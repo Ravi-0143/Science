@@ -426,10 +426,14 @@
         Video Guidance & Concept Explanation
       </h2>
       <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 1rem;">
-        Watch the video tutorial for in-depth concepts, cell structures, and explanations:
+        Watch the video tutorial for in-depth concepts, cell structures, and explanations. <em>(Move cursor or touch screen to enable audio!)</em>
       </p>
-      <div class="video-wrapper">
-        <iframe src="https://www.youtube.com/embed/MYcVW1dlNbU" 
+      <div class="video-wrapper" id="videoContainerMain">
+        <div class="audio-status-badge" id="audioBadgeMain">
+          <i class="fa-solid fa-volume-xmark"></i> Muted (Hover / Touch for Sound)
+        </div>
+        <iframe id="ytplayerMain"
+                src="https://www.youtube.com/embed/MYcVW1dlNbU?enablejsapi=1&autoplay=1&mute=1&loop=1&playlist=MYcVW1dlNbU" 
                 title="Epithelial Tissues Guidance Video" 
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
                 allowfullscreen>
@@ -444,5 +448,54 @@
       CBSE Class 9 & 10 Science Interactive Portal • Built for <a href="https://github.com/Ravi-0143/Science.git" target="_blank">GitHub: Ravi-0143/Science</a>
     </p>
   </footer>
+
+  <!-- YouTube Iframe API -->
+  <script src="https://www.youtube.com/iframe_api"></script>
+  <script>
+    var playerMain;
+    function onYouTubeIframeAPIReady() {
+      playerMain = new YT.Player('ytplayerMain', {
+        events: {
+          'onReady': function(event) {
+            event.target.playVideo();
+            event.target.mute();
+          }
+        }
+      });
+    }
+
+    function enableMainAudio() {
+      if (playerMain && typeof playerMain.unMute === 'function') {
+        playerMain.unMute();
+        playerMain.setVolume(100);
+        const b = document.getElementById('audioBadgeMain');
+        if (b) {
+          b.innerHTML = '<i class="fa-solid fa-volume-high"></i> Audio On';
+          b.classList.add('audio-active');
+        }
+      }
+    }
+
+    function disableMainAudio() {
+      if (playerMain && typeof playerMain.mute === 'function') {
+        playerMain.mute();
+        const b = document.getElementById('audioBadgeMain');
+        if (b) {
+          b.innerHTML = '<i class="fa-solid fa-volume-xmark"></i> Muted (Hover / Touch for Sound)';
+          b.classList.remove('audio-active');
+        }
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const v = document.getElementById('videoContainerMain');
+      if (v) {
+        v.addEventListener('mouseenter', enableMainAudio);
+        v.addEventListener('mouseleave', disableMainAudio);
+        v.addEventListener('touchstart', enableMainAudio, { passive: true });
+        v.addEventListener('touchend', disableMainAudio, { passive: true });
+      }
+    });
+  </script>
 </body>
 </html>

@@ -967,6 +967,115 @@ body, body.dark-theme {
   border: none;
 }
 
+.audio-status-badge {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  background: rgba(15, 23, 42, 0.85);
+  backdrop-filter: blur(8px);
+  color: #f8fafc;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  z-index: 10;
+  pointer-events: none;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transition: all 0.3s ease;
+}
+
+.audio-status-badge.audio-active {
+  background: rgba(5, 150, 105, 0.9);
+  color: #ffffff;
+  box-shadow: 0 0 15px rgba(16, 185, 129, 0.4);
+}
+
+/* Enhanced Cell Graphic Box Interactions */
+.cell-graphic-box {
+  width: 100%;
+  height: 160px;
+  background: #f8fafc;
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  margin-bottom: 1rem;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  user-select: none;
+  touch-action: manipulation;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.cell-graphic-box:hover {
+  border-color: var(--primary-cyan);
+  box-shadow: 0 4px 15px rgba(2, 132, 199, 0.1);
+}
+
+/* Metachronal wave animation for Cilia Hairs */
+@keyframes metachronalWave {
+  0% { transform: rotate(-18deg); }
+  50% { transform: rotate(0deg); }
+  100% { transform: rotate(18deg); }
+}
+
+.cilia-hair {
+  transform-origin: bottom center;
+  animation: metachronalWave 0.9s ease-in-out infinite alternate;
+}
+
+.cilia-hair:nth-child(2n) { animation-delay: 0.15s; }
+.cilia-hair:nth-child(3n) { animation-delay: 0.3s; }
+.cilia-hair:nth-child(4n) { animation-delay: 0.45s; }
+
+/* Cuboidal Factory Respiration Pulsing */
+@keyframes factoryPulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.02); }
+  100% { transform: scale(1); }
+}
+
+.cuboidal-pulse {
+  animation: factoryPulse 2s ease-in-out infinite;
+}
+
+/* Keratin Flake Shedding for Stratified Skin Scratch */
+.keratin-flake {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  background: #f43f5e;
+  border-radius: 2px;
+  pointer-events: none;
+  animation: flakeShed 0.8s ease-out forwards;
+}
+
+@keyframes flakeShed {
+  0% { opacity: 1; transform: translate(0, 0) rotate(0deg); }
+  100% { opacity: 0; transform: translate(var(--dx, 20px), var(--dy, -30px)) rotate(180deg); }
+}
+
+/* Diffusion wave pulse for Simple Squamous */
+.diffusion-wave {
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  border: 2px solid #0284c7;
+  border-radius: 50%;
+  pointer-events: none;
+  animation: diffPulse 0.9s ease-out forwards;
+}
+
+@keyframes diffPulse {
+  0% { transform: scale(0.2); opacity: 1; }
+  100% { transform: scale(3.5); opacity: 0; }
+}
+
 /* Footer */
 .app-footer {
   height: 40px;
