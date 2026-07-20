@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Epithelial Tissue & Skin Cell Lab | CBSE Class 9 Biology</title>
-  <meta name="description" content="Interactive Class 9 Biology Explorer for Epithelial Tissues: Simple Squamous, Stratified Squamous (Skin), Cuboidal, and Ciliated Columnar cells with live simulations and homework matching guide.">
+  <title>Epithelial Tissue & Skin Cell Interactive Lab | CBSE Class 9 Biology</title>
+  <meta name="description" content="Interactive Class 9 Biology Lab for Epithelial Tissues: Multi-layer Skin Abrasion & Regeneration Simulator, Simple Squamous, Cuboidal, and Ciliated Columnar cells with live video guidance.">
 
   <!-- Google Fonts & Font Awesome Icons -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -152,11 +152,6 @@
       box-shadow: 0 2px 8px rgba(2, 132, 199, 0.25);
     }
 
-    .nav-btn.primary-nav:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 4px 12px rgba(2, 132, 199, 0.35);
-    }
-
     /* Container */
     .container {
       max-width: 1200px;
@@ -206,6 +201,197 @@
       line-height: 1.6;
     }
 
+    /* Video Embed Section */
+    .video-section {
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      padding: 2rem;
+      box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.04);
+      margin-bottom: 2.5rem;
+    }
+
+    .section-title {
+      font-size: 1.4rem;
+      font-weight: 800;
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--text-main);
+    }
+
+    .section-subtitle {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      margin-bottom: 1rem;
+    }
+
+    .video-wrapper {
+      position: relative;
+      width: 100%;
+      padding-bottom: 56.25%; /* 16:9 ratio */
+      height: 0;
+      border-radius: 14px;
+      overflow: hidden;
+      border: 1px solid var(--border-color);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.06);
+    }
+
+    .video-wrapper iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    /* Special Advanced Skin Studio Section */
+    .skin-studio-section {
+      background: #ffffff;
+      border: 2px solid var(--accent-pink);
+      border-radius: 20px;
+      padding: 2rem;
+      box-shadow: 0 12px 35px rgba(219, 39, 119, 0.08);
+      margin-bottom: 2.5rem;
+    }
+
+    .skin-studio-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .skin-studio-title h2 {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .skin-studio-title p {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      margin-top: 4px;
+    }
+
+    .hud-metrics {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .hud-card {
+      background: var(--surface-1);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 8px 14px;
+      display: flex;
+      flex-direction: column;
+      min-width: 130px;
+    }
+
+    .hud-label {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .hud-val {
+      font-family: var(--font-mono);
+      font-weight: 700;
+      font-size: 1rem;
+      color: var(--accent-pink);
+    }
+
+    .skin-canvas-container {
+      position: relative;
+      width: 100%;
+      height: 280px;
+      background: #fff0f5;
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      overflow: hidden;
+      cursor: crosshair;
+      box-shadow: inset 0 2px 8px rgba(0,0,0,0.03);
+    }
+
+    #skinCanvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .canvas-overlay-prompt {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      background: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(8px);
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--accent-pink);
+      border: 1px solid rgba(219, 39, 119, 0.3);
+      pointer-events: none;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .skin-controls-bar {
+      margin-top: 1.25rem;
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .action-btn-pink {
+      background: linear-gradient(135deg, var(--accent-pink), var(--accent-purple));
+      color: #fff;
+      border: none;
+      padding: 10px 18px;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: 0.85rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s;
+      box-shadow: 0 4px 12px rgba(219, 39, 119, 0.25);
+    }
+
+    .action-btn-pink:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 16px rgba(219, 39, 119, 0.35);
+    }
+
+    .action-btn-outline {
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      padding: 10px 16px;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .action-btn-outline:hover {
+      background: var(--surface-1);
+    }
+
     /* 4 Grid Modules */
     .tissue-grid {
       display: grid;
@@ -244,7 +430,6 @@
       margin-bottom: 0.75rem;
     }
 
-    /* Card Themes */
     .tissue-card.squamous .card-header-badge { background: #e0f2fe; color: #0284c7; }
     .tissue-card.stratified .card-header-badge { background: #fce7f3; color: #db2777; }
     .tissue-card.cuboidal .card-header-badge { background: #dcfce7; color: #059669; }
@@ -270,7 +455,6 @@
     .tissue-card.cuboidal .tissue-location { color: var(--accent-emerald); }
     .tissue-card.columnar .tissue-location { color: var(--accent-amber); }
 
-    /* Canvas / Graphic Visualizer Box */
     .cell-graphic-box {
       width: 100%;
       height: 160px;
@@ -331,7 +515,7 @@
     .tissue-card.columnar .demo-btn { background: #fef3c7; color: #d97706; }
     .tissue-card.columnar .demo-btn:hover { background: #fde68a; }
 
-    /* Homework Direct Match & Practice Quiz Section */
+    /* Homework Direct Match Section */
     .quiz-section {
       background: #ffffff;
       border: 1px solid var(--border-color);
@@ -339,22 +523,6 @@
       padding: 2rem;
       box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.04);
       margin-bottom: 2.5rem;
-    }
-
-    .section-title {
-      font-size: 1.4rem;
-      font-weight: 800;
-      margin-bottom: 0.5rem;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      color: var(--text-main);
-    }
-
-    .section-subtitle {
-      font-size: 0.9rem;
-      color: var(--text-muted);
-      margin-bottom: 1.5rem;
     }
 
     .match-container {
@@ -485,7 +653,6 @@
     }
 
     /* Cell Animation Styles */
-    /* Squamous slide food animation */
     .food-particle {
       position: absolute;
       width: 16px;
@@ -506,7 +673,6 @@
       100% { left: 90%; }
     }
 
-    /* Friction scratch animation */
     .scratch-effect {
       position: absolute;
       top: 0; left: 0; right: 0; bottom: 0;
@@ -516,7 +682,6 @@
       transition: opacity 0.2s;
     }
 
-    /* Cilia hair sweeping animation */
     .cilia-hair {
       transform-origin: bottom center;
     }
@@ -549,7 +714,6 @@
       100% { bottom: 145px; left: 85%; opacity: 0; }
     }
 
-    /* Secretion Fluid Pump */
     .fluid-dot {
       position: absolute;
       width: 8px;
@@ -609,11 +773,11 @@
       </div>
       <h1 class="hero-title">Epithelial Tissues & Skin Cell Structure Explorer</h1>
       <p class="hero-desc">
-        Epithelial tissue forms the protective outer and inner covering of organs throughout the body. Explore the 4 key types of epithelial cells below, watch the guidance video lesson, run interactive functional simulations, and complete the direct homework matching activity!
+        Epithelial tissue forms the protective outer and inner covering of organs throughout the body. Watch the embedded video tutorial, experiment with the interactive multi-layer skin abrasion simulator, and solve the homework matching activity!
       </p>
     </section>
 
-    <!-- Video Guidance Section -->
+    <!-- Embedded YouTube Video Guidance Section -->
     <section class="video-section">
       <h2 class="section-title">
         <i class="fa-solid fa-circle-play" style="color: var(--accent-pink);"></i>
@@ -623,11 +787,60 @@
         Watch this video tutorial covering CBSE Class 9 Epithelial Tissues, cell structure, location, and functions:
       </p>
       <div class="video-wrapper">
-        <iframe src="https://www.youtube.com/embed/MYcVW1dlNbU" 
+        <iframe src="https://www.youtube.com/embed/MYcVW1dlNbU?autoplay=0&rel=0" 
                 title="Epithelial Tissues Guidance Video" 
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
                 allowfullscreen>
         </iframe>
+      </div>
+    </section>
+
+    <!-- Advanced Multi-Layer Skin Abrasion & Regeneration Studio -->
+    <section class="skin-studio-section">
+      <div class="skin-studio-header">
+        <div class="skin-studio-title">
+          <h2>
+            <i class="fa-solid fa-hand-fist" style="color: var(--accent-pink);"></i>
+            Interactive Skin Surface Friction & Regeneration Studio
+          </h2>
+          <p>
+            Click & drag your mouse/finger across the skin canvas to simulate friction, rubbing, and flaking of top skin layers! Watch basal stem cells divide to regenerate replacement cells!
+          </p>
+        </div>
+
+        <div class="hud-metrics">
+          <div class="hud-card">
+            <span class="hud-label">Surface Layer Wear</span>
+            <span class="hud-val" id="wearHud">0% (Intact)</span>
+          </div>
+          <div class="hud-card">
+            <span class="hud-label">Dermis Safety</span>
+            <span class="hud-val" style="color: var(--accent-emerald);" id="safetyHud">100% Safe</span>
+          </div>
+          <div class="hud-card">
+            <span class="hud-label">Basal Mitosis</span>
+            <span class="hud-val" style="color: var(--primary-cyan);" id="mitosisHud">Ready</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="skin-canvas-container" id="skinCanvasBox">
+        <div class="canvas-overlay-prompt">
+          <i class="fa-solid fa-hand-pointer"></i> Drag across skin to rub & scratch surface cells!
+        </div>
+        <canvas id="skinCanvas"></canvas>
+      </div>
+
+      <div class="skin-controls-bar">
+        <button class="action-btn-pink" onclick="triggerRubFriction()">
+          <i class="fa-solid fa-hand-sparkles"></i> Rub & Flake Top Skin Cells
+        </button>
+        <button class="action-btn-pink" style="background: linear-gradient(135deg, var(--primary-cyan), #0284c7);" onclick="triggerMitosisPulse()">
+          <i class="fa-solid fa-dna"></i> Trigger Basal Cell Mitosis
+        </button>
+        <button class="action-btn-outline" onclick="resetSkinStudio()">
+          <i class="fa-solid fa-rotate-left"></i> Restore Full Skin Layers
+        </button>
       </div>
     </section>
 
@@ -645,17 +858,14 @@
 
           <div class="cell-graphic-box" id="squamousBox">
             <div class="food-particle sliding" id="foodParticle"></div>
-            <!-- SVG Diagram 1 -->
             <svg width="240" height="120" viewBox="0 0 240 120">
               <line x1="10" y1="95" x2="230" y2="95" stroke="#0f172a" stroke-width="3"/>
-              <!-- Flat single layer cells -->
               <g stroke="#0284c7" stroke-width="2" fill="#bae6fd">
                 <rect x="15" y="65" width="50" height="30" rx="3"/>
                 <rect x="68" y="65" width="50" height="30" rx="3"/>
                 <rect x="121" y="65" width="50" height="30" rx="3"/>
                 <rect x="174" y="65" width="50" height="30" rx="3"/>
               </g>
-              <!-- Nuclei -->
               <circle cx="40" cy="80" r="5" fill="#0369a1"/>
               <circle cx="93" cy="80" r="5" fill="#0369a1"/>
               <circle cx="146" cy="80" r="5" fill="#0369a1"/>
@@ -684,38 +894,34 @@
 
           <div class="cell-graphic-box" id="stratifiedBox">
             <div class="scratch-effect" id="scratchEffect"></div>
-            <!-- SVG Diagram 2 -->
             <svg width="240" height="140" viewBox="0 0 240 140">
               <line x1="10" y1="130" x2="230" y2="130" stroke="#0f172a" stroke-width="3"/>
-              <!-- Stacked layers like deck of cards -->
               <g stroke="#db2777" stroke-width="1.5" fill="#fbcfe8">
-                <!-- Layer 5 top -->
                 <rect x="20" y="20" width="45" height="20" rx="2"/>
                 <rect x="68" y="20" width="45" height="20" rx="2"/>
                 <rect x="116" y="20" width="45" height="20" rx="2"/>
                 <rect x="164" y="20" width="45" height="20" rx="2"/>
-                <!-- Layer 4 -->
+
                 <rect x="20" y="42" width="45" height="20" rx="2"/>
                 <rect x="68" y="42" width="45" height="20" rx="2"/>
                 <rect x="116" y="42" width="45" height="20" rx="2"/>
                 <rect x="164" y="42" width="45" height="20" rx="2"/>
-                <!-- Layer 3 -->
+
                 <rect x="20" y="64" width="45" height="20" rx="2"/>
                 <rect x="68" y="64" width="45" height="20" rx="2"/>
                 <rect x="116" y="64" width="45" height="20" rx="2"/>
                 <rect x="164" y="64" width="45" height="20" rx="2"/>
-                <!-- Layer 2 -->
+
                 <rect x="20" y="86" width="45" height="20" rx="2"/>
                 <rect x="68" y="86" width="45" height="20" rx="2"/>
                 <rect x="116" y="86" width="45" height="20" rx="2"/>
                 <rect x="164" y="86" width="45" height="20" rx="2"/>
-                <!-- Layer 1 bottom -->
+
                 <rect x="20" y="108" width="45" height="20" rx="2"/>
                 <rect x="68" y="108" width="45" height="20" rx="2"/>
                 <rect x="116" y="108" width="45" height="20" rx="2"/>
                 <rect x="164" y="108" width="45" height="20" rx="2"/>
               </g>
-              <!-- Nuclei dots -->
               <g fill="#9d174d">
                 <circle cx="42" cy="30" r="3"/><circle cx="90" cy="30" r="3"/><circle cx="138" cy="30" r="3"/><circle cx="186" cy="30" r="3"/>
                 <circle cx="42" cy="52" r="3"/><circle cx="90" cy="52" r="3"/><circle cx="138" cy="52" r="3"/><circle cx="186" cy="52" r="3"/>
@@ -732,7 +938,7 @@
         </div>
 
         <button class="demo-btn" onclick="triggerScratchTest()">
-          <i class="fa-solid fa-hand-fist"></i> Simulate Skin Scratch / Wear
+          <i class="fa-solid fa-hand-fist"></i> Quick Scratch Test
         </button>
       </div>
 
@@ -749,18 +955,14 @@
             <div class="fluid-dot pumping" style="left: 60px;"></div>
             <div class="fluid-dot pumping" style="left: 120px; animation-delay: 0.5s;"></div>
             <div class="fluid-dot pumping" style="left: 180px; animation-delay: 1s;"></div>
-
-            <!-- SVG Diagram 3 -->
             <svg width="240" height="130" viewBox="0 0 240 130">
               <line x1="10" y1="120" x2="230" y2="120" stroke="#0f172a" stroke-width="3"/>
-              <!-- Cube-shaped cells -->
               <g stroke="#059669" stroke-width="2" fill="#bbf7d0">
                 <rect x="18" y="55" width="48" height="65" rx="3"/>
                 <rect x="71" y="55" width="48" height="65" rx="3"/>
                 <rect x="124" y="55" width="48" height="65" rx="3"/>
                 <rect x="177" y="55" width="48" height="65" rx="3"/>
               </g>
-              <!-- Central spherical nuclei -->
               <g fill="#047857">
                 <circle cx="42" cy="87" r="7"/>
                 <circle cx="95" cy="87" r="7"/>
@@ -791,47 +993,39 @@
 
           <div class="cell-graphic-box sweeping" id="columnarBox">
             <div class="mucus-dust"></div>
-            <!-- SVG Diagram 4 -->
             <svg width="240" height="140" viewBox="0 0 240 140">
               <line x1="10" y1="130" x2="230" y2="130" stroke="#0f172a" stroke-width="3"/>
-              
-              <!-- Columnar Cells -->
               <g stroke="#d97706" stroke-width="2" fill="#fde68a">
                 <rect x="15" y="45" width="48" height="85" rx="3"/>
                 <rect x="68" y="45" width="48" height="85" rx="3"/>
                 <rect x="121" y="45" width="48" height="85" rx="3"/>
                 <rect x="174" y="45" width="48" height="85" rx="3"/>
               </g>
-              
-              <!-- Basal Nuclei -->
               <g fill="#b45309">
                 <circle cx="39" cy="110" r="6"/>
                 <circle cx="92" cy="110" r="6"/>
                 <circle cx="145" cy="110" r="6"/>
                 <circle cx="198" cy="110" r="6"/>
               </g>
-
-              <!-- Microscopic Cilia Hairs on top -->
               <g stroke="#b45309" stroke-width="2" stroke-linecap="round" class="cilia-group">
-                <!-- Cell 1 -->
                 <line x1="20" y1="45" x2="20" y2="25" class="cilia-hair"/>
                 <line x1="28" y1="45" x2="28" y2="25" class="cilia-hair"/>
                 <line x1="36" y1="45" x2="36" y2="25" class="cilia-hair"/>
                 <line x1="44" y1="45" x2="44" y2="25" class="cilia-hair"/>
                 <line x1="52" y1="45" x2="52" y2="25" class="cilia-hair"/>
-                <!-- Cell 2 -->
+
                 <line x1="73" y1="45" x2="73" y2="25" class="cilia-hair"/>
                 <line x1="81" y1="45" x2="81" y2="25" class="cilia-hair"/>
                 <line x1="89" y1="45" x2="89" y2="25" class="cilia-hair"/>
                 <line x1="97" y1="45" x2="97" y2="25" class="cilia-hair"/>
                 <line x1="105" y1="45" x2="105" y2="25" class="cilia-hair"/>
-                <!-- Cell 3 -->
+
                 <line x1="126" y1="45" x2="126" y2="25" class="cilia-hair"/>
                 <line x1="134" y1="45" x2="134" y2="25" class="cilia-hair"/>
                 <line x1="142" y1="45" x2="142" y2="25" class="cilia-hair"/>
                 <line x1="150" y1="45" x2="150" y2="25" class="cilia-hair"/>
                 <line x1="158" y1="45" x2="158" y2="25" class="cilia-hair"/>
-                <!-- Cell 4 -->
+
                 <line x1="179" y1="45" x2="179" y2="25" class="cilia-hair"/>
                 <line x1="187" y1="45" x2="187" y2="25" class="cilia-hair"/>
                 <line x1="195" y1="45" x2="195" y2="25" class="cilia-hair"/>
@@ -864,7 +1058,6 @@
       </p>
 
       <div class="match-container">
-        <!-- Left Side: Tissues -->
         <div class="match-column">
           <div class="match-column-title">1. Select Tissue Type</div>
           <div class="match-item" data-type="squamous" onclick="selectTissue(this)">
@@ -885,7 +1078,6 @@
           </div>
         </div>
 
-        <!-- Right Side: Locations -->
         <div class="match-column">
           <div class="match-column-title">2. Select Body Location</div>
           <div class="match-item" data-target="columnar" onclick="selectLocation(this)">
@@ -974,20 +1166,264 @@
     <p>CBSE Class 9 & 10 Science Interactive Portal • Built for <a href="index.html" style="color: var(--primary-cyan); text-decoration: none;">Science Main Hub</a></p>
   </footer>
 
-  <!-- Interactive Scripts -->
+  <!-- Interactive Scripts Engine -->
   <script>
-    // Demo Functions
+    // ------------------------------------------------------------------
+    // Advanced Multi-Layer Skin Interactive Canvas Engine
+    // ------------------------------------------------------------------
+    const canvas = document.getElementById('skinCanvas');
+    const ctx = canvas.getContext('2d');
+
+    let isMouseDown = false;
+    let wearPercent = 0;
+    let flakingParticles = [];
+    let mitosisPulseTime = 0;
+
+    // Skin layers state (rows x cols)
+    const ROWS = 6;
+    const COLS = 16;
+    let cellLayers = [];
+
+    function initSkinState() {
+      cellLayers = [];
+      for (let r = 0; r < ROWS; r++) {
+        let rowCells = [];
+        for (let c = 0; c < COLS; c++) {
+          rowCells.push({
+            health: 1.0,
+            type: r === 0 ? 'corneum' : (r === ROWS - 1 ? 'basale' : 'spinosum')
+          });
+        }
+        cellLayers.push(rowCells);
+      }
+      wearPercent = 0;
+      updateHud();
+    }
+
+    function resizeCanvas() {
+      const box = document.getElementById('skinCanvasBox');
+      canvas.width = box.clientWidth;
+      canvas.height = box.clientHeight;
+    }
+
+    window.addEventListener('resize', resizeCanvas);
+
+    function updateHud() {
+      document.getElementById('wearHud').textContent = Math.round(wearPercent) + '% worn';
+      document.getElementById('safetyHud').textContent = '100% Safe (Dermis Intact)';
+      document.getElementById('mitosisHud').textContent = mitosisPulseTime > 0 ? 'Dividing (Mitosis)' : 'Active Barrier';
+    }
+
+    function applyFrictionAt(x, y) {
+      const cellWidth = canvas.width / COLS;
+      const colIndex = Math.floor(x / cellWidth);
+      
+      if (colIndex >= 0 && colIndex < COLS) {
+        // Wear top active layer in this column
+        for (let r = 0; r < ROWS - 1; r++) {
+          if (cellLayers[r][colIndex].health > 0) {
+            cellLayers[r][colIndex].health -= 0.15;
+            if (cellLayers[r][colIndex].health < 0) cellLayers[r][colIndex].health = 0;
+            
+            // Spawn flaking cell particles
+            flakingParticles.push({
+              x: (colIndex + 0.5) * cellWidth,
+              y: 40 + r * 30,
+              vx: (Math.random() - 0.5) * 4,
+              vy: -Math.random() * 3 - 1,
+              alpha: 1.0,
+              color: '#f43f5e'
+            });
+
+            // Auto trigger basal mitosis to regenerate
+            mitosisPulseTime = 30;
+            break;
+          }
+        }
+      }
+
+      // Calculate total wear percentage
+      let totalHealth = 0;
+      for (let r = 0; r < ROWS - 1; r++) {
+        for (let c = 0; c < COLS; c++) {
+          totalHealth += cellLayers[r][c].health;
+        }
+      }
+      const maxHealth = (ROWS - 1) * COLS;
+      wearPercent = Math.max(0, ((maxHealth - totalHealth) / maxHealth) * 100);
+      updateHud();
+    }
+
+    // Canvas Mouse & Touch Event Listeners
+    canvas.addEventListener('mousedown', (e) => {
+      isMouseDown = true;
+      const rect = canvas.getBoundingClientRect();
+      applyFrictionAt(e.clientX - rect.left, e.clientY - rect.top);
+    });
+
+    canvas.addEventListener('mousemove', (e) => {
+      if (isMouseDown) {
+        const rect = canvas.getBoundingClientRect();
+        applyFrictionAt(e.clientX - rect.left, e.clientY - rect.top);
+      }
+    });
+
+    window.addEventListener('mouseup', () => { isMouseDown = false; });
+
+    canvas.addEventListener('touchstart', (e) => {
+      isMouseDown = true;
+      const rect = canvas.getBoundingClientRect();
+      const touch = e.touches[0];
+      applyFrictionAt(touch.clientX - rect.left, touch.clientY - rect.top);
+    });
+
+    canvas.addEventListener('touchmove', (e) => {
+      if (isMouseDown) {
+        const rect = canvas.getBoundingClientRect();
+        const touch = e.touches[0];
+        applyFrictionAt(touch.clientX - rect.left, touch.clientY - rect.top);
+      }
+    });
+
+    window.addEventListener('touchend', () => { isMouseDown = false; });
+
+    function renderSkinCanvas() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      const w = canvas.width;
+      const h = canvas.height;
+      const colW = w / COLS;
+      const cellH = 26;
+      const startY = 60;
+
+      // 1. Draw Dermis & Blood Capillaries (Underneath Basement Membrane)
+      ctx.fillStyle = '#fee2e2';
+      ctx.fillRect(0, startY + (ROWS * cellH), w, h - (startY + ROWS * cellH));
+
+      // Draw Basement Membrane line
+      ctx.beginPath();
+      ctx.moveTo(0, startY + (ROWS * cellH));
+      ctx.lineTo(w, startY + (ROWS * cellH));
+      ctx.strokeStyle = '#991b1b';
+      ctx.lineWidth = 3;
+      ctx.stroke();
+
+      ctx.font = '700 11px sans-serif';
+      ctx.fillStyle = '#991b1b';
+      ctx.fillText('PROTECTED DERMIS & BLOOD CAPILLARIES (UNTOUCHED UNDERNEATH)', 15, startY + (ROWS * cellH) + 20);
+
+      // 2. Draw Multi-Layer Cell Grid
+      for (let r = 0; r < ROWS; r++) {
+        for (let c = 0; c < COLS; c++) {
+          const cell = cellLayers[r][c];
+          if (cell.health <= 0) continue;
+
+          const x = c * colW + 1;
+          const y = startY + (r * cellH);
+
+          // Fill color based on skin layer
+          if (r === 0) {
+            // Dead Stratum Corneum surface layer
+            ctx.fillStyle = `rgba(251, 113, 133, ${cell.health * 0.9})`;
+            ctx.strokeStyle = '#f43f5e';
+          } else if (r === ROWS - 1) {
+            // Basal Stem Cell layer (dividing)
+            ctx.fillStyle = mitosisPulseTime > 0 ? '#f472b6' : '#db2777';
+            ctx.strokeStyle = '#831843';
+          } else {
+            // Intermediate Stratum Spinosum
+            ctx.fillStyle = `rgba(253, 164, 175, ${cell.health})`;
+            ctx.strokeStyle = '#e11d48';
+          }
+
+          ctx.lineWidth = 1;
+          ctx.beginPath();
+          ctx.roundRect(x, y, colW - 2, cellH - 2, 3);
+          ctx.fill();
+          ctx.stroke();
+
+          // Draw Cell Nucleus
+          if (cell.health > 0.3) {
+            ctx.beginPath();
+            ctx.arc(x + (colW / 2), y + (cellH / 2), r === ROWS - 1 ? 4 : 2.5, 0, Math.PI * 2);
+            ctx.fillStyle = r === ROWS - 1 ? '#4c0519' : '#881337';
+            ctx.fill();
+          }
+        }
+      }
+
+      // 3. Render Flaking Particles
+      for (let i = flakingParticles.length - 1; i >= 0; i--) {
+        const p = flakingParticles[i];
+        p.x += p.vx;
+        p.y += p.vy;
+        p.alpha -= 0.02;
+
+        if (p.alpha <= 0) {
+          flakingParticles.splice(i, 1);
+        } else {
+          ctx.save();
+          ctx.globalAlpha = p.alpha;
+          ctx.fillStyle = p.color;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, 4, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.restore();
+        }
+      }
+
+      // 4. Handle Mitosis Regeneration logic
+      if (mitosisPulseTime > 0) {
+        mitosisPulseTime--;
+        // Slowly heal cell layers
+        for (let r = ROWS - 2; r >= 0; r--) {
+          for (let c = 0; c < COLS; c++) {
+            if (cellLayers[r][c].health < 1.0) {
+              cellLayers[r][c].health += 0.008;
+              if (cellLayers[r][c].health > 1.0) cellLayers[r][c].health = 1.0;
+            }
+          }
+        }
+      }
+
+      requestAnimationFrame(renderSkinCanvas);
+    }
+
+    function triggerRubFriction() {
+      for (let i = 0; i < 8; i++) {
+        const randomX = Math.random() * canvas.width;
+        applyFrictionAt(randomX, 60);
+      }
+    }
+
+    function triggerMitosisPulse() {
+      mitosisPulseTime = 90;
+      updateHud();
+    }
+
+    function resetSkinStudio() {
+      initSkinState();
+    }
+
+    // Initialize Canvas on load
+    document.addEventListener('DOMContentLoaded', () => {
+      resizeCanvas();
+      initSkinState();
+      renderSkinCanvas();
+    });
+
+    // ------------------------------------------------------------------
+    // Demo Card Functions
+    // ------------------------------------------------------------------
     function triggerSlideAnimation() {
       const p = document.getElementById('foodParticle');
       p.classList.remove('sliding');
-      void p.offsetWidth; // trigger reflow
+      void p.offsetWidth;
       p.classList.add('sliding');
     }
 
     function triggerScratchTest() {
-      const scratch = document.getElementById('scratchEffect');
-      scratch.style.opacity = '1';
-      setTimeout(() => { scratch.style.opacity = '0'; }, 800);
+      triggerRubFriction();
     }
 
     function triggerFluidPump() {
@@ -1002,7 +1438,9 @@
       box.classList.toggle('sweeping');
     }
 
-    // Matching Game State
+    // ------------------------------------------------------------------
+    // Matching Game Engine
+    // ------------------------------------------------------------------
     let selectedTissueEl = null;
     let matchedCount = 0;
 
