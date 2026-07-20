@@ -1,0 +1,1048 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Epithelial Tissue & Skin Cell Lab | CBSE Class 9 Biology</title>
+  <meta name="description" content="Interactive Class 9 Biology Explorer for Epithelial Tissues: Simple Squamous, Stratified Squamous (Skin), Cuboidal, and Ciliated Columnar cells with live simulations and homework matching guide.">
+
+  <!-- Google Fonts & Font Awesome Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Canvas Confetti -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+  <style>
+    :root {
+      --bg-light: #f8fafc;
+      --bg-card: #ffffff;
+      --bg-card-hover: #f1f5f9;
+      --surface-1: #f1f5f9;
+      --surface-2: #e2e8f0;
+      --border-color: #e2e8f0;
+      --border-strong: #cbd5e1;
+      
+      --primary-cyan: #0284c7;
+      --primary-glow: rgba(2, 132, 199, 0.15);
+      --accent-purple: #7c3aed;
+      --accent-pink: #db2777;
+      --accent-amber: #d97706;
+      --accent-emerald: #059669;
+
+      --text-main: #0f172a;
+      --text-secondary: #334155;
+      --text-muted: #64748b;
+      --text-accent: #0284c7;
+
+      --font-sans: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-mono: 'Fira Code', monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-light);
+      color: var(--text-main);
+      font-family: var(--font-sans);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Header */
+    .app-header {
+      height: 70px;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 1.5rem;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .home-btn-link {
+      color: var(--text-muted);
+      font-size: 1.1rem;
+      padding: 8px 12px;
+      border-radius: 8px;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+
+    .home-btn-link:hover {
+      background: var(--surface-1);
+      color: var(--primary-cyan);
+    }
+
+    .logo-icon {
+      width: 42px;
+      height: 42px;
+      background: linear-gradient(135deg, var(--accent-pink), var(--accent-purple));
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      color: #fff;
+      box-shadow: 0 4px 12px rgba(219, 39, 119, 0.25);
+    }
+
+    .brand-text h1 {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .brand-text .highlight {
+      color: var(--accent-pink);
+    }
+
+    .brand-text p {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    .nav-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .nav-btn {
+      padding: 8px 14px;
+      border-radius: 10px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      text-decoration: none;
+      color: var(--text-secondary);
+      background: var(--surface-1);
+      border: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+
+    .nav-btn:hover {
+      background: #e2e8f0;
+      color: var(--text-main);
+    }
+
+    .nav-btn.primary-nav {
+      background: linear-gradient(135deg, var(--primary-cyan), #0284c7);
+      color: #fff;
+      border: none;
+      box-shadow: 0 2px 8px rgba(2, 132, 199, 0.25);
+    }
+
+    .nav-btn.primary-nav:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(2, 132, 199, 0.35);
+    }
+
+    /* Container */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem;
+      width: 100%;
+      flex: 1;
+    }
+
+    /* Hero Banner */
+    .hero-banner {
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      padding: 2rem;
+      margin-bottom: 2rem;
+      box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.04);
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(219, 39, 119, 0.1);
+      color: var(--accent-pink);
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      width: fit-content;
+    }
+
+    .hero-title {
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--text-main);
+    }
+
+    .hero-desc {
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    /* 4 Grid Modules */
+    .tissue-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .tissue-card {
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+      transition: all 0.3s ease;
+      position: relative;
+    }
+
+    .tissue-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 25px rgba(0, 0, 0, 0.08);
+      border-color: var(--border-strong);
+    }
+
+    .card-header-badge {
+      font-size: 0.72rem;
+      font-family: var(--font-mono);
+      font-weight: 700;
+      text-transform: uppercase;
+      padding: 3px 8px;
+      border-radius: 6px;
+      width: fit-content;
+      margin-bottom: 0.75rem;
+    }
+
+    /* Card Themes */
+    .tissue-card.squamous .card-header-badge { background: #e0f2fe; color: #0284c7; }
+    .tissue-card.stratified .card-header-badge { background: #fce7f3; color: #db2777; }
+    .tissue-card.cuboidal .card-header-badge { background: #dcfce7; color: #059669; }
+    .tissue-card.columnar .card-header-badge { background: #fef3c7; color: #d97706; }
+
+    .tissue-card h2 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin-bottom: 0.25rem;
+    }
+
+    .tissue-location {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--primary-cyan);
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .tissue-card.stratified .tissue-location { color: var(--accent-pink); }
+    .tissue-card.cuboidal .tissue-location { color: var(--accent-emerald); }
+    .tissue-card.columnar .tissue-location { color: var(--accent-amber); }
+
+    /* Canvas / Graphic Visualizer Box */
+    .cell-graphic-box {
+      width: 100%;
+      height: 160px;
+      background: #f8fafc;
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      margin-bottom: 1rem;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .why-box {
+      background: var(--surface-1);
+      border-left: 4px solid var(--primary-cyan);
+      padding: 10px 12px;
+      border-radius: 0 8px 8px 0;
+      font-size: 0.82rem;
+      color: var(--text-secondary);
+      line-height: 1.5;
+      margin-bottom: 1rem;
+    }
+
+    .tissue-card.stratified .why-box { border-left-color: var(--accent-pink); }
+    .tissue-card.cuboidal .why-box { border-left-color: var(--accent-emerald); }
+    .tissue-card.columnar .why-box { border-left-color: var(--accent-amber); }
+
+    .why-box strong {
+      color: var(--text-main);
+    }
+
+    .demo-btn {
+      width: 100%;
+      padding: 10px;
+      border-radius: 10px;
+      border: none;
+      font-weight: 700;
+      font-size: 0.85rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+
+    .tissue-card.squamous .demo-btn { background: #e0f2fe; color: #0284c7; }
+    .tissue-card.squamous .demo-btn:hover { background: #bae6fd; }
+
+    .tissue-card.stratified .demo-btn { background: #fce7f3; color: #db2777; }
+    .tissue-card.stratified .demo-btn:hover { background: #fbcfe8; }
+
+    .tissue-card.cuboidal .demo-btn { background: #dcfce7; color: #059669; }
+    .tissue-card.cuboidal .demo-btn:hover { background: #bbf7d0; }
+
+    .tissue-card.columnar .demo-btn { background: #fef3c7; color: #d97706; }
+    .tissue-card.columnar .demo-btn:hover { background: #fde68a; }
+
+    /* Homework Direct Match & Practice Quiz Section */
+    .quiz-section {
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      padding: 2rem;
+      box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.04);
+      margin-bottom: 2.5rem;
+    }
+
+    .section-title {
+      font-size: 1.4rem;
+      font-weight: 800;
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--text-main);
+    }
+
+    .section-subtitle {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      margin-bottom: 1.5rem;
+    }
+
+    .match-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .match-column {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .match-column-title {
+      font-size: 0.85rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+
+    .match-item {
+      background: var(--surface-1);
+      border: 2px solid var(--border-color);
+      border-radius: 12px;
+      padding: 12px 16px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .match-item:hover {
+      border-color: var(--primary-cyan);
+      background: #ffffff;
+      transform: translateX(4px);
+    }
+
+    .match-item.selected {
+      border-color: var(--accent-purple);
+      background: #f3e8ff;
+      color: var(--accent-purple);
+    }
+
+    .match-item.matched {
+      border-color: var(--accent-emerald);
+      background: #dcfce7;
+      color: var(--accent-emerald);
+      cursor: default;
+    }
+
+    .match-score-bar {
+      margin-top: 1.5rem;
+      padding: 1rem;
+      background: var(--surface-1);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .score-text {
+      font-weight: 700;
+      font-size: 1rem;
+    }
+
+    .reset-btn {
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .reset-btn:hover {
+      background: var(--surface-2);
+    }
+
+    /* Comparison Table */
+    .table-section {
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      padding: 2rem;
+      box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.04);
+    }
+
+    .summary-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+    }
+
+    .summary-table th, .summary-table td {
+      border: 1px solid var(--border-color);
+      padding: 12px 16px;
+      text-align: left;
+      font-size: 0.88rem;
+    }
+
+    .summary-table th {
+      background: var(--surface-1);
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .summary-table tr:hover {
+      background: #f8fafc;
+    }
+
+    /* Footer */
+    .app-footer {
+      margin-top: auto;
+      padding: 1.5rem;
+      background: #ffffff;
+      border-top: 1px solid var(--border-color);
+      text-align: center;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    /* Cell Animation Styles */
+    /* Squamous slide food animation */
+    .food-particle {
+      position: absolute;
+      width: 16px;
+      height: 16px;
+      background: #ef4444;
+      border-radius: 50%;
+      top: 35px;
+      left: 10px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    }
+
+    .sliding {
+      animation: slideFood 2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+    }
+
+    @keyframes slideFood {
+      0% { left: 10px; }
+      100% { left: 90%; }
+    }
+
+    /* Friction scratch animation */
+    .scratch-effect {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(239, 68, 68, 0.15);
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+
+    /* Cilia hair sweeping animation */
+    .cilia-hair {
+      transform-origin: bottom center;
+    }
+
+    .sweeping .cilia-hair {
+      animation: sweepHair 0.6s ease-in-out infinite alternate;
+    }
+
+    @keyframes sweepHair {
+      0% { transform: rotate(-12deg); }
+      100% { transform: rotate(12deg); }
+    }
+
+    .mucus-dust {
+      position: absolute;
+      bottom: 120px;
+      left: 20%;
+      width: 12px;
+      height: 12px;
+      background: #16a34a;
+      border-radius: 50%;
+    }
+
+    .sweeping .mucus-dust {
+      animation: dustSweep 1.2s linear infinite;
+    }
+
+    @keyframes dustSweep {
+      0% { bottom: 110px; left: 10%; opacity: 1; }
+      100% { bottom: 145px; left: 85%; opacity: 0; }
+    }
+
+    /* Secretion Fluid Pump */
+    .fluid-dot {
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      background: #059669;
+      border-radius: 50%;
+      opacity: 0;
+    }
+
+    .pumping .fluid-dot {
+      animation: pumpFluid 1.5s ease-out infinite;
+    }
+
+    @keyframes pumpFluid {
+      0% { transform: scale(0.5); opacity: 1; top: 110px; }
+      100% { transform: scale(1.4); opacity: 0; top: 20px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- App Header -->
+  <header class="app-header">
+    <div class="brand">
+      <a href="index.html" class="home-btn-link" title="Return to Main Hub">
+        <i class="fa-solid fa-house"></i>
+      </a>
+      <div class="logo-icon">
+        <i class="fa-solid fa-microscope"></i>
+      </div>
+      <div class="brand-text">
+        <h1>Epithelial<span class="highlight">Tissue</span> Lab</h1>
+        <p>CBSE Class 9 Biology • Animal Tissues</p>
+      </div>
+    </div>
+
+    <div class="nav-actions">
+      <a href="index.html" class="nav-btn">
+        <i class="fa-solid fa-house"></i> Main Hub
+      </a>
+      <a href="hydrocarbon_3d_lab.html" class="nav-btn">
+        <i class="fa-solid fa-atom"></i> 3D Hydrocarbon Lab
+      </a>
+      <a href="mirror_lens_ray_diagram_simulator.html" class="nav-btn primary-nav">
+        <i class="fa-solid fa-glasses"></i> Ray Diagrams
+      </a>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="container">
+    
+    <!-- Hero Banner -->
+    <section class="hero-banner">
+      <div class="hero-badge">
+        <i class="fa-solid fa-dna"></i> Class 9 Biology Chapter 6: Tissues
+      </div>
+      <h1 class="hero-title">Epithelial Tissues & Skin Cell Structure Explorer</h1>
+      <p class="hero-desc">
+        Epithelial tissue forms the protective outer and inner covering of organs throughout the body. Explore the 4 key types of epithelial cells below, run interactive functional simulations, and complete the direct homework matching activity!
+      </p>
+    </section>
+
+    <!-- 4 Interactive Cell Modules -->
+    <section class="tissue-grid">
+
+      <!-- Module 1: Simple Squamous Epithelium -->
+      <div class="tissue-card squamous">
+        <div>
+          <div class="card-header-badge">Diagram 1 • Single Layer</div>
+          <h2>1. Simple Squamous</h2>
+          <div class="tissue-location">
+            <i class="fa-solid fa-location-dot"></i> Oesophagus & Blood Vessels
+          </div>
+
+          <div class="cell-graphic-box" id="squamousBox">
+            <div class="food-particle sliding" id="foodParticle"></div>
+            <!-- SVG Diagram 1 -->
+            <svg width="240" height="120" viewBox="0 0 240 120">
+              <line x1="10" y1="95" x2="230" y2="95" stroke="#0f172a" stroke-width="3"/>
+              <!-- Flat single layer cells -->
+              <g stroke="#0284c7" stroke-width="2" fill="#bae6fd">
+                <rect x="15" y="65" width="50" height="30" rx="3"/>
+                <rect x="68" y="65" width="50" height="30" rx="3"/>
+                <rect x="121" y="65" width="50" height="30" rx="3"/>
+                <rect x="174" y="65" width="50" height="30" rx="3"/>
+              </g>
+              <!-- Nuclei -->
+              <circle cx="40" cy="80" r="5" fill="#0369a1"/>
+              <circle cx="93" cy="80" r="5" fill="#0369a1"/>
+              <circle cx="146" cy="80" r="5" fill="#0369a1"/>
+              <circle cx="199" cy="80" r="5" fill="#0369a1"/>
+            </svg>
+          </div>
+
+          <div class="why-box">
+            <strong>Why:</strong> It is a single layer of ultra-flat tiles (like plastic wrap). Food needs to slide down smoothly without getting stuck in the oesophagus, and items pass through fast.
+          </div>
+        </div>
+
+        <button class="demo-btn" onclick="triggerSlideAnimation()">
+          <i class="fa-solid fa-play"></i> Test Food Slide Speed
+        </button>
+      </div>
+
+      <!-- Module 2: Stratified Squamous Epithelium (Skin) -->
+      <div class="tissue-card stratified">
+        <div>
+          <div class="card-header-badge">Diagram 2 • Multi-Layered</div>
+          <h2>2. Stratified Squamous</h2>
+          <div class="tissue-location">
+            <i class="fa-solid fa-hand"></i> Human Skin (Epidermis)
+          </div>
+
+          <div class="cell-graphic-box" id="stratifiedBox">
+            <div class="scratch-effect" id="scratchEffect"></div>
+            <!-- SVG Diagram 2 -->
+            <svg width="240" height="140" viewBox="0 0 240 140">
+              <line x1="10" y1="130" x2="230" y2="130" stroke="#0f172a" stroke-width="3"/>
+              <!-- Stacked layers like deck of cards -->
+              <g stroke="#db2777" stroke-width="1.5" fill="#fbcfe8">
+                <!-- Layer 5 top -->
+                <rect x="20" y="20" width="45" height="20" rx="2"/>
+                <rect x="68" y="20" width="45" height="20" rx="2"/>
+                <rect x="116" y="20" width="45" height="20" rx="2"/>
+                <rect x="164" y="20" width="45" height="20" rx="2"/>
+                <!-- Layer 4 -->
+                <rect x="20" y="42" width="45" height="20" rx="2"/>
+                <rect x="68" y="42" width="45" height="20" rx="2"/>
+                <rect x="116" y="42" width="45" height="20" rx="2"/>
+                <rect x="164" y="42" width="45" height="20" rx="2"/>
+                <!-- Layer 3 -->
+                <rect x="20" y="64" width="45" height="20" rx="2"/>
+                <rect x="68" y="64" width="45" height="20" rx="2"/>
+                <rect x="116" y="64" width="45" height="20" rx="2"/>
+                <rect x="164" y="64" width="45" height="20" rx="2"/>
+                <!-- Layer 2 -->
+                <rect x="20" y="86" width="45" height="20" rx="2"/>
+                <rect x="68" y="86" width="45" height="20" rx="2"/>
+                <rect x="116" y="86" width="45" height="20" rx="2"/>
+                <rect x="164" y="86" width="45" height="20" rx="2"/>
+                <!-- Layer 1 bottom -->
+                <rect x="20" y="108" width="45" height="20" rx="2"/>
+                <rect x="68" y="108" width="45" height="20" rx="2"/>
+                <rect x="116" y="108" width="45" height="20" rx="2"/>
+                <rect x="164" y="108" width="45" height="20" rx="2"/>
+              </g>
+              <!-- Nuclei dots -->
+              <g fill="#9d174d">
+                <circle cx="42" cy="30" r="3"/><circle cx="90" cy="30" r="3"/><circle cx="138" cy="30" r="3"/><circle cx="186" cy="30" r="3"/>
+                <circle cx="42" cy="52" r="3"/><circle cx="90" cy="52" r="3"/><circle cx="138" cy="52" r="3"/><circle cx="186" cy="52" r="3"/>
+                <circle cx="42" cy="74" r="3"/><circle cx="90" cy="74" r="3"/><circle cx="138" cy="74" r="3"/><circle cx="186" cy="74" r="3"/>
+                <circle cx="42" cy="96" r="3"/><circle cx="90" cy="96" r="3"/><circle cx="138" cy="96" r="3"/><circle cx="186" cy="96" r="3"/>
+                <circle cx="42" cy="118" r="3"/><circle cx="90" cy="118" r="3"/><circle cx="138" cy="118" r="3"/><circle cx="186" cy="118" r="3"/>
+              </g>
+            </svg>
+          </div>
+
+          <div class="why-box">
+            <strong>Why:</strong> "Stratified" means multi-layered. Your skin gets rubbed, scratched, and bumped all day long. One layer would break immediately, so nature stacks dozens of flat layers on top of each other like a deck of cards.
+          </div>
+        </div>
+
+        <button class="demo-btn" onclick="triggerScratchTest()">
+          <i class="fa-solid fa-hand-fist"></i> Simulate Skin Scratch / Wear
+        </button>
+      </div>
+
+      <!-- Module 3: Cuboidal Epithelium -->
+      <div class="tissue-card cuboidal">
+        <div>
+          <div class="card-header-badge">Diagram 3 • Cube Factories</div>
+          <h2>3. Cuboidal Epithelium</h2>
+          <div class="tissue-location">
+            <i class="fa-solid fa-filter"></i> Kidney Tubules & Salivary Glands
+          </div>
+
+          <div class="cell-graphic-box" id="cuboidalBox">
+            <div class="fluid-dot pumping" style="left: 60px;"></div>
+            <div class="fluid-dot pumping" style="left: 120px; animation-delay: 0.5s;"></div>
+            <div class="fluid-dot pumping" style="left: 180px; animation-delay: 1s;"></div>
+
+            <!-- SVG Diagram 3 -->
+            <svg width="240" height="130" viewBox="0 0 240 130">
+              <line x1="10" y1="120" x2="230" y2="120" stroke="#0f172a" stroke-width="3"/>
+              <!-- Cube-shaped cells -->
+              <g stroke="#059669" stroke-width="2" fill="#bbf7d0">
+                <rect x="18" y="55" width="48" height="65" rx="3"/>
+                <rect x="71" y="55" width="48" height="65" rx="3"/>
+                <rect x="124" y="55" width="48" height="65" rx="3"/>
+                <rect x="177" y="55" width="48" height="65" rx="3"/>
+              </g>
+              <!-- Central spherical nuclei -->
+              <g fill="#047857">
+                <circle cx="42" cy="87" r="7"/>
+                <circle cx="95" cy="87" r="7"/>
+                <circle cx="148" cy="87" r="7"/>
+                <circle cx="201" cy="87" r="7"/>
+              </g>
+            </svg>
+          </div>
+
+          <div class="why-box">
+            <strong>Why:</strong> These cells look like 3D boxes or dice. Because they are thick, they have space inside to hold the factory machinery needed to filter urine (kidneys) or secret saliva (salivary glands).
+          </div>
+        </div>
+
+        <button class="demo-btn" onclick="triggerFluidPump()">
+          <i class="fa-solid fa-droplet"></i> Animate Fluid Secretion
+        </button>
+      </div>
+
+      <!-- Module 4: Ciliated Columnar Epithelium -->
+      <div class="tissue-card columnar">
+        <div>
+          <div class="card-header-badge">Diagram 4 • Tall Pillars + Broom Hairs</div>
+          <h2>4. Ciliated Columnar</h2>
+          <div class="tissue-location">
+            <i class="fa-solid fa-wind"></i> Respiratory Tract & Windpipe
+          </div>
+
+          <div class="cell-graphic-box sweeping" id="columnarBox">
+            <div class="mucus-dust"></div>
+            <!-- SVG Diagram 4 -->
+            <svg width="240" height="140" viewBox="0 0 240 140">
+              <line x1="10" y1="130" x2="230" y2="130" stroke="#0f172a" stroke-width="3"/>
+              
+              <!-- Columnar Cells -->
+              <g stroke="#d97706" stroke-width="2" fill="#fde68a">
+                <rect x="15" y="45" width="48" height="85" rx="3"/>
+                <rect x="68" y="45" width="48" height="85" rx="3"/>
+                <rect x="121" y="45" width="48" height="85" rx="3"/>
+                <rect x="174" y="45" width="48" height="85" rx="3"/>
+              </g>
+              
+              <!-- Basal Nuclei -->
+              <g fill="#b45309">
+                <circle cx="39" cy="110" r="6"/>
+                <circle cx="92" cy="110" r="6"/>
+                <circle cx="145" cy="110" r="6"/>
+                <circle cx="198" cy="110" r="6"/>
+              </g>
+
+              <!-- Microscopic Cilia Hairs on top -->
+              <g stroke="#b45309" stroke-width="2" stroke-linecap="round" class="cilia-group">
+                <!-- Cell 1 -->
+                <line x1="20" y1="45" x2="20" y2="25" class="cilia-hair"/>
+                <line x1="28" y1="45" x2="28" y2="25" class="cilia-hair"/>
+                <line x1="36" y1="45" x2="36" y2="25" class="cilia-hair"/>
+                <line x1="44" y1="45" x2="44" y2="25" class="cilia-hair"/>
+                <line x1="52" y1="45" x2="52" y2="25" class="cilia-hair"/>
+                <!-- Cell 2 -->
+                <line x1="73" y1="45" x2="73" y2="25" class="cilia-hair"/>
+                <line x1="81" y1="45" x2="81" y2="25" class="cilia-hair"/>
+                <line x1="89" y1="45" x2="89" y2="25" class="cilia-hair"/>
+                <line x1="97" y1="45" x2="97" y2="25" class="cilia-hair"/>
+                <line x1="105" y1="45" x2="105" y2="25" class="cilia-hair"/>
+                <!-- Cell 3 -->
+                <line x1="126" y1="45" x2="126" y2="25" class="cilia-hair"/>
+                <line x1="134" y1="45" x2="134" y2="25" class="cilia-hair"/>
+                <line x1="142" y1="45" x2="142" y2="25" class="cilia-hair"/>
+                <line x1="150" y1="45" x2="150" y2="25" class="cilia-hair"/>
+                <line x1="158" y1="45" x2="158" y2="25" class="cilia-hair"/>
+                <!-- Cell 4 -->
+                <line x1="179" y1="45" x2="179" y2="25" class="cilia-hair"/>
+                <line x1="187" y1="45" x2="187" y2="25" class="cilia-hair"/>
+                <line x1="195" y1="45" x2="195" y2="25" class="cilia-hair"/>
+                <line x1="203" y1="45" x2="203" y2="25" class="cilia-hair"/>
+                <line x1="211" y1="45" x2="211" y2="25" class="cilia-hair"/>
+              </g>
+            </svg>
+          </div>
+
+          <div class="why-box">
+            <strong>Why:</strong> "Columnar" means tall like columns, and "Ciliated" means it has microscopic hairs (cilia) on top. When you breathe in dust, these hairs act like tiny brooms sweeping dirty mucus upwards out of your breathing tubes.
+          </div>
+        </div>
+
+        <button class="demo-btn" onclick="toggleCiliaSweep()">
+          <i class="fa-solid fa-broom"></i> Toggle Cilia Broom Sweeping
+        </button>
+      </div>
+
+    </section>
+
+    <!-- Interactive Homework Matching Activity -->
+    <section class="quiz-section">
+      <h2 class="section-title">
+        <i class="fa-solid fa-graduation-cap" style="color: var(--accent-purple);"></i>
+        Homework Matching Activity: Tissue Type $\rightarrow$ Body Location
+      </h2>
+      <p class="section-subtitle">
+        Click a <strong>Tissue Type</strong> on the left, then click its matching <strong>Body Location</strong> on the right!
+      </p>
+
+      <div class="match-container">
+        <!-- Left Side: Tissues -->
+        <div class="match-column">
+          <div class="match-column-title">1. Select Tissue Type</div>
+          <div class="match-item" data-type="squamous" onclick="selectTissue(this)">
+            <span>1. Simple Squamous Epithelium</span>
+            <i class="fa-regular fa-circle"></i>
+          </div>
+          <div class="match-item" data-type="stratified" onclick="selectTissue(this)">
+            <span>2. Stratified Squamous</span>
+            <i class="fa-regular fa-circle"></i>
+          </div>
+          <div class="match-item" data-type="cuboidal" onclick="selectTissue(this)">
+            <span>3. Cuboidal Epithelium</span>
+            <i class="fa-regular fa-circle"></i>
+          </div>
+          <div class="match-item" data-type="columnar" onclick="selectTissue(this)">
+            <span>4. Ciliated Columnar</span>
+            <i class="fa-regular fa-circle"></i>
+          </div>
+        </div>
+
+        <!-- Right Side: Locations -->
+        <div class="match-column">
+          <div class="match-column-title">2. Select Body Location</div>
+          <div class="match-item" data-target="columnar" onclick="selectLocation(this)">
+            <span>(ii) Respiratory tract (Windpipe/Lungs)</span>
+            <i class="fa-regular fa-circle"></i>
+          </div>
+          <div class="match-item" data-target="squamous" onclick="selectLocation(this)">
+            <span>(i) Oesophagus</span>
+            <i class="fa-regular fa-circle"></i>
+          </div>
+          <div class="match-item" data-target="stratified" onclick="selectLocation(this)">
+            <span>(iv) Skin</span>
+            <i class="fa-regular fa-circle"></i>
+          </div>
+          <div class="match-item" data-target="cuboidal" onclick="selectLocation(this)">
+            <span>(iii) Kidney tubules & Salivary glands</span>
+            <i class="fa-regular fa-circle"></i>
+          </div>
+        </div>
+      </div>
+
+      <div class="match-score-bar">
+        <div class="score-text" id="matchStatusText">
+          Matched 0 / 4 pairs. Select a tissue to begin!
+        </div>
+        <button class="reset-btn" onclick="resetMatchingGame()">
+          <i class="fa-solid fa-rotate"></i> Reset Game
+        </button>
+      </div>
+    </section>
+
+    <!-- Summary Comparison Table -->
+    <section class="table-section">
+      <h2 class="section-title">
+        <i class="fa-solid fa-table-list" style="color: var(--primary-cyan);"></i>
+        Quick Reference Summary Table
+      </h2>
+
+      <table class="summary-table">
+        <thead>
+          <tr>
+            <th>Epithelial Tissue</th>
+            <th>Cell Structure / Shape</th>
+            <th>Layers</th>
+            <th>Primary Function</th>
+            <th>Body Location</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Simple Squamous</strong></td>
+            <td>Ultra-flat tiles, thin boundaries</td>
+            <td>Single (1)</td>
+            <td>Rapid diffusion & smooth sliding</td>
+            <td>Oesophagus, blood vessels</td>
+          </tr>
+          <tr>
+            <td><strong>Stratified Squamous</strong></td>
+            <td>Multi-layered flat tiles</td>
+            <td>Multiple (Stratified)</td>
+            <td>Protection against wear, tear & scratches</td>
+            <td>Human Skin (Epidermis)</td>
+          </tr>
+          <tr>
+            <td><strong>Cuboidal Epithelium</strong></td>
+            <td>Cube-shaped 3D boxes/dice</td>
+            <td>Single (1)</td>
+            <td>Mechanical support, filtration & secretion</td>
+            <td>Kidney tubules, Salivary glands</td>
+          </tr>
+          <tr>
+            <td><strong>Ciliated Columnar</strong></td>
+            <td>Tall pillars + hair-like cilia on top</td>
+            <td>Single (1)</td>
+            <td>Broom-like sweeping of dirty mucus upwards</td>
+            <td>Respiratory tract, Trachea</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="app-footer">
+    <p>CBSE Class 9 & 10 Science Interactive Portal • Built for <a href="index.html" style="color: var(--primary-cyan); text-decoration: none;">Science Main Hub</a></p>
+  </footer>
+
+  <!-- Interactive Scripts -->
+  <script>
+    // Demo Functions
+    function triggerSlideAnimation() {
+      const p = document.getElementById('foodParticle');
+      p.classList.remove('sliding');
+      void p.offsetWidth; // trigger reflow
+      p.classList.add('sliding');
+    }
+
+    function triggerScratchTest() {
+      const scratch = document.getElementById('scratchEffect');
+      scratch.style.opacity = '1';
+      setTimeout(() => { scratch.style.opacity = '0'; }, 800);
+    }
+
+    function triggerFluidPump() {
+      const box = document.getElementById('cuboidalBox');
+      box.classList.remove('pumping');
+      void box.offsetWidth;
+      box.classList.add('pumping');
+    }
+
+    function toggleCiliaSweep() {
+      const box = document.getElementById('columnarBox');
+      box.classList.toggle('sweeping');
+    }
+
+    // Matching Game State
+    let selectedTissueEl = null;
+    let matchedCount = 0;
+
+    function selectTissue(el) {
+      if (el.classList.contains('matched')) return;
+
+      document.querySelectorAll('.match-column:first-child .match-item').forEach(item => {
+        if (!item.classList.contains('matched')) item.classList.remove('selected');
+      });
+
+      el.classList.add('selected');
+      selectedTissueEl = el;
+      document.getElementById('matchStatusText').textContent = `Selected "${el.querySelector('span').textContent}". Now click its matching Body Location!`;
+    }
+
+    function selectLocation(el) {
+      if (!selectedTissueEl || el.classList.contains('matched')) return;
+
+      const tissueType = selectedTissueEl.getAttribute('data-type');
+      const targetType = el.getAttribute('data-target');
+
+      if (tissueType === targetType) {
+        selectedTissueEl.classList.remove('selected');
+        selectedTissueEl.classList.add('matched');
+        selectedTissueEl.querySelector('i').className = 'fa-solid fa-circle-check';
+
+        el.classList.add('matched');
+        el.querySelector('i').className = 'fa-solid fa-circle-check';
+
+        matchedCount++;
+        selectedTissueEl = null;
+
+        if (matchedCount === 4) {
+          document.getElementById('matchStatusText').innerHTML = '🎉 <span style="color: var(--accent-emerald);">All 4 Matched Correctly! Outstanding Work!</span>';
+          if (typeof confetti === 'function') {
+            confetti({ particleCount: 80, spread: 70, origin: { y: 0.6 } });
+          }
+        } else {
+          document.getElementById('matchStatusText').textContent = `Correct Match! (${matchedCount}/4 completed)`;
+        }
+      } else {
+        el.style.borderColor = '#ef4444';
+        setTimeout(() => {
+          el.style.borderColor = 'var(--border-color)';
+        }, 600);
+        document.getElementById('matchStatusText').textContent = '❌ Incorrect match! Try again.';
+      }
+    }
+
+    function resetMatchingGame() {
+      matchedCount = 0;
+      selectedTissueEl = null;
+      document.querySelectorAll('.match-item').forEach(item => {
+        item.className = 'match-item';
+        item.querySelector('i').className = 'fa-regular fa-circle';
+      });
+      document.getElementById('matchStatusText').textContent = 'Matched 0 / 4 pairs. Select a tissue to begin!';
+    }
+  </script>
+</body>
+</html>

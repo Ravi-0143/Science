@@ -1,50 +1,46 @@
-# 🧪 Hydrocarbon 3D Lab (CBSE Class 9 & 10 Chemistry)
+# 🧪 Science Interactive Hub (CBSE Class 9 & 10)
 
-An interactive, high-performance 3D web application designed for students studying **"Carbon and Its Compounds"** in CBSE Class 9 & 10 Chemistry. 
-
-Explore molecular structures, learn IUPAC systematic nomenclature rules, construct custom organic molecules, and visualize electron sharing in 3D.
+An interactive, high-performance web suite designed for CBSE Class 9 & 10 Science (Physics, Chemistry & Biology). Features live 3D molecular modeling, real-time optical ray tracing, epithelial tissue functional simulators, and interactive homework activity engines.
 
 ---
 
-## 🌟 Key Features
+## 🌟 Interactive Modules
 
-### 1. 🧊 3D Molecule Explorer
-* **Interactive Rendering:** Built using Three.js with realistic materials, shadows, and lighting.
-* **Rotatable & Zoomable:** Orbit controls for full 360° molecular exploration.
-* **Pre-built Library:** 
-  * **Alkanes:** Methane ($CH_4$), Ethane ($C_2H_6$), Propane ($C_3H_8$), Butane ($C_4H_{10}$)
-  * **Alkenes:** Ethene ($C_2H_4$), Propene ($C_3H_6$)
-  * **Alkynes:** Ethyne ($C_2H_2$)
-  * **Functional Groups (Class 10 Extension):** Ethanol ($C_2H_5OH$), Ethanoic Acid ($CH_3COOH$), Propanone ($CH_3COCH_3$), Chloromethane ($CH_3Cl$).
+### 1. 🧊 3D Hydrocarbon & IUPAC Lab (`hydrocarbon_3d_lab.html`)
+* **3D Molecular Renderer:** Built using Three.js with realistic materials, shadows, and orbit control.
+* **Pre-built Library:** Alkanes, Alkenes, Alkynes, Alcohols (-OH), Aldehydes (-CHO), Ketones (>C=O), Carboxylic Acids (-COOH), and Haloalkanes (-Cl, -Br).
+* **3D Electron Sharing (Lewis Dot):** Visualizes shared covalent electron pairs between atoms.
+* **IUPAC Nomenclature Engine:** Procedurally computes Word Root, Primary Suffix, Secondary Suffix, and molecular formula.
+* **Class 10 Practice Quiz:** Interactive revision questions with celebratory confetti animations.
 
-### 2. ⚛️ 3D Electron Sharing (Lewis / Electron Dot Structure)
-* Toggle 3D electron dot overlays demonstrating shared covalent electron pairs between Carbon, Hydrogen, Oxygen, and Halogen atoms.
+### 2. 👓 Optics Ray Diagram Simulator (`mirror_lens_ray_diagram_simulator.html`)
+* **Live Optics Engine:** Live SVG ray tracing for Convex/Concave Lenses & Mirrors.
+* **Dynamic Sliders:** Adjust object distance ($u$), focal length ($f$), and object height ($h_o$).
+* **Real-time Readouts:** Instant calculation of image distance ($v$), magnification ($m$), image nature (Real/Virtual), and orientation.
+* **CBSE Formula Reference:** Quick lookup for Lens Formula ($\frac{1}{f} = \frac{1}{v} - \frac{1}{u}$) and Mirror Formula ($\frac{1}{f} = \frac{1}{v} + \frac{1}{u}$).
 
-### 3. 🛠️ Custom Molecule Builder & IUPAC Engine
-* **Carbon Chain Slider:** Dynamically select chain length from 1 to 6 carbons (Meth- to Hex-).
-* **Saturation Level:** Toggle between Single (-ane), Double (-ene), and Triple (-yne) bonds.
-* **Functional Group Attachment:** Attach Alcohols (-OH), Aldehydes (-CHO), Ketones (>C=O), Carboxylic Acids (-COOH), and Haloalkanes (-Cl, -Br).
-* **Real-time IUPAC Name Derivation:** Automatically calculates IUPAC Word Root, Primary Suffix, Secondary Suffix, Substituent Prefixes, Molecular Mass, and Chemical Formula.
+### 3. 🔬 Epithelial Tissue & Skin Cell Lab (`epithelial_tissue_lab.html`)
+* **4 Epithelial Tissue Simulators:**
+  1. **Simple Squamous Epithelium (Oesophagus):** Single layer of ultra-flat tiles for smooth sliding and fast diffusion. Interactive food slide demo!
+  2. **Stratified Squamous Epithelium (Skin):** Multi-layered stacked deck of cards protecting against rubbing, scratching, and wear. Interactive friction/wear simulation!
+  3. **Cuboidal Epithelium (Kidney Tubules & Salivary Glands):** Cube-shaped 3D factory cells. Interactive fluid pump & saliva secretion animation!
+  4. **Ciliated Columnar Epithelium (Respiratory Tract / Windpipe):** Tall pillars with hair-like cilia sweeping dirty mucus upwards out of lungs. Interactive cilia broom sweeping animation!
+* **Homework Matching Activity:** Drag/click interactive matching game for tissue types $\rightarrow$ body locations with instant scoring and celebratory feedback.
 
-### 4. 📝 Practice Quiz & Revision Notes
-* CBSE Class 10 textbook summary covering **Catenation**, **Tetravalency**, **Homologous Series**, and **Nomenclature Steps**.
-* Interactive quiz with instant feedback and celebratory confetti animations upon completion.
+---
+
+## 🎨 Design System
+
+* **Light Theme Aesthetic:** Clean, vibrant light background (`#f8fafc`), crisp card surfaces (`#ffffff`), and curated high-contrast color palettes tailored for optimal readability.
+* **Micro-Animations:** Smooth transitions, active state highlights, and interactive canvas visualizers.
 
 ---
 
 ## 🚀 How to Run Locally
 
-1. Open `index.html` in any web browser (Chrome, Edge, Firefox, Safari).
-2. Or serve via any local web server:
+1. Open `index.html` in any modern web browser (Chrome, Edge, Firefox, Safari).
+2. Or serve via any local HTTP server:
    ```bash
    npx serve .
    ```
 3. Open `http://localhost:3000` in your browser.
-
----
-
-## 📚 Syllabus Alignment
-Specifically aligned with CBSE Class 10 NCERT Chapter 4: **Carbon and Its Compounds**.
-- **Catenation:** Ability of carbon to form stable long chains.
-- **Tetravalency:** Valency of 4 forming four covalent bonds.
-- **IUPAC Nomenclature:** Word Root + Suffix + Functional Group.

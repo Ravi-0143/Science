@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Science Interactive Lab Portal | CBSE Class 9 & 10</title>
-  <meta name="description" content="Main portal for CBSE Class 9 & 10 Science interactive simulations: 3D Hydrocarbon & IUPAC Structure Lab, and Optics Ray Diagram Simulator.">
+  <meta name="description" content="Main portal for CBSE Class 9 & 10 Science interactive simulations: 3D Hydrocarbon Lab, Optics Ray Diagram Simulator, and Epithelial Tissue & Skin Cell Lab.">
 
   <!-- Google Fonts & Font Awesome Icons -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -14,21 +14,21 @@
 
   <style>
     :root {
-      --bg-dark: #0a0e17;
-      --bg-card: rgba(20, 28, 45, 0.75);
-      --bg-card-hover: rgba(30, 42, 68, 0.9);
-      --border-color: rgba(255, 255, 255, 0.1);
-      --border-glow: rgba(0, 230, 255, 0.3);
+      --bg-light: #f8fafc;
+      --bg-card: #ffffff;
+      --bg-card-hover: #f1f5f9;
+      --border-color: #e2e8f0;
+      --border-glow: rgba(2, 132, 199, 0.2);
       
-      --primary-cyan: #00e5ff;
-      --primary-glow: rgba(0, 229, 255, 0.4);
-      --accent-purple: #9d4edd;
-      --accent-pink: #ff2a85;
-      --accent-amber: #ffb703;
-      --accent-emerald: #00f5d4;
+      --primary-cyan: #0284c7;
+      --primary-glow: rgba(2, 132, 199, 0.2);
+      --accent-purple: #7c3aed;
+      --accent-pink: #db2777;
+      --accent-amber: #d97706;
+      --accent-emerald: #059669;
 
-      --text-main: #f0f4f8;
-      --text-secondary: #94a3b8;
+      --text-main: #0f172a;
+      --text-secondary: #334155;
       --text-muted: #64748b;
       
       --font-sans: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
@@ -42,7 +42,7 @@
     }
 
     body {
-      background-color: var(--bg-dark);
+      background-color: var(--bg-light);
       color: var(--text-main);
       font-family: var(--font-sans);
       min-height: 100vh;
@@ -51,15 +51,15 @@
       overflow-x: hidden;
     }
 
-    /* Background Ambient Glow */
+    /* Ambient Soft Glow */
     .bg-glow {
       position: fixed;
       top: -200px;
       left: 50%;
       transform: translateX(-50%);
-      width: 800px;
+      width: 900px;
       height: 600px;
-      background: radial-gradient(circle, rgba(0, 229, 255, 0.15) 0%, rgba(157, 78, 221, 0.1) 40%, rgba(10, 14, 23, 0) 70%);
+      background: radial-gradient(circle, rgba(14, 165, 233, 0.08) 0%, rgba(124, 58, 237, 0.05) 40%, rgba(248, 250, 252, 0) 70%);
       pointer-events: none;
       z-index: 0;
     }
@@ -67,7 +67,7 @@
     /* Header Navigation */
     .app-header {
       height: 70px;
-      background: rgba(10, 14, 23, 0.9);
+      background: rgba(255, 255, 255, 0.95);
       backdrop-filter: blur(16px);
       border-bottom: 1px solid var(--border-color);
       display: flex;
@@ -76,6 +76,7 @@
       padding: 0 2rem;
       position: relative;
       z-index: 10;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
     }
 
     .brand {
@@ -94,12 +95,13 @@
       justify-content: center;
       font-size: 1.3rem;
       color: #fff;
-      box-shadow: 0 0 15px var(--primary-glow);
+      box-shadow: 0 4px 12px rgba(2, 132, 199, 0.25);
     }
 
     .brand-text h1 {
       font-size: 1.35rem;
       font-weight: 700;
+      color: var(--text-main);
     }
 
     .brand-text .highlight {
@@ -108,11 +110,11 @@
 
     .brand-text p {
       font-size: 0.75rem;
-      color: var(--text-secondary);
+      color: var(--text-muted);
     }
 
     .repo-link {
-      background: rgba(255, 255, 255, 0.05);
+      background: #f1f5f9;
       border: 1px solid var(--border-color);
       color: var(--text-main);
       padding: 8px 16px;
@@ -127,10 +129,10 @@
     }
 
     .repo-link:hover {
-      background: rgba(0, 229, 255, 0.15);
+      background: #e0f2fe;
       border-color: var(--primary-cyan);
       color: var(--primary-cyan);
-      box-shadow: 0 0 12px var(--primary-glow);
+      box-shadow: 0 2px 10px rgba(2, 132, 199, 0.15);
     }
 
     /* Hero Section */
@@ -139,7 +141,7 @@
       padding: 4rem 1.5rem 2.5rem;
       position: relative;
       z-index: 1;
-      max-width: 900px;
+      max-width: 950px;
       margin: 0 auto;
     }
 
@@ -147,13 +149,13 @@
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      background: rgba(0, 229, 255, 0.1);
-      border: 1px solid rgba(0, 229, 255, 0.3);
+      background: #e0f2fe;
+      border: 1px solid rgba(2, 132, 199, 0.3);
       color: var(--primary-cyan);
       padding: 6px 16px;
       border-radius: 20px;
       font-size: 0.82rem;
-      font-weight: 600;
+      font-weight: 700;
       margin-bottom: 1.25rem;
       text-transform: uppercase;
       letter-spacing: 0.05em;
@@ -164,9 +166,7 @@
       font-weight: 800;
       line-height: 1.2;
       margin-bottom: 1rem;
-      background: linear-gradient(135deg, #ffffff 30%, var(--primary-cyan) 80%, var(--accent-purple) 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+      color: var(--text-main);
     }
 
     .hero-subtitle {
@@ -177,8 +177,8 @@
 
     /* Lab Cards Showcase Grid */
     .showcase-container {
-      max-width: 1100px;
-      margin: 0 auto 3rem;
+      max-width: 1200px;
+      margin: 0 auto 3.5rem;
       padding: 0 1.5rem;
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
@@ -189,7 +189,6 @@
 
     .lab-card {
       background: var(--bg-card);
-      backdrop-filter: blur(16px);
       border: 1px solid var(--border-color);
       border-radius: 20px;
       padding: 2rem;
@@ -199,13 +198,14 @@
       transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       position: relative;
       overflow: hidden;
+      box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.04);
     }
 
     .lab-card:hover {
-      background: var(--bg-card-hover);
+      background: var(--bg-card);
       border-color: var(--primary-cyan);
       transform: translateY(-6px);
-      box-shadow: 0 15px 35px rgba(0, 229, 255, 0.15);
+      box-shadow: 0 20px 40px -10px rgba(2, 132, 199, 0.15);
     }
 
     .card-icon-wrapper {
@@ -220,21 +220,28 @@
     }
 
     .lab-card.chem .card-icon-wrapper {
-      background: linear-gradient(135deg, rgba(0, 229, 255, 0.2), rgba(157, 78, 221, 0.2));
+      background: #e0f2fe;
       color: var(--primary-cyan);
-      border: 1px solid var(--border-glow);
+      border: 1px solid rgba(2, 132, 199, 0.3);
     }
 
     .lab-card.physics .card-icon-wrapper {
-      background: linear-gradient(135deg, rgba(255, 183, 3, 0.2), rgba(255, 42, 133, 0.2));
+      background: #fef3c7;
       color: var(--accent-amber);
-      border: 1px solid rgba(255, 183, 3, 0.3);
+      border: 1px solid rgba(217, 119, 6, 0.3);
+    }
+
+    .lab-card.bio .card-icon-wrapper {
+      background: #fce7f3;
+      color: var(--accent-pink);
+      border: 1px solid rgba(219, 39, 119, 0.3);
     }
 
     .card-title {
       font-size: 1.4rem;
       font-weight: 700;
       margin-bottom: 0.75rem;
+      color: var(--text-main);
     }
 
     .card-desc {
@@ -254,7 +261,7 @@
     .tag {
       font-size: 0.72rem;
       font-family: var(--font-mono);
-      background: rgba(255, 255, 255, 0.05);
+      background: #f1f5f9;
       border: 1px solid var(--border-color);
       color: var(--text-secondary);
       padding: 3px 10px;
@@ -262,8 +269,8 @@
     }
 
     .launch-btn {
-      background: linear-gradient(135deg, var(--primary-cyan), #00b4d8);
-      color: #000;
+      background: linear-gradient(135deg, var(--primary-cyan), #0284c7);
+      color: #ffffff;
       font-weight: 700;
       font-size: 0.95rem;
       padding: 12px 20px;
@@ -274,22 +281,29 @@
       justify-content: center;
       gap: 8px;
       transition: all 0.25s ease;
+      box-shadow: 0 4px 12px rgba(2, 132, 199, 0.25);
     }
 
     .lab-card.physics .launch-btn {
-      background: linear-gradient(135deg, var(--accent-amber), #f77f00);
+      background: linear-gradient(135deg, var(--accent-amber), #ea580c);
+      box-shadow: 0 4px 12px rgba(217, 119, 6, 0.25);
+    }
+
+    .lab-card.bio .launch-btn {
+      background: linear-gradient(135deg, var(--accent-pink), var(--accent-purple));
+      box-shadow: 0 4px 12px rgba(219, 39, 119, 0.25);
     }
 
     .launch-btn:hover {
-      box-shadow: 0 0 20px var(--primary-glow);
       transform: scale(1.02);
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
     }
 
     /* Footer */
     .app-footer {
       margin-top: auto;
       padding: 1.5rem;
-      background: rgba(5, 8, 15, 0.95);
+      background: #ffffff;
       border-top: 1px solid var(--border-color);
       text-align: center;
       font-size: 0.85rem;
@@ -313,7 +327,7 @@
       </div>
       <div class="brand-text">
         <h1>Science<span class="highlight">Interactive</span> Hub</h1>
-        <p>CBSE Class 9 & 10 • Physics & Chemistry Labs</p>
+        <p>CBSE Class 9 & 10 • Physics, Chemistry & Biology Labs</p>
       </div>
     </div>
 
@@ -327,9 +341,9 @@
     <div class="hero-badge">
       <i class="fa-solid fa-microscope"></i> Interactive Science Simulators
     </div>
-    <h1 class="hero-title">Master Science Concepts with Live 3D & Ray Tracing</h1>
+    <h1 class="hero-title">Master Physics, Chemistry & Biology Concepts</h1>
     <p class="hero-subtitle">
-      Explore interactive 3D hydrocarbon molecular structures, IUPAC nomenclature rules, and live optical lens/mirror ray diagram simulations aligned with CBSE Class 9 & 10 syllabus.
+      Explore interactive 3D molecular structures, live optical ray tracing, and epithelial tissue / skin cell functional simulators aligned directly with CBSE Class 9 & 10 syllabus.
     </p>
   </section>
 
@@ -377,6 +391,28 @@
       </div>
       <a href="mirror_lens_ray_diagram_simulator.html" class="launch-btn">
         Launch Ray Diagram Simulator <i class="fa-solid fa-arrow-right"></i>
+      </a>
+    </div>
+
+    <!-- Module 3: Epithelial Tissue & Skin Cell Lab -->
+    <div class="lab-card bio">
+      <div>
+        <div class="card-icon-wrapper">
+          <i class="fa-solid fa-dna"></i>
+        </div>
+        <h2 class="card-title">Epithelial Tissue & Skin Cell Lab</h2>
+        <p class="card-desc">
+          Interactive visualizer for animal tissues: Simple Squamous (Oesophagus), Stratified Squamous (Skin multi-layered protection), Cuboidal (Kidney/Salivary factories), and Ciliated Columnar (Respiratory broom hairs).
+        </p>
+        <div class="card-tags">
+          <span class="tag">CBSE Class 9 Biology</span>
+          <span class="tag">Skin Cells (Stratified)</span>
+          <span class="tag">Epithelial Tissues</span>
+          <span class="tag">Interactive Matching</span>
+        </div>
+      </div>
+      <a href="epithelial_tissue_lab.html" class="launch-btn">
+        Launch Epithelial Tissue Lab <i class="fa-solid fa-arrow-right"></i>
       </a>
     </div>
 
