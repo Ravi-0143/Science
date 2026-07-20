@@ -3,334 +3,390 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Hydrocarbon 3D Lab | CBSE Class 9 & 10 Chemistry</title>
-  <meta name="description" content="Interactive 3D Hydrocarbon render, molecular builder, IUPAC nomenclature calculator, and electron dot structure viewer for CBSE Class 9 & 10 Chemistry.">
-  
+  <title>Science Interactive Lab Portal | CBSE Class 9 & 10</title>
+  <meta name="description" content="Main portal for CBSE Class 9 & 10 Science interactive simulations: 3D Hydrocarbon & IUPAC Structure Lab, and Optics Ray Diagram Simulator.">
+
   <!-- Google Fonts & Font Awesome Icons -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-  <!-- Three.js and OrbitControls -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
-  <!-- Canvas Confetti -->
-  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-  
-  <link rel="stylesheet" href="styles.css">
+  <style>
+    :root {
+      --bg-dark: #0a0e17;
+      --bg-card: rgba(20, 28, 45, 0.75);
+      --bg-card-hover: rgba(30, 42, 68, 0.9);
+      --border-color: rgba(255, 255, 255, 0.1);
+      --border-glow: rgba(0, 230, 255, 0.3);
+      
+      --primary-cyan: #00e5ff;
+      --primary-glow: rgba(0, 229, 255, 0.4);
+      --accent-purple: #9d4edd;
+      --accent-pink: #ff2a85;
+      --accent-amber: #ffb703;
+      --accent-emerald: #00f5d4;
+
+      --text-main: #f0f4f8;
+      --text-secondary: #94a3b8;
+      --text-muted: #64748b;
+      
+      --font-sans: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-mono: 'Fira Code', monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      font-family: var(--font-sans);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+    }
+
+    /* Background Ambient Glow */
+    .bg-glow {
+      position: fixed;
+      top: -200px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 800px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(0, 229, 255, 0.15) 0%, rgba(157, 78, 221, 0.1) 40%, rgba(10, 14, 23, 0) 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Header Navigation */
+    .app-header {
+      height: 70px;
+      background: rgba(10, 14, 23, 0.9);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 2rem;
+      position: relative;
+      z-index: 10;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .logo-icon {
+      width: 42px;
+      height: 42px;
+      background: linear-gradient(135deg, var(--primary-cyan), var(--accent-purple));
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      color: #fff;
+      box-shadow: 0 0 15px var(--primary-glow);
+    }
+
+    .brand-text h1 {
+      font-size: 1.35rem;
+      font-weight: 700;
+    }
+
+    .brand-text .highlight {
+      color: var(--primary-cyan);
+    }
+
+    .brand-text p {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+    }
+
+    .repo-link {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      padding: 8px 16px;
+      border-radius: 10px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.25s ease;
+    }
+
+    .repo-link:hover {
+      background: rgba(0, 229, 255, 0.15);
+      border-color: var(--primary-cyan);
+      color: var(--primary-cyan);
+      box-shadow: 0 0 12px var(--primary-glow);
+    }
+
+    /* Hero Section */
+    .hero-section {
+      text-align: center;
+      padding: 4rem 1.5rem 2.5rem;
+      position: relative;
+      z-index: 1;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(0, 229, 255, 0.1);
+      border: 1px solid rgba(0, 229, 255, 0.3);
+      color: var(--primary-cyan);
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      margin-bottom: 1.25rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .hero-title {
+      font-size: 2.75rem;
+      font-weight: 800;
+      line-height: 1.2;
+      margin-bottom: 1rem;
+      background: linear-gradient(135deg, #ffffff 30%, var(--primary-cyan) 80%, var(--accent-purple) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero-subtitle {
+      font-size: 1.1rem;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    /* Lab Cards Showcase Grid */
+    .showcase-container {
+      max-width: 1100px;
+      margin: 0 auto 3rem;
+      padding: 0 1.5rem;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 2rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .lab-card {
+      background: var(--bg-card);
+      backdrop-filter: blur(16px);
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .lab-card:hover {
+      background: var(--bg-card-hover);
+      border-color: var(--primary-cyan);
+      transform: translateY(-6px);
+      box-shadow: 0 15px 35px rgba(0, 229, 255, 0.15);
+    }
+
+    .card-icon-wrapper {
+      width: 56px;
+      height: 56px;
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.8rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .lab-card.chem .card-icon-wrapper {
+      background: linear-gradient(135deg, rgba(0, 229, 255, 0.2), rgba(157, 78, 221, 0.2));
+      color: var(--primary-cyan);
+      border: 1px solid var(--border-glow);
+    }
+
+    .lab-card.physics .card-icon-wrapper {
+      background: linear-gradient(135deg, rgba(255, 183, 3, 0.2), rgba(255, 42, 133, 0.2));
+      color: var(--accent-amber);
+      border: 1px solid rgba(255, 183, 3, 0.3);
+    }
+
+    .card-title {
+      font-size: 1.4rem;
+      font-weight: 700;
+      margin-bottom: 0.75rem;
+    }
+
+    .card-desc {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      line-height: 1.55;
+      margin-bottom: 1.5rem;
+    }
+
+    .card-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 1.5rem;
+    }
+
+    .tag {
+      font-size: 0.72rem;
+      font-family: var(--font-mono);
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-color);
+      color: var(--text-secondary);
+      padding: 3px 10px;
+      border-radius: 6px;
+    }
+
+    .launch-btn {
+      background: linear-gradient(135deg, var(--primary-cyan), #00b4d8);
+      color: #000;
+      font-weight: 700;
+      font-size: 0.95rem;
+      padding: 12px 20px;
+      border-radius: 12px;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.25s ease;
+    }
+
+    .lab-card.physics .launch-btn {
+      background: linear-gradient(135deg, var(--accent-amber), #f77f00);
+    }
+
+    .launch-btn:hover {
+      box-shadow: 0 0 20px var(--primary-glow);
+      transform: scale(1.02);
+    }
+
+    /* Footer */
+    .app-footer {
+      margin-top: auto;
+      padding: 1.5rem;
+      background: rgba(5, 8, 15, 0.95);
+      border-top: 1px solid var(--border-color);
+      text-align: center;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .app-footer a {
+      color: var(--primary-cyan);
+      text-decoration: none;
+    }
+  </style>
 </head>
-<body class="dark-theme">
-  <!-- Main Header -->
+<body>
+  <div class="bg-glow"></div>
+
+  <!-- Main Navigation Header -->
   <header class="app-header">
     <div class="brand">
       <div class="logo-icon">
-        <i class="fa-solid fa-atom fa-spin-pulse" style="--fa-animation-duration: 12s;"></i>
+        <i class="fa-solid fa-flask-vial"></i>
       </div>
       <div class="brand-text">
-        <h1>Hydrocarbon<span class="highlight">3D</span> Lab</h1>
-        <p>CBSE Class 9 & 10 • Carbon and Its Compounds</p>
+        <h1>Science<span class="highlight">Interactive</span> Hub</h1>
+        <p>CBSE Class 9 & 10 • Physics & Chemistry Labs</p>
       </div>
     </div>
 
-    <!-- Navigation Tabs -->
-    <nav class="nav-tabs">
-      <button class="tab-btn active" data-tab="explorer">
-        <i class="fa-solid fa-cubes"></i> 3D Molecule Explorer
-      </button>
-      <button class="tab-btn" data-tab="builder">
-        <i class="fa-solid fa-wand-magic-sparkles"></i> Molecule Builder & IUPAC
-      </button>
-      <button class="tab-btn" data-tab="theory">
-        <i class="fa-solid fa-book-open"></i> Class 10 Notes & Rules
-      </button>
-      <button class="tab-btn" data-tab="quiz">
-        <i class="fa-solid fa-graduation-cap"></i> Practice Quiz
-      </button>
-    </nav>
+    <a href="https://github.com/Ravi-0143/Science.git" target="_blank" class="repo-link">
+      <i class="fa-brands fa-github"></i> GitHub Repository
+    </a>
   </header>
 
-  <!-- App Container -->
-  <main class="app-container">
+  <!-- Hero Section -->
+  <section class="hero-section">
+    <div class="hero-badge">
+      <i class="fa-solid fa-microscope"></i> Interactive Science Simulators
+    </div>
+    <h1 class="hero-title">Master Science Concepts with Live 3D & Ray Tracing</h1>
+    <p class="hero-subtitle">
+      Explore interactive 3D hydrocarbon molecular structures, IUPAC nomenclature rules, and live optical lens/mirror ray diagram simulations aligned with CBSE Class 9 & 10 syllabus.
+    </p>
+  </section>
+
+  <!-- Lab Modules Showcase Grid -->
+  <section class="showcase-container">
     
-    <!-- Left Sidebar: Molecule Library & Filters -->
-    <aside class="sidebar" id="mainSidebar">
-      <div class="sidebar-header">
-        <h2><i class="fa-solid fa-flask"></i> Compound Library</h2>
-        <div class="search-box">
-          <i class="fa-solid fa-search"></i>
-          <input type="text" id="searchInput" placeholder="Search methane, ethanol...">
+    <!-- Module 1: Hydrocarbon 3D Lab -->
+    <div class="lab-card chem">
+      <div>
+        <div class="card-icon-wrapper">
+          <i class="fa-solid fa-atom fa-spin-pulse" style="--fa-animation-duration: 15s;"></i>
+        </div>
+        <h2 class="card-title">3D Hydrocarbon & IUPAC Lab</h2>
+        <p class="card-desc">
+          Interactive 3D molecular viewer for Alkanes, Alkenes, Alkynes, and Functional Groups (-OH, -CHO, >C=O, -COOH, -Cl, -Br). Includes 3D electron share view (Lewis dots), procedural IUPAC builder, and revision quiz.
+        </p>
+        <div class="card-tags">
+          <span class="tag">Carbon & Its Compounds</span>
+          <span class="tag">Three.js 3D</span>
+          <span class="tag">IUPAC Rules</span>
+          <span class="tag">Electron Sharing</span>
         </div>
       </div>
+      <a href="hydrocarbon_3d_lab.html" class="launch-btn">
+        Launch 3D Molecular Lab <i class="fa-solid fa-arrow-right"></i>
+      </a>
+    </div>
 
-      <div class="filter-pills">
-        <button class="pill active" data-category="all">All</button>
-        <button class="pill" data-category="alkane">Alkanes</button>
-        <button class="pill" data-category="alkene">Alkenes</button>
-        <button class="pill" data-category="alkyne">Alkynes</button>
-        <button class="pill" data-category="functional">Functional Groups</button>
-      </div>
-
-      <div class="molecule-list" id="moleculeList">
-        <!-- Populated dynamically by JS -->
-      </div>
-    </aside>
-
-    <!-- Center Section: 3D Viewport & Builder Canvas -->
-    <section class="viewport-section">
-      <!-- Top Floating Toolbar -->
-      <div class="viewport-toolbar">
-        <div class="title-badge" id="activeMoleculeTitle">
-          <span class="badge-tag" id="moleculeCategoryTag">Alkane</span>
-          <h2 id="moleculeName">Methane</h2>
-          <span class="formula-code" id="moleculeFormula">CH₄</span>
+    <!-- Module 2: Optics Ray Diagram Simulator -->
+    <div class="lab-card physics">
+      <div>
+        <div class="card-icon-wrapper">
+          <i class="fa-solid fa-glasses"></i>
         </div>
-
-        <div class="viewport-actions">
-          <button class="action-btn" id="btnToggleRotate" title="Toggle Auto Rotation">
-            <i class="fa-solid fa-rotate"></i> <span>Rotate</span>
-          </button>
-          <button class="action-btn" id="btnToggleStyle" title="Switch Ball-and-Stick / Space-Filling / Wireframe">
-            <i class="fa-solid fa-eye"></i> <span id="styleName">Ball & Stick</span>
-          </button>
-          <button class="action-btn" id="btnElectronDot" title="Toggle Electron Share View">
-            <i class="fa-solid fa-circle-nodes"></i> <span>Electron Share</span>
-          </button>
-          <button class="action-btn" id="btnResetCam" title="Reset View">
-            <i class="fa-solid fa-arrows-to-eye"></i> <span>Reset</span>
-          </button>
+        <h2 class="card-title">Optics Ray Diagram Simulator</h2>
+        <p class="card-desc">
+          Live ray tracing simulator for Convex/Concave Lenses & Mirrors. Dynamically adjust object distance ($u$), focal length ($f$), and height ($h_o$) to compute image distance ($v$), magnification ($m$), and nature (real/virtual).
+        </p>
+        <div class="card-tags">
+          <span class="tag">Light: Reflection & Refraction</span>
+          <span class="tag">Ray Tracing</span>
+          <span class="tag">Lens & Mirror Formula</span>
+          <span class="tag">Magnification</span>
         </div>
       </div>
+      <a href="mirror_lens_ray_diagram_simulator.html" class="launch-btn">
+        Launch Ray Diagram Simulator <i class="fa-solid fa-arrow-right"></i>
+      </a>
+    </div>
 
-      <!-- 3D Canvas Canvas Container -->
-      <div class="canvas-wrapper" id="canvasContainer">
-        <canvas id="threeCanvas"></canvas>
-
-        <!-- Atom Hover Card -->
-        <div class="atom-tooltip" id="atomTooltip" style="display: none;">
-          <div class="tooltip-header">
-            <span class="atom-symbol" id="ttSymbol">C</span>
-            <span class="atom-name" id="ttName">Carbon</span>
-          </div>
-          <div class="tooltip-body">
-            <p><strong>Valency:</strong> <span id="ttValency">4</span></p>
-            <p><strong>Electrons Shared:</strong> <span id="ttShared">4</span></p>
-            <p><strong>Role:</strong> <span id="ttRole">Central Chain Atom</span></p>
-          </div>
-        </div>
-
-        <!-- Floating Legend -->
-        <div class="canvas-legend">
-          <div class="legend-item"><span class="color-dot carbon"></span> Carbon (C)</div>
-          <div class="legend-item"><span class="color-dot hydrogen"></span> Hydrogen (H)</div>
-          <div class="legend-item"><span class="color-dot oxygen"></span> Oxygen (O)</div>
-          <div class="legend-item"><span class="color-dot halogen"></span> Chlorine/Bromine</div>
-        </div>
-      </div>
-
-      <!-- Bottom Card: IUPAC Rule Breakdown & Analysis -->
-      <div class="iupac-breakdown-card" id="iupacCard">
-        <div class="breakdown-header">
-          <h3><i class="fa-solid fa-code-branch"></i> IUPAC Name Systematic Breakdown</h3>
-        </div>
-        <div class="breakdown-grid">
-          <div class="b-box">
-            <span class="b-label">Prefix (Substituent)</span>
-            <span class="b-value" id="breakdownPrefix">None</span>
-            <small id="breakdownPrefixDesc">No halogens or side chains</small>
-          </div>
-          <div class="b-plus">+</div>
-          <div class="b-box highlight-root">
-            <span class="b-label">Word Root (Carbon Count)</span>
-            <span class="b-value" id="breakdownRoot">Meth-</span>
-            <small id="breakdownRootDesc">1 Carbon Atom</small>
-          </div>
-          <div class="b-plus">+</div>
-          <div class="b-box">
-            <span class="b-label">Primary Suffix (Bonds)</span>
-            <span class="b-value" id="breakdownSuffix1">-ane</span>
-            <small id="breakdownSuffix1Desc">All C-C Single Bonds</small>
-          </div>
-          <div class="b-plus" id="suffix2Plus">+</div>
-          <div class="b-box" id="suffix2Box">
-            <span class="b-label">Secondary Suffix (Functional Group)</span>
-            <span class="b-value" id="breakdownSuffix2">None</span>
-            <small id="breakdownSuffix2Desc">Hydrocarbon only</small>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Right Panel: Builder Controls or Quiz Modal -->
-    <aside class="panel-right" id="rightPanel">
-      
-      <!-- TAB 1: MOLECULE BUILDER -->
-      <div class="panel-tab-content active" id="tabContentBuilder">
-        <div class="panel-header">
-          <h2><i class="fa-solid fa-sliders"></i> Interactive Builder</h2>
-          <p>Construct customized hydrocarbons & functional groups</p>
-        </div>
-
-        <div class="builder-control-group">
-          <label>1. Carbon Chain Length (Word Root)</label>
-          <div class="range-wrapper">
-            <input type="range" id="carbonRange" min="1" max="6" value="3" step="1">
-            <div class="range-labels">
-              <span>1 (Meth)</span>
-              <span>2 (Eth)</span>
-              <span>3 (Prop)</span>
-              <span>4 (But)</span>
-              <span>5 (Pent)</span>
-              <span>6 (Hex)</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="builder-control-group">
-          <label>2. Saturation & Bond Type</label>
-          <div class="btn-group-toggle">
-            <button class="toggle-btn active" data-bond="single">
-              <i class="fa-solid fa-minus"></i> Single (-ane)
-            </button>
-            <button class="toggle-btn" data-bond="double" id="btnDoubleBond">
-              <i class="fa-solid fa-equals"></i> Double (-ene)
-            </button>
-            <button class="toggle-btn" data-bond="triple" id="btnTripleBond">
-              <i class="fa-solid fa-bars"></i> Triple (-yne)
-            </button>
-          </div>
-        </div>
-
-        <div class="builder-control-group">
-          <label>3. Functional Group (Class 10 Extension)</label>
-          <select id="functionalSelect" class="styled-select">
-            <option value="none">None (Pure Hydrocarbon)</option>
-            <option value="alcohol">Alcohol (-OH) → Suffix: -ol</option>
-            <option value="aldehyde">Aldehyde (-CHO) → Suffix: -al</option>
-            <option value="ketone">Ketone (&gt;C=O) → Suffix: -one</option>
-            <option value="carboxylic">Carboxylic Acid (-COOH) → Suffix: -oic acid</option>
-            <option value="chloro">Chloro Substituted (-Cl) → Prefix: Chloro-</option>
-            <option value="bromo">Bromo Substituted (-Br) → Prefix: Bromo-</option>
-          </select>
-        </div>
-
-        <div class="builder-stats">
-          <div class="stat-card">
-            <i class="fa-solid fa-atom"></i>
-            <div>
-              <span class="stat-title">General Formula</span>
-              <span class="stat-val" id="genFormulaDisplay">CₙH₂ₙ₊₂</span>
-            </div>
-          </div>
-          <div class="stat-card">
-            <i class="fa-solid fa-weight-hanging"></i>
-            <div>
-              <span class="stat-title">Molecular Mass</span>
-              <span class="stat-val" id="molMassDisplay">44 g/mol</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="info-callout">
-          <i class="fa-solid fa-lightbulb"></i>
-          <p id="catenationFact">
-            <strong>Catenation Fact:</strong> Carbon forms strong C-C covalent bonds, allowing it to build stable straight chains of up to hundreds of carbon atoms!
-          </p>
-        </div>
-      </div>
-
-      <!-- TAB 2: THEORY & CBSE CLASS 10 REVISION -->
-      <div class="panel-tab-content" id="tabContentTheory">
-        <div class="panel-header">
-          <h2><i class="fa-solid fa-book"></i> Carbon & Its Compounds</h2>
-          <p>CBSE Class 9 & 10 Quick Revision Notes</p>
-        </div>
-        
-        <div class="accordion-list">
-          <details open class="acc-item">
-            <summary><i class="fa-solid fa-shield-halved"></i> 1. Why Carbon Forms Chains</summary>
-            <div class="acc-content">
-              <ul>
-                <li><strong>Tetravalency:</strong> Carbon has atomic number 6 (2,4). It has 4 valence electrons and shares them to achieve stable octet.</li>
-                <li><strong>Catenation:</strong> Carbon atoms readily bond with each other to form straight chains, branched chains, or rings.</li>
-                <li><strong>Covalent Bond Strength:</strong> Small atomic size makes C-C bonds extremely strong and stable.</li>
-              </ul>
-            </div>
-          </details>
-
-          <details class="acc-item">
-            <summary><i class="fa-solid fa-table"></i> 2. Hydrocarbon Classification</summary>
-            <div class="acc-content">
-              <table class="mini-table">
-                <thead>
-                  <tr><th>Family</th><th>Bond</th><th>Formula</th><th>Suffix</th></tr>
-                </thead>
-                <tbody>
-                  <tr><td>Alkane</td><td>Single (C-C)</td><td>C<sub>n</sub>H<sub>2n+2</sub></td><td>-ane</td></tr>
-                  <tr><td>Alkene</td><td>Double (C=C)</td><td>C<sub>n</sub>H<sub>2n</sub></td><td>-ene</td></tr>
-                  <tr><td>Alkyne</td><td>Triple (C≡C)</td><td>C<sub>n</sub>H<sub>2n-2</sub></td><td>-yne</td></tr>
-                </tbody>
-              </table>
-            </div>
-          </details>
-
-          <details class="acc-item">
-            <summary><i class="fa-solid fa-tags"></i> 3. IUPAC Nomenclature Steps</summary>
-            <div class="acc-content">
-              <ol class="step-list">
-                <li><strong>Count Carbons:</strong> 1=Meth, 2=Eth, 3=Prop, 4=But, 5=Pent, 6=Hex.</li>
-                <li><strong>Identify Saturation:</strong> All single bonds (-ane), 1 double bond (-ene), 1 triple bond (-yne).</li>
-                <li><strong>Functional Groups:</strong> Remove terminal 'e' and append suffix (-ol, -al, -one, -oic acid) or add prefix (Chloro/Bromo).</li>
-              </ol>
-            </div>
-          </details>
-        </div>
-      </div>
-
-      <!-- TAB 3: PRACTICE QUIZ MODE -->
-      <div class="panel-tab-content" id="tabContentQuiz">
-        <div class="panel-header">
-          <h2><i class="fa-solid fa-award"></i> IUPAC Challenge</h2>
-          <p>Test your molecular naming & formula skills</p>
-        </div>
-
-        <div class="quiz-container">
-          <div class="quiz-progress">
-            <span>Question <strong id="qCurrent">1</strong> of <strong id="qTotal">5</strong></span>
-            <div class="progress-bar"><div class="progress-fill" id="quizProgressFill" style="width: 20%;"></div></div>
-          </div>
-
-          <div class="quiz-card" id="quizCard">
-            <div class="quiz-question" id="quizQuestion">
-              What is the IUPAC name of the compound with formula <strong>C₃H₆</strong> containing one double bond?
-            </div>
-            
-            <div class="quiz-options" id="quizOptions">
-              <!-- Dynamically loaded options -->
-            </div>
-
-            <div class="quiz-feedback" id="quizFeedback" style="display: none;">
-              <!-- Feedback alert -->
-            </div>
-
-            <button class="primary-btn" id="btnNextQuiz" style="display: none;">Next Question <i class="fa-solid fa-arrow-right"></i></button>
-          </div>
-        </div>
-      </div>
-
-    </aside>
-
-  </main>
+  </section>
 
   <!-- Footer -->
   <footer class="app-footer">
-    <p>Designed for CBSE Class 9 & 10 Science Students • Built with Three.js & HTML5 Covalent Engine</p>
+    <p>
+      CBSE Class 9 & 10 Science Interactive Portal • Built for <a href="https://github.com/Ravi-0143/Science.git" target="_blank">GitHub: Ravi-0143/Science</a>
+    </p>
   </footer>
-
-  <!-- Application Logic Scripts -->
-  <script src="molecules.js"></script>
-  <script src="builder.js"></script>
-  <script src="quiz.js"></script>
-  <script src="app.js"></script>
 </body>
 </html>
