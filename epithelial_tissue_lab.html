@@ -687,12 +687,11 @@
           </div>
 
           <div class="cell-graphic-box" id="stratifiedBox">
-            <div class="scratch-effect" id="scratchEffect"></div>
             <!-- SVG Diagram 2 -->
             <svg width="240" height="140" viewBox="0 0 240 140">
               <line x1="10" y1="130" x2="230" y2="130" stroke="#0f172a" stroke-width="3"/>
               <!-- Stacked layers like deck of cards -->
-              <g stroke="#db2777" stroke-width="1.5" fill="#fbcfe8">
+              <g stroke="#db2777" stroke-width="1.5" fill="#fbcfe8" id="skinLayersGroup">
                 <!-- Layer 5 top -->
                 <rect x="20" y="20" width="45" height="20" rx="2"/>
                 <rect x="68" y="20" width="45" height="20" rx="2"/>
@@ -735,8 +734,8 @@
           </div>
         </div>
 
-        <button class="demo-btn" onclick="triggerScratchTest()">
-          <i class="fa-solid fa-hand-fist"></i> Simulate Skin Scratch / Wear
+        <button class="demo-btn" onclick="highlightSkinLayers()">
+          <i class="fa-solid fa-layer-group"></i> Highlight Stacked Layers
         </button>
       </div>
 
@@ -1044,11 +1043,11 @@
         });
       }
 
-      // 2. Stratified Skin Box - Drag / Click friction scratch & keratin shedding
+      // 2. Stratified Skin Box - Click to highlight stacked layers
       const stratifiedBox = document.getElementById('stratifiedBox');
       if (stratifiedBox) {
-        stratifiedBox.addEventListener('click', (e) => {
-          triggerScratchTest(e);
+        stratifiedBox.addEventListener('click', () => {
+          highlightSkinLayers();
         });
       }
 
@@ -1089,27 +1088,13 @@
       p.classList.add('sliding');
     }
 
-    function triggerScratchTest(e) {
-      const scratch = document.getElementById('scratchEffect');
-      const stratifiedBox = document.getElementById('stratifiedBox');
-      if (scratch) {
-        scratch.style.opacity = '1';
-        setTimeout(() => { scratch.style.opacity = '0'; }, 800);
-      }
-
-      scratchCount++;
-      for (let i = 0; i < 6; i++) {
-        const flake = document.createElement('div');
-        flake.className = 'keratin-flake';
-        const x = e ? (e.clientX - stratifiedBox.getBoundingClientRect().left) : (40 + Math.random() * 160);
-        const y = 30 + (Math.random() * 20 - 10);
-        flake.style.left = x + 'px';
-        flake.style.top = y + 'px';
-        flake.style.setProperty('--dx', (Math.random() * 60 - 30) + 'px');
-        flake.style.setProperty('--dy', (-20 - Math.random() * 40) + 'px');
-        stratifiedBox.appendChild(flake);
-        setTimeout(() => flake.remove(), 800);
-      }
+    function highlightSkinLayers() {
+      const group = document.getElementById('skinLayersGroup');
+      if (!group) return;
+      group.style.fill = '#f43f5e';
+      setTimeout(() => {
+        group.style.fill = '#fbcfe8';
+      }, 600);
     }
 
     function triggerFluidPump() {

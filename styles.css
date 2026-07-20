@@ -1044,22 +1044,6 @@ body, body.dark-theme {
   animation: factoryPulse 2s ease-in-out infinite;
 }
 
-/* Keratin Flake Shedding for Stratified Skin Scratch */
-.keratin-flake {
-  position: absolute;
-  width: 6px;
-  height: 6px;
-  background: #f43f5e;
-  border-radius: 2px;
-  pointer-events: none;
-  animation: flakeShed 0.8s ease-out forwards;
-}
-
-@keyframes flakeShed {
-  0% { opacity: 1; transform: translate(0, 0) rotate(0deg); }
-  100% { opacity: 0; transform: translate(var(--dx, 20px), var(--dy, -30px)) rotate(180deg); }
-}
-
 /* Diffusion wave pulse for Simple Squamous */
 .diffusion-wave {
   position: absolute;
