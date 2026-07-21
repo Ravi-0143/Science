@@ -1,0 +1,4 @@
+node_modules/
+build/
+# dist/ is included for webapp module hosting
+!.env.example

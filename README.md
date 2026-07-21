@@ -33,6 +33,11 @@ An interactive, high-performance web suite designed for CBSE Class 9 & 10 Scienc
 * **Cell Differentiation Visualizer:** Microscopic comparison cards between **Meristematic Cells** (dense cytoplasm, large nucleus, no vacuole, active division) and **Permanent Cells** (large central vacuole, thick wall, specialized job).
 * **Interactive Placement Mission & Retrieval Quiz:** Drag/click tissue matching activity and a 5-question NCERT-aligned revision quiz with confetti celebrations.
 
+### 5. 🌿 Vascular Tissue Atlas - Flora Immersive (`Flora-Immersive/`)
+* **Cinematic 3D Particle Streams:** High-DPI canvas engine rendering xylem water transpiration pull and phloem pressure-driven sucrose translocation.
+* **Cell Explorer Mode:** Interactive anatomical inspection of Vessel Elements, Tracheids, Xylem Parenchyma/Fibres, Sieve-Tube Elements, and Companion Cells.
+* **Guided Story & Diagnostic Quiz:** Interactive guided story tours with live environmental sliders and exam trap diagnostic quizzes.
+
 ---
 
 ## 🎨 Design System

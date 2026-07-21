@@ -1,0 +1,1493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vascular tissue atlas — Xylem &amp; Phloem</title>
+<style>
+  :root{
+    --parchment:#F7F3E8;
+    --parchment-2:#F0E9D8;
+    --ink:#2B2118;
+    --ink-soft:#5C4F3E;
+    --bronze:#8B6F3E;
+    --bronze-light:#DCCBA0;
+    --bronze-dark:#5E4A28;
+    --green:#4A7C59;
+    --green-light:#D8E8DC;
+    --green-dark:#2F5038;
+    --xylem:#B85C38;
+    --xylem-light:#F3DBCC;
+    --xylem-dark:#7A3B22;
+    --phloem:#3E6B8F;
+    --phloem-light:#D6E4EC;
+    --phloem-dark:#26445C;
+    --trap:#8C2F2F;
+    --trap-light:#F5DCDC;
+    --paper-line:#D8CDB4;
+    --mech-xylem:#AFD6E8;
+    --mech-xylem-line:#6FA9C4;
+    --mech-phloem:#F5CB8E;
+    --mech-phloem-line:#D89A48;
+    --mech-companion:#DCC6E8;
+    --mech-companion-line:#A97FC2;
+    --mech-source:#7FA968;
+    --mech-sink:#B99168;
+    --mech-water:#3E6B8F;
+    --mech-sucrose:#B8791F;
+    --radius:10px;
+    --shadow:0 1px 0 rgba(43,33,24,0.06);
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--parchment);
+    color:var(--ink);
+    font-family:"Iowan Old Style","Palatino Linotype",Georgia,serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .display{
+    font-family:"Iowan Old Style",Georgia,"Times New Roman",serif;
+  }
+  .ui-font{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  }
+  .mono{
+    font-family:"SF Mono",SFMono-Regular,Consolas,"Liberation Mono",Menlo,monospace;
+  }
+
+  .wrap{
+    max-width:980px;
+    margin:0 auto;
+    padding:40px 24px 80px;
+  }
+
+  /* ---------- Header ---------- */
+  header.top{
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    border-bottom:2px solid var(--ink);
+    padding-bottom:14px;
+    margin-bottom:8px;
+    flex-wrap:wrap;
+    gap:8px;
+  }
+  header.top .eyebrow{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    font-size:11px;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--ink-soft);
+  }
+  h1.title{
+    font-size:32px;
+    font-weight:400;
+    margin:2px 0 0;
+    letter-spacing:0.01em;
+  }
+  h1.title em{
+    font-style:italic;
+    color:var(--bronze-dark);
+  }
+  .plate-no{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    font-size:12px;
+    color:var(--ink-soft);
+    text-align:right;
+  }
+
+  /* ---------- Tissue toggle ---------- */
+  .tissue-toggle{
+    display:flex;
+    gap:0;
+    margin:28px 0 0;
+    border:1.5px solid var(--ink);
+    border-radius:999px;
+    overflow:hidden;
+    width:fit-content;
+    background:var(--parchment-2);
+  }
+  .tissue-toggle button{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    font-size:14px;
+    font-weight:600;
+    padding:10px 26px;
+    border:none;
+    background:transparent;
+    color:var(--ink-soft);
+    cursor:pointer;
+    transition:background .2s, color .2s;
+    letter-spacing:0.02em;
+  }
+  .tissue-toggle button.active.xy{ background:var(--xylem); color:#fff; }
+  .tissue-toggle button.active.ph{ background:var(--phloem); color:#fff; }
+  .tissue-toggle button:not(.active):hover{ background:var(--paper-line); }
+
+  .subhead{
+    margin:18px 0 0;
+    font-size:16px;
+    color:var(--ink-soft);
+    max-width:640px;
+    line-height:1.55;
+  }
+  .subhead b{ color:var(--ink); font-weight:600; }
+
+  /* ---------- fact strip ---------- */
+  .fact-strip{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:1px;
+    background:var(--ink);
+    margin:26px 0 0;
+    border:1px solid var(--ink);
+  }
+  .fact-strip .fact{
+    background:var(--parchment-2);
+    padding:14px 16px;
+  }
+  .fact .fact-label{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    font-size:10.5px;
+    text-transform:uppercase;
+    letter-spacing:0.1em;
+    color:var(--ink-soft);
+    margin-bottom:5px;
+  }
+  .fact .fact-value{
+    font-size:15px;
+    line-height:1.35;
+  }
+  .fact .fact-value.xy-accent{ color:var(--xylem-dark); font-weight:600; }
+  .fact .fact-value.ph-accent{ color:var(--phloem-dark); font-weight:600; }
+
+  /* ---------- Section layout: diagram + cards ---------- */
+  .atlas{
+    display:grid;
+    grid-template-columns:340px 1fr;
+    gap:28px;
+    margin-top:34px;
+    align-items:start;
+  }
+  @media (max-width:760px){
+    .atlas{ grid-template-columns:1fr; }
+  }
+
+  .diagram-panel{
+    background:radial-gradient(120% 90% at 30% 0%, #FDFAF1 0%, var(--parchment-2) 55%, #ECE3CC 100%);
+    border:1px solid var(--paper-line);
+    border-radius:14px;
+    padding:18px 18px 20px;
+    position:sticky;
+    top:20px;
+    box-shadow:0 1px 2px rgba(43,33,24,0.05), inset 0 1px 0 rgba(255,255,255,0.6);
+    transition:background 0.6s ease;
+    overflow:hidden;
+  }
+  .diagram-panel.night{
+    background:radial-gradient(120% 90% at 30% 0%, #2E3A44 0%, #1E2A33 55%, #14202A 100%);
+  }
+  .diagram-panel.night .panel-label{ color:#9FB4C2; }
+  .diagram-panel.night .stat-k{ color:#7E97A6; }
+  .diagram-panel.night .stat-v{ color:#DCEAF0; }
+  .diagram-panel.night .mech-info{ background:rgba(255,255,255,0.06); border-color:rgba(255,255,255,0.12); color:#B7C7D0; }
+  .diagram-panel.night .ctrl-label{ color:#9FB4C2; }
+
+  .panel-top-row{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:10px;
+  }
+  .diagram-panel .panel-label{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    font-size:11px;
+    text-transform:uppercase;
+    letter-spacing:0.1em;
+    color:var(--ink-soft);
+    transition:color .4s;
+  }
+  .daynight-toggle{
+    display:flex;
+    border:1px solid var(--paper-line);
+    border-radius:999px;
+    overflow:hidden;
+    background:rgba(255,255,255,0.5);
+  }
+  .diagram-panel.night .daynight-toggle{ border-color:rgba(255,255,255,0.18); background:rgba(255,255,255,0.06); }
+  .daynight-toggle button{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    font-size:10.5px;
+    font-weight:700;
+    padding:4px 10px;
+    border:none;
+    background:transparent;
+    color:var(--ink-soft);
+    cursor:pointer;
+  }
+  .daynight-toggle button.on{
+    background:var(--ink);
+    color:var(--parchment);
+  }
+  .diagram-panel.night .daynight-toggle button.on{ background:#DCEAF0; color:#1E2A33; }
+
+  svg.section-svg{ width:100%; height:auto; display:block; overflow:visible; }
+
+  .particle{ animation-timing-function:linear; animation-iteration-count:infinite; }
+  .p-water{
+    animation-name:rise;
+    animation-duration:var(--xdur, 3s);
+  }
+  .p-sucrose{
+    animation-name:fall;
+    animation-duration:var(--pdur, 3s);
+  }
+  @keyframes rise{
+    0%{ transform:translateY(0); opacity:0; }
+    8%{ opacity:1; }
+    92%{ opacity:1; }
+    100%{ transform:translateY(-410px); opacity:0; }
+  }
+  @keyframes fall{
+    0%{ transform:translateY(0); opacity:0; }
+    8%{ opacity:1; }
+    92%{ opacity:1; }
+    100%{ transform:translateY(410px); opacity:0; }
+  }
+  .flow-paused .p-water, .flow-paused .p-sucrose{ animation-play-state:paused; opacity:0.15 !important; }
+
+  .sieve-ring{
+    animation:sievePulse 2.2s ease-in-out infinite;
+    transform-origin:center;
+    transform-box:fill-box;
+  }
+  @keyframes sievePulse{
+    0%,100%{ transform:scaleX(1); opacity:0.9; }
+    50%{ transform:scaleX(1.12); opacity:1; }
+  }
+
+  .companion-cell{ transition:filter .3s; }
+  .companion-cell.glow{
+    animation:companionGlow 1.4s ease-in-out infinite;
+  }
+  @keyframes companionGlow{
+    0%,100%{ filter:drop-shadow(0 0 0px var(--mech-companion-line)); }
+    50%{ filter:drop-shadow(0 0 6px var(--mech-companion-line)); }
+  }
+
+  .source-box{ transition:filter .3s; cursor:pointer; }
+  .source-box:hover{ filter:brightness(1.08); }
+  .source-box.pulse{ animation:sourcePulse 1.6s ease-in-out infinite; }
+  @keyframes sourcePulse{
+    0%,100%{ filter:drop-shadow(0 0 0px var(--mech-source)); }
+    50%{ filter:drop-shadow(0 0 8px var(--mech-source)); }
+  }
+  .sink-box{ cursor:pointer; transition:filter .3s; }
+  .sink-box:hover{ filter:brightness(1.08); }
+
+  .stomata-group{ transform-origin:55px 30px; transform-box:fill-box; }
+
+  .burst-ring{
+    fill:none;
+    stroke:var(--mech-sucrose);
+    stroke-width:3;
+    opacity:0;
+  }
+  .burst-ring.go{
+    animation:burstTravel 1.3s cubic-bezier(.3,.7,.4,1) forwards;
+  }
+  @keyframes burstTravel{
+    0%{ transform:translateY(0) scale(0.6); opacity:0; }
+    10%{ opacity:1; }
+    85%{ opacity:1; }
+    100%{ transform:translateY(400px) scale(1.4); opacity:0; }
+  }
+
+  .controls-block{
+    margin-top:16px;
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+  }
+  .ctrl{
+    display:flex;
+    flex-direction:column;
+    gap:5px;
+  }
+  .ctrl-top-row{
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+  }
+  .ctrl-label{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    font-size:12px;
+    font-weight:600;
+    color:var(--ink-soft);
+    transition:color .4s;
+  }
+  .ctrl-val{
+    font-family:"SF Mono",Consolas,monospace;
+    font-size:12px;
+    color:var(--ink);
+  }
+  .diagram-panel.night .ctrl-val{ color:#DCEAF0; }
+  input[type="range"].sim-slider{
+    -webkit-appearance:none;
+    appearance:none;
+    width:100%;
+    height:4px;
+    border-radius:2px;
+    background:var(--paper-line);
+    outline:none;
+    cursor:pointer;
+  }
+  .diagram-panel.night input[type="range"].sim-slider{ background:rgba(255,255,255,0.15); }
+  input[type="range"].sim-slider::-webkit-slider-thumb{
+    -webkit-appearance:none;
+    width:16px;height:16px;
+    border-radius:50%;
+    background:var(--bronze);
+    border:2px solid #fff;
+    box-shadow:0 1px 3px rgba(0,0,0,0.3);
+    cursor:pointer;
+    transition:transform .15s;
+  }
+  input[type="range"].sim-slider::-webkit-slider-thumb:hover{ transform:scale(1.15); }
+  input[type="range"].sim-slider.xy-slider::-webkit-slider-thumb{ background:var(--mech-xylem-line); }
+  input[type="range"].sim-slider.ph-slider::-webkit-slider-thumb{ background:var(--mech-sucrose); }
+
+  .readout-strip{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:8px;
+    margin-top:14px;
+  }
+  .readout-strip .stat{
+    background:rgba(255,255,255,0.55);
+    border:1px solid var(--paper-line);
+    border-radius:8px;
+    padding:8px 10px;
+  }
+  .diagram-panel.night .readout-strip .stat{ background:rgba(255,255,255,0.06); border-color:rgba(255,255,255,0.12); }
+  .readout-strip .stat-k{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    font-size:9.5px;
+    text-transform:uppercase;
+    letter-spacing:0.07em;
+    color:var(--ink-soft);
+  }
+  .readout-strip .stat-v{
+    font-family:"SF Mono",Consolas,monospace;
+    font-size:13px;
+    margin-top:2px;
+    color:var(--ink);
+  }
+
+  .mech-legend{
+    display:flex;
+    flex-wrap:wrap;
+    gap:6px;
+    margin-top:14px;
+  }
+  .mech-legend button{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    font-size:11px;
+    font-weight:600;
+    padding:5px 9px;
+    border:1px solid var(--paper-line);
+    border-radius:6px;
+    background:rgba(255,255,255,0.5);
+    color:var(--ink-soft);
+    cursor:pointer;
+    transition:border-color .15s, color .15s, background .15s;
+  }
+  .diagram-panel.night .mech-legend button{ border-color:rgba(255,255,255,0.15); background:rgba(255,255,255,0.05); color:#9FB4C2; }
+  .mech-legend button.active{
+    border-color:var(--ink);
+    color:var(--ink);
+    background:#fff;
+  }
+  .diagram-panel.night .mech-legend button.active{ border-color:#DCEAF0; color:#DCEAF0; background:rgba(255,255,255,0.12); }
+  .mech-info{
+    margin-top:10px;
+    padding:11px 13px;
+    background:var(--parchment);
+    border:1px solid var(--paper-line);
+    border-radius:8px;
+    font-size:12.5px;
+    line-height:1.55;
+    color:var(--ink-soft);
+    min-height:38px;
+    transition:background .4s, border-color .4s;
+  }
+  .mech-part{ cursor:pointer; transition:opacity .18s; }
+  .mech-part.dimmed{ opacity:0.3; }
+
+  .filter-row{
+    display:flex;
+    gap:8px;
+    margin-top:14px;
+  }
+  .filter-row button{
+    flex:1;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    font-size:12px;
+    font-weight:600;
+    padding:7px 4px;
+    border:1px solid var(--paper-line);
+    border-radius:6px;
+    background:var(--parchment);
+    color:var(--ink-soft);
+    cursor:pointer;
+  }
+  .filter-row button.on{
+    border-color:var(--ink);
+    color:var(--ink);
+    background:#fff;
+  }
+
+  /* ---------- Cards ---------- */
+  .card-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:14px;
+  }
+  @media (max-width:560px){ .card-grid{ grid-template-columns:1fr; } }
+
+  .cell-card{
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-radius:var(--radius);
+    padding:16px 18px;
+    box-shadow:var(--shadow);
+    cursor:pointer;
+    transition:border-color .18s, transform .12s;
+    border-left:4px solid var(--bronze);
+  }
+  .cell-card:hover{ transform:translateY(-1px); }
+  .cell-card.selected{ border-color:var(--ink); box-shadow:0 2px 8px rgba(43,33,24,0.12); }
+  .cell-card.faded{ opacity:0.35; }
+
+  .cell-card .cc-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    margin-bottom:6px;
+  }
+  .cell-card h3{
+    font-size:18px;
+    margin:0;
+    font-weight:600;
+  }
+  .status-pill{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    font-size:10px;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:0.05em;
+    padding:3px 8px;
+    border-radius:999px;
+    white-space:nowrap;
+  }
+  .status-pill.dead{ background:var(--bronze-light); color:var(--bronze-dark); }
+  .status-pill.living{ background:var(--green-light); color:var(--green-dark); }
+
+  .cell-card .cc-row{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    font-size:13px;
+    line-height:1.5;
+    margin-top:6px;
+    color:var(--ink-soft);
+  }
+  .cell-card .cc-row b{ color:var(--ink); font-weight:600; }
+
+  .cell-detail{
+    grid-column:1 / -1;
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-radius:var(--radius);
+    padding:20px 22px;
+    margin-top:2px;
+    animation:fadeIn .2s ease;
+  }
+  @keyframes fadeIn{ from{opacity:0; transform:translateY(-4px);} to{opacity:1; transform:none;} }
+  .cell-detail h3{ font-size:20px; margin:0 0 4px; }
+  .cell-detail .detail-sub{ color:var(--ink-soft); font-size:14px; margin-bottom:14px; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;}
+  .detail-stats{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:10px;
+    margin-bottom:14px;
+  }
+  .detail-stats .stat{
+    background:var(--parchment-2);
+    border-radius:8px;
+    padding:10px 12px;
+  }
+  .detail-stats .stat .k{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    font-size:10px;
+    text-transform:uppercase;
+    letter-spacing:0.08em;
+    color:var(--ink-soft);
+  }
+  .detail-stats .stat .v{
+    font-family:"SF Mono",Consolas,monospace;
+    font-size:13px;
+    margin-top:3px;
+  }
+  .cell-detail p{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    font-size:14.5px;
+    line-height:1.65;
+    color:var(--ink);
+    margin:0 0 10px;
+  }
+  .close-detail{
+    float:right;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    font-size:12px;
+    border:1px solid var(--paper-line);
+    background:transparent;
+    border-radius:6px;
+    padding:5px 10px;
+    cursor:pointer;
+    color:var(--ink-soft);
+  }
+
+  /* ---------- Exam trap section ---------- */
+  .trap-section{
+    margin-top:44px;
+    border-top:2px solid var(--ink);
+    padding-top:22px;
+  }
+  .trap-header{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-bottom:6px;
+  }
+  .trap-header .icon{
+    width:22px;height:22px;
+    border-radius:50%;
+    background:var(--trap);
+    color:#fff;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    font-weight:700;
+    font-size:13px;
+    flex-shrink:0;
+  }
+  .trap-header h2{ font-size:22px; margin:0; font-weight:400; }
+  .trap-desc{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    color:var(--ink-soft);
+    font-size:14px;
+    margin:0 0 20px;
+  }
+
+  .trap-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:12px;
+  }
+  @media (max-width:700px){ .trap-grid{ grid-template-columns:1fr; } }
+  .trap-card{
+    background:var(--trap-light);
+    border:1px solid #E0BFBF;
+    border-radius:var(--radius);
+    padding:14px 16px;
+  }
+  .trap-card .tc-term{
+    font-weight:700;
+    font-size:15px;
+    color:var(--trap);
+    margin-bottom:4px;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  }
+  .trap-card .tc-belongs{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    font-size:11px;
+    text-transform:uppercase;
+    letter-spacing:0.06em;
+    color:#6b4444;
+    margin-bottom:8px;
+  }
+  .trap-card p{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    font-size:13px;
+    line-height:1.5;
+    margin:0;
+    color:#5c3a3a;
+  }
+
+  /* ---------- Quiz ---------- */
+  .quiz-section{
+    margin-top:44px;
+    border-top:2px solid var(--ink);
+    padding-top:22px;
+  }
+  .quiz-section h2{ font-size:22px; font-weight:400; margin:0 0 4px; }
+  .quiz-meta{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    font-size:13px;
+    color:var(--ink-soft);
+    margin-bottom:18px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+  }
+  .quiz-meta .score{
+    font-family:"SF Mono",Consolas,monospace;
+    font-weight:600;
+    color:var(--ink);
+  }
+  .quiz-card{
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-radius:var(--radius);
+    padding:22px 24px;
+  }
+  .quiz-progress{
+    height:4px;
+    background:var(--paper-line);
+    border-radius:2px;
+    margin-bottom:18px;
+    overflow:hidden;
+  }
+  .quiz-progress .fill{
+    height:100%;
+    background:var(--bronze);
+    transition:width .3s ease;
+  }
+  .quiz-q{
+    font-size:17px;
+    line-height:1.5;
+    margin-bottom:18px;
+  }
+  .quiz-options{
+    display:flex;
+    flex-direction:column;
+    gap:9px;
+  }
+  .quiz-opt{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    font-size:14.5px;
+    text-align:left;
+    padding:12px 15px;
+    border:1px solid var(--paper-line);
+    border-radius:8px;
+    background:var(--parchment);
+    cursor:pointer;
+    transition:border-color .15s, background .15s;
+    color:var(--ink);
+  }
+  .quiz-opt:hover:not(.locked){ border-color:var(--bronze); }
+  .quiz-opt.correct{ background:var(--green-light); border-color:var(--green); color:var(--green-dark); font-weight:600; }
+  .quiz-opt.wrong{ background:var(--trap-light); border-color:var(--trap); color:var(--trap); font-weight:600; }
+  .quiz-opt.locked{ cursor:default; }
+  .quiz-explain{
+    margin-top:16px;
+    padding:14px 16px;
+    background:var(--parchment-2);
+    border-radius:8px;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    font-size:13.5px;
+    line-height:1.6;
+    color:var(--ink-soft);
+    display:none;
+  }
+  .quiz-explain.show{ display:block; }
+  .quiz-nav{
+    display:flex;
+    justify-content:flex-end;
+    margin-top:18px;
+  }
+  .quiz-nav button{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    font-size:13px;
+    font-weight:600;
+    padding:9px 20px;
+    border-radius:8px;
+    border:none;
+    background:var(--ink);
+    color:var(--parchment);
+    cursor:pointer;
+    display:none;
+  }
+  .quiz-nav button.show{ display:inline-block; }
+
+  .quiz-done{
+    text-align:center;
+    padding:30px 10px;
+  }
+  .quiz-done .big-score{
+    font-size:44px;
+    font-weight:600;
+    font-family:"SF Mono",Consolas,monospace;
+    color:var(--bronze-dark);
+  }
+  .quiz-done p{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    color:var(--ink-soft);
+    margin:8px 0 20px;
+  }
+  .quiz-done button{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    font-size:13px;
+    font-weight:600;
+    padding:9px 22px;
+    border-radius:8px;
+    border:1px solid var(--ink);
+    background:transparent;
+    cursor:pointer;
+  }
+
+  footer.foot{
+    margin-top:50px;
+    padding-top:16px;
+    border-top:1px solid var(--paper-line);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    font-size:11.5px;
+    color:var(--ink-soft);
+    display:flex;
+    justify-content:space-between;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div>
+      <div class="eyebrow ui-font">Plant vascular tissue &middot; atlas plate</div>
+      <h1 class="title">Xylem <em>&amp;</em> Phloem</h1>
+    </div>
+    <div class="plate-no ui-font">Complex permanent tissues<br>Angiosperm cross-section</div>
+  </header>
+
+  <div class="tissue-toggle ui-font" id="tissueToggle">
+    <button class="active xy" data-tissue="xylem">Xylem</button>
+    <button data-tissue="phloem" style="color:#5C4F3E">Phloem</button>
+  </div>
+
+  <p class="subhead" id="subhead">
+    A <b>complex permanent tissue</b> built from four distinct cell types working together to move water and dissolved minerals, one-way, from root to leaf.
+  </p>
+
+  <div class="fact-strip" id="factStrip"></div>
+
+  <div class="atlas">
+    <div class="diagram-panel" id="diagramPanel">
+      <div class="panel-top-row">
+        <div class="panel-label ui-font">Live simulation &middot; source to sink</div>
+        <div class="daynight-toggle ui-font" id="daynightToggle">
+          <button class="on" data-mode="day">Day</button>
+          <button data-mode="night">Night</button>
+        </div>
+      </div>
+      <svg class="section-svg" id="mechSvg" viewBox="0 0 320 540" xmlns="http://www.w3.org/2000/svg"></svg>
+
+      <div class="controls-block">
+        <div class="ctrl">
+          <div class="ctrl-top-row">
+            <span class="ctrl-label ui-font">Stomatal opening (transpiration)</span>
+            <span class="ctrl-val" id="xyVal">55%</span>
+          </div>
+          <input type="range" class="sim-slider xy-slider" id="xySlider" min="0" max="100" value="55" step="1">
+        </div>
+        <div class="ctrl">
+          <div class="ctrl-top-row">
+            <span class="ctrl-label ui-font">Sugar loading at source</span>
+            <span class="ctrl-val" id="phVal">55%</span>
+          </div>
+          <input type="range" class="sim-slider ph-slider" id="phSlider" min="0" max="100" value="55" step="1">
+        </div>
+      </div>
+
+      <div class="readout-strip ui-font">
+        <div class="stat">
+          <div class="stat-k">Xylem flow rate</div>
+          <div class="stat-v" id="xyRate">1.9 mm/s</div>
+        </div>
+        <div class="stat">
+          <div class="stat-k">Phloem flow rate</div>
+          <div class="stat-v" id="phRate">1.9 mm/s</div>
+        </div>
+      </div>
+
+      <div class="mech-legend ui-font" id="mechLegend"></div>
+      <div class="mech-info ui-font" id="mechInfo">Drag the sliders to change flow speed, or click the source / sink boxes below to trigger a sugar-loading pulse.</div>
+    </div>
+
+    <div>
+      <div class="filter-row ui-font" id="filterRow" style="margin:0 0 14px;">
+        <button data-filter="all" class="on">All cells</button>
+        <button data-filter="dead">Dead only</button>
+        <button data-filter="living">Living only</button>
+      </div>
+      <div class="card-grid" id="cardGrid"></div>
+    </div>
+  </div>
+
+  <section class="trap-section">
+    <div class="trap-header">
+      <div class="icon">!</div>
+      <h2>Exam trap alert</h2>
+    </div>
+    <p class="trap-desc">These four terms are the classic distractors question-setters slip into xylem/phloem MCQs. None of them belong to xylem.</p>
+    <div class="trap-grid" id="trapGrid"></div>
+  </section>
+
+  <section class="quiz-section">
+    <h2>Quick check</h2>
+    <div class="quiz-meta ui-font">
+      <span id="quizProgressLabel">Question 1 of 6</span>
+      <span class="score" id="quizScore">Score: 0 / 6</span>
+    </div>
+    <div class="quiz-card">
+      <div class="quiz-progress"><div class="fill" id="quizFill" style="width:0%"></div></div>
+      <div class="quiz-q" id="quizQ"></div>
+      <div class="quiz-options" id="quizOptions"></div>
+      <div class="quiz-explain" id="quizExplain"></div>
+      <div class="quiz-nav"><button id="quizNextBtn">Next question</button></div>
+    </div>
+  </section>
+
+  <footer class="foot">
+    <span>Vascular tissue module &middot; drop-in component</span>
+    <span id="tissueFooter">Viewing: Xylem</span>
+  </footer>
+
+</div>
+
+<script>
+(function(){
+
+var DATA = {
+  xylem: {
+    accent: 'var(--xylem)',
+    accentDark: 'var(--xylem-dark)',
+    accentLight: 'var(--xylem-light)',
+    facts: [
+      { label: 'Multiple cell types', value: '4 distinct types working as one unit', accent:true },
+      { label: 'Main function', value: 'Unidirectional transport, roots \u2192 leaves' },
+      { label: 'Botanical fact', value: '\u201CWood\u201D = secondary xylem from secondary growth' }
+    ],
+    subhead: 'A <b>complex permanent tissue</b> built from four distinct cell types working together to move water and dissolved minerals, one-way, from root to leaf.',
+    cells: [
+      {
+        id:'tracheid', name:'Tracheids', status:'dead',
+        oneLiner:'Primary water conductors in gymnosperms',
+        structure:'Elongated, tube-like cells with thick, lignified walls and tapering ends.',
+        keyFact:'The primary water-conducting elements in gymnosperms and lower vascular plants.',
+        stats:[ ['State','Dead at maturity'], ['Found in','Gymnosperms'], ['Wall','Lignified, thick'] ]
+      },
+      {
+        id:'vessel', name:'Vessels', status:'dead',
+        oneLiner:'Efficient long-distance water pipes',
+        structure:'Long, cylindrical structures formed by several joined cells called vessel members, with perforated end walls.',
+        keyFact:'Much more efficient at water transport than tracheids; a characteristic feature of angiosperms.',
+        stats:[ ['State','Dead at maturity'], ['Found in','Angiosperms'], ['End walls','Perforated'] ]
+      },
+      {
+        id:'parenchyma', name:'Xylem parenchyma', status:'living',
+        oneLiner:'The only living cells in xylem',
+        structure:'Cells with thin cellulosic walls.',
+        keyFact:'The only living cells in xylem tissue.',
+        stats:[ ['State','Living'], ['Wall','Thin, cellulosic'], ['Role','Storage + lateral transport'] ]
+      },
+      {
+        id:'fibres', name:'Xylem fibres', status:'dead',
+        oneLiner:'Structural support, obliterated lumen',
+        structure:'Cells with highly thickened lignified walls and obliterated central lumens.',
+        keyFact:'Provide mechanical strength and support to the plant body.',
+        stats:[ ['State','Dead at maturity'], ['Wall','Thick, lignified'], ['Role','Mechanical support'] ]
+      }
+    ]
+  },
+  phloem: {
+    accent: 'var(--phloem)',
+    accentDark: 'var(--phloem-dark)',
+    accentLight: 'var(--phloem-light)',
+    facts: [
+      { label: 'Multiple cell types', value: '4 components, only sieve tube members lack a nucleus' },
+      { label: 'Main function', value: 'Bidirectional transport of organic food (sugars)' },
+      { label: 'Botanical fact', value: 'Sieve tube members rely on companion cells to survive' }
+    ],
+    subhead: 'A <b>complex permanent tissue</b> that transports the food (organic nutrients) made in leaves to every living part of the plant, in either direction.',
+    cells: [
+      {
+        id:'sieve-tube', name:'Sieve tube elements', status:'living',
+        oneLiner:'Living but enucleate conducting cells',
+        structure:'Elongated cells joined end to end into sieve tubes, with perforated sieve plates at their junctions.',
+        keyFact:'Living at maturity but lose their nucleus, and depend entirely on companion cells to function.',
+        stats:[ ['State','Living, no nucleus'], ['Joins via','Sieve plates'], ['Role','Bulk sugar transport'] ]
+      },
+      {
+        id:'companion', name:'Companion cells', status:'living',
+        oneLiner:'The support crew for sieve tubes',
+        structure:'Small, nucleated living cells lying alongside each sieve tube element.',
+        keyFact:'Help in the loading and unloading of sugars into sieve tubes.',
+        stats:[ ['State','Living, nucleated'], ['Found in','Angiosperms'], ['Role','Loading / unloading sugar'] ]
+      },
+      {
+        id:'phloem-parenchyma', name:'Phloem parenchyma', status:'living',
+        oneLiner:'Storage cells of the phloem',
+        structure:'Living cells with thin cellulosic walls, storing food and other substances.',
+        keyFact:'Specialized cells belonging to the phloem, the vascular tissue responsible for transporting organic nutrients (food).',
+        stats:[ ['State','Living'], ['Wall','Thin, cellulosic'], ['Role','Food storage'] ]
+      },
+      {
+        id:'phloem-fibres', name:'Phloem fibres (bast)', status:'dead',
+        oneLiner:'The only dead cells in phloem',
+        structure:'Elongated, lignified sclerenchymatous cells, often called bast fibres.',
+        keyFact:'The only dead component of phloem; provide mechanical strength once the tissue matures.',
+        stats:[ ['State','Dead at maturity'], ['Wall','Lignified'], ['Role','Mechanical support'] ]
+      }
+    ]
+  }
+};
+
+var TRAPS = [
+  { term:'Companion cells', belongs:'Belongs to phloem', text:'Help in the loading and unloading of sugars into sieve tubes. Frequently listed as a "xylem component" distractor.' },
+  { term:'Collenchyma', belongs:'A simple permanent tissue', text:'Provides mechanical support to young stems and petioles. Not a xylem sub-type \u2014 xylem\u2019s own support tissue is xylem fibres.' },
+  { term:'Sieve cells & phloem parenchyma', belongs:'Belongs to phloem', text:'Specialized cells of the phloem, the vascular tissue that transports organic nutrients (food), not water.' }
+];
+
+var QUIZ = [
+  {
+    q:'Which cell type is the only living component of xylem tissue?',
+    options:['Tracheids','Vessels','Xylem parenchyma','Xylem fibres'],
+    correct:2,
+    explain:'Xylem parenchyma cells have thin cellulosic walls and remain alive, handling food storage and lateral water conduction. Tracheids, vessels, and fibres are all dead at maturity.'
+  },
+  {
+    q:'A question asks you to pick three valid xylem constituents from: Tracheids, Companion cells, Xylem parenchyma, Xylem fibres. Which one is the odd one out?',
+    options:['Tracheids','Companion cells','Xylem parenchyma','Xylem fibres'],
+    correct:1,
+    explain:'Companion cells belong to phloem, not xylem \u2014 they help load and unload sugars into sieve tubes. The other three are genuine xylem components.'
+  },
+  {
+    q:'Why is xylem called a "complex" tissue?',
+    options:['It only appears in flowering plants','It contains more than one type of cell working together for a common function','It transports food in two directions','It is formed only during secondary growth'],
+    correct:1,
+    explain:'"Complex tissue" specifically means it is made of more than one cell type coordinating for a shared function \u2014 in xylem\u2019s case, four types.'
+  },
+  {
+    q:'Which structural feature makes vessels more efficient at water transport than tracheids?',
+    options:['Thicker lignified walls','Tapering ends','Perforated end walls allowing continuous flow','Living cytoplasm'],
+    correct:2,
+    explain:'Vessel members join end to end with perforated end walls, forming a continuous tube \u2014 far more efficient than the pitted, closed-end tracheids.'
+  },
+  {
+    q:'Collenchyma is best described as:',
+    options:['A xylem sub-type providing mechanical support','A simple permanent tissue supporting young stems and petioles','A dead, lignified component of phloem','The living component of xylem'],
+    correct:1,
+    explain:'Collenchyma is a simple permanent tissue (one cell type) that supports young, growing parts of the plant. It has no relationship to xylem\u2014 xylem\u2019s support role is filled by xylem fibres.'
+  },
+  {
+    q:'"Wood" in botanical terms specifically refers to:',
+    options:['Any lignified plant tissue','Phloem fibres accumulated over years','Secondary xylem produced during secondary growth','The bark layer of a tree trunk'],
+    correct:2,
+    explain:'Wood is the scientific term for secondary xylem, laid down year after year during a plant\u2019s secondary growth \u2014 which is also why tree rings are visible in xylem.'
+  }
+];
+
+var state = { tissue:'xylem', selectedCell:null, filter:'all', quizIdx:0, quizScore:0, quizAnswered:false, mechPart:null };
+
+var COLORS = {
+  tracheid:'var(--xylem)', vessel:'var(--xylem-dark)', parenchyma:'var(--green)', fibres:'var(--bronze)',
+  'sieve-tube':'var(--phloem)', companion:'var(--bronze)', 'phloem-parenchyma':'var(--green)', 'phloem-fibres':'var(--bronze-dark)'
+};
+
+function el(tag, cls, html){
+  var e = document.createElement(tag);
+  if(cls) e.className = cls;
+  if(html !== undefined) e.innerHTML = html;
+  return e;
+}
+
+function renderFacts(){
+  var t = DATA[state.tissue];
+  var strip = document.getElementById('factStrip');
+  strip.innerHTML = '';
+  t.facts.forEach(function(f){
+    var card = el('div','fact');
+    var label = el('div','fact-label ui-font', f.label);
+    var val = el('div','fact-value' + (f.accent ? (state.tissue==='xylem' ? ' xy-accent' : ' ph-accent') : ''), f.value);
+    card.appendChild(label); card.appendChild(val);
+    strip.appendChild(card);
+  });
+  document.getElementById('subhead').innerHTML = t.subhead;
+}
+
+var MECH_PARTS = {
+  lignin: {
+    label:'Lignin',
+    text:'A rigid polymer deposited in spiral bands on tracheid and vessel walls. It stops the tube from collapsing under the negative pressure that transpiration pulls create.'
+  },
+  water: {
+    label:'Water',
+    text:'Water and dissolved minerals move up the xylem in one direction only, pulled from root to leaf by transpiration \u2014 the loss of water vapour from leaf surfaces. Drag the stomatal opening slider to see the flow speed respond.'
+  },
+  stomata: {
+    label:'Stomata',
+    text:'Pores in the leaf surface, bounded by guard cells, that open to let water vapour escape. Wider stomata mean faster transpiration, which pulls water up the xylem faster \u2014 that is exactly what the top slider controls.'
+  },
+  sieveplate: {
+    label:'Sieve plate',
+    text:'A perforated wall between sieve tube elements. Cytoplasm and dissolved sugars pass through its pores, letting phloem sap flow as a continuous stream.'
+  },
+  sucrose: {
+    label:'Sucrose',
+    text:'The main sugar translocated through phloem. It is loaded into the sieve tube at the source (leaf) and unloaded at the sink (root or fruit), wherever it is needed.'
+  },
+  companion: {
+    label:'Companion cells',
+    text:'Nucleated living cells that sit beside each sieve tube element. Since sieve tube elements lose their nucleus, companion cells do the metabolic work of loading and unloading sugar for them \u2014 they glow here whenever sugar loading is active.'
+  },
+  sourcesink: {
+    label:'Source \u2192 sink flow',
+    text:'Sugar loaded at a source (usually a leaf) raises solute concentration in the phloem there, drawing water in by osmosis and building pressure. That pressure pushes sap toward a sink (root, fruit, growing bud), where sugar is unloaded and water exits back into the xylem \u2014 the pressure-flow hypothesis. Click the Source or Sink box to trigger a pulse and watch it travel.'
+  }
+};
+
+function renderMechSvg(){
+  var svg = document.getElementById('mechSvg');
+  var s = '';
+
+  s += '<defs>' +
+    '<marker id="arrH" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></marker>' +
+    '<linearGradient id="xyGrad" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="var(--mech-xylem)" stop-opacity="0.9"/><stop offset="50%" stop-color="var(--mech-xylem)" stop-opacity="0.45"/><stop offset="100%" stop-color="var(--mech-xylem)" stop-opacity="0.85"/></linearGradient>' +
+    '<linearGradient id="phGrad" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="var(--mech-phloem)" stop-opacity="0.95"/><stop offset="50%" stop-color="var(--mech-phloem)" stop-opacity="0.5"/><stop offset="100%" stop-color="var(--mech-phloem)" stop-opacity="0.9"/></linearGradient>' +
+    '<radialGradient id="waterGlow"><stop offset="0%" stop-color="#8FCBEE"/><stop offset="100%" stop-color="var(--mech-water)"/></radialGradient>' +
+    '</defs>';
+
+  s += '<text x="55" y="18" text-anchor="middle" font-size="13" font-weight="600" fill="var(--ink)" class="dn-text">Xylem</text>';
+  s += '<text x="150" y="18" text-anchor="middle" font-size="13" font-weight="600" fill="var(--ink)" class="dn-text">Phloem</text>';
+
+  s += '<g class="stomata-group" id="stomataGroup">' +
+    '<rect id="stomaLeft" x="38" y="20" width="12" height="10" rx="5" fill="var(--mech-xylem-line)"/>' +
+    '<rect id="stomaRight" x="60" y="20" width="12" height="10" rx="5" fill="var(--mech-xylem-line)"/>' +
+    '</g>';
+
+  s += '<g class="mech-part" data-part="lignin">' +
+    '<rect id="xyTube" x="30" y="34" width="50" height="410" rx="10" fill="url(#xyGrad)" stroke="var(--mech-xylem-line)" stroke-width="1.5"/>' +
+    tubeSpiral(30,50,34,444) +
+    '</g>';
+
+  s += '<g id="waterParticles">' + waterDots() + '</g>';
+
+  s += '<g class="mech-part" data-part="lignin">' +
+    '<line x1="55" y1="430" x2="55" y2="80" stroke="var(--ink)" stroke-width="2" marker-end="url(#arrH)" opacity="0.55"/>' +
+    '<text x="14" y="255" text-anchor="middle" font-size="10.5" fill="var(--ink)" transform="rotate(-90 14 255)" font-weight="600" class="dn-text">Transpiration</text>' +
+    '</g>';
+
+  s += '<g class="mech-part" data-part="sieveplate">' +
+    '<rect id="phTube" x="125" y="34" width="50" height="410" rx="10" fill="url(#phGrad)" stroke="var(--mech-phloem-line)" stroke-width="1.5"/>' +
+    '</g>';
+
+  s += '<g id="sucroseParticles">' + sucroseHexes() + '</g>';
+
+  s += '<g id="burstRingPh"><ellipse class="burst-ring" cx="150" cy="55" rx="22" ry="10"/></g>';
+  s += '<g id="burstRingXy"><ellipse class="burst-ring" cx="55" cy="430" rx="22" ry="10" stroke="var(--mech-water)"/></g>';
+
+  s += sievePlate(150,120);
+  s += sievePlate(150,370);
+
+  s += '<g class="mech-part" data-part="sucrose">' +
+    '<line x1="150" y1="145" x2="150" y2="365" stroke="var(--ink)" stroke-width="2" marker-end="url(#arrH)" opacity="0.55"/>' +
+    '<text x="192" y="255" text-anchor="middle" font-size="10.5" fill="var(--ink)" transform="rotate(-90 192 255)" font-weight="600" class="dn-text">Translocation</text>' +
+    '</g>';
+
+  s += '<g class="mech-part" data-part="companion" id="companionGroup">';
+  for(var i=0;i<5;i++){
+    var cy = 44 + i*80;
+    s += '<rect class="companion-cell" x="195" y="'+cy+'" width="38" height="72" rx="8" fill="var(--mech-companion)" fill-opacity="0.65" stroke="var(--mech-companion-line)" stroke-width="1.2"/>';
+    s += '<circle cx="214" cy="'+(cy+36)+'" r="5.5" fill="var(--mech-companion-line)"/>';
+  }
+  s += '</g>';
+
+  s += '<g class="mech-part" data-part="sourcesink">' +
+    '<rect id="sourceBox" class="source-box" x="245" y="34" width="60" height="46" rx="8" fill="var(--mech-source)"/>' +
+    '<text x="275" y="52" text-anchor="middle" font-size="10.5" fill="#fff" font-weight="600">Source</text>' +
+    '<text x="275" y="66" text-anchor="middle" font-size="10.5" fill="#fff" font-weight="600">(Leaf)</text>' +
+    '<rect id="sinkBox" class="sink-box" x="245" y="398" width="60" height="46" rx="8" fill="var(--mech-sink)"/>' +
+    '<text x="275" y="416" text-anchor="middle" font-size="10.5" fill="#fff" font-weight="600">Sink</text>' +
+    '<text x="275" y="430" text-anchor="middle" font-size="10.5" fill="#fff" font-weight="600">(Root)</text>' +
+    '</g>';
+
+  s += '<g class="mech-part" data-part="sourcesink">' +
+    '<line x1="243" y1="55" x2="178" y2="55" stroke="var(--ink)" stroke-width="1.8" marker-end="url(#arrH)" opacity="0.6"/>' +
+    '<text x="211" y="46" text-anchor="middle" font-size="10" fill="var(--ink)" class="dn-text">Osmosis</text>' +
+    '<line x1="178" y1="420" x2="243" y2="420" stroke="var(--ink)" stroke-width="1.8" marker-end="url(#arrH)" opacity="0.6"/>' +
+    '<line x1="123" y1="452" x2="83" y2="452" stroke="var(--ink)" stroke-width="1.8" marker-end="url(#arrH)" opacity="0.6"/>' +
+    '<text x="103" y="470" text-anchor="middle" font-size="10" fill="var(--ink)" class="dn-text">Osmosis</text>' +
+    '</g>';
+
+  svg.innerHTML = s;
+
+  document.querySelectorAll('.mech-part').forEach(function(node){
+    node.addEventListener('click', function(){
+      selectMechPart(node.getAttribute('data-part'));
+    });
+  });
+
+  document.getElementById('sourceBox').addEventListener('click', function(e){
+    e.stopPropagation();
+    triggerBurst('ph');
+    selectMechPart('sourcesink');
+  });
+  document.getElementById('sinkBox').addEventListener('click', function(e){
+    e.stopPropagation();
+    triggerBurst('xy');
+    selectMechPart('sourcesink');
+  });
+}
+
+function tubeSpiral(x,w,y1,y2){
+  var out = '';
+  var step = 34;
+  for(var y=y1; y<y2; y+=step){
+    out += '<path d="M'+x+','+y+' Q'+(x+w/2)+','+(y+step/2)+' '+x+','+(y+step)+' M'+(x+w)+','+y+' Q'+(x+w/2)+','+(y+step/2)+' '+(x+w)+','+(y+step)+'" stroke="var(--mech-xylem-line)" stroke-width="1" fill="none" opacity="0.5"/>';
+  }
+  return out;
+}
+
+function waterDots(){
+  var pts = [[45,60],[62,90],[50,130],[68,160],[42,200],[60,235],[48,270],[65,305],[43,340],[60,375],[50,405],[46,425]];
+  var out = '';
+  pts.forEach(function(p,i){
+    out += '<circle class="particle p-water" cx="'+p[0]+'" cy="'+p[1]+'" r="4.5" fill="url(#waterGlow)"/>';
+  });
+  return out;
+}
+
+function sucroseHexes(){
+  var pts = [[140,55],[160,75],[135,100],[158,145],[138,180],[160,210],[136,245],[158,280],[138,310],[160,340],[136,395],[158,425],[140,440]];
+  var out = '';
+  pts.forEach(function(p){
+    out += '<g class="particle p-sucrose">' + hexPair(p[0],p[1]) + '</g>';
+  });
+  return out;
+}
+function hexPair(cx,cy){
+  return '<circle cx="'+(cx-4)+'" cy="'+cy+'" r="6" fill="none" stroke="var(--mech-sucrose)" stroke-width="1.4"/>' +
+         '<circle cx="'+(cx+5)+'" cy="'+cy+'" r="6" fill="none" stroke="var(--mech-sucrose)" stroke-width="1.4"/>';
+}
+
+function sievePlate(cx,cy){
+  return '<g class="mech-part" data-part="sieveplate">' +
+    '<ellipse class="sieve-ring" cx="'+cx+'" cy="'+cy+'" rx="25" ry="7" fill="var(--mech-phloem)" stroke="var(--mech-phloem-line)" stroke-width="1.3"/>' +
+    '<circle cx="'+(cx-10)+'" cy="'+cy+'" r="2" fill="none" stroke="var(--mech-phloem-line)" stroke-width="0.8"/>' +
+    '<circle cx="'+cx+'" cy="'+cy+'" r="2" fill="none" stroke="var(--mech-phloem-line)" stroke-width="0.8"/>' +
+    '<circle cx="'+(cx+10)+'" cy="'+cy+'" r="2" fill="none" stroke="var(--mech-phloem-line)" stroke-width="0.8"/>' +
+    '</g>';
+}
+
+function renderMechLegend(){
+  var wrap = document.getElementById('mechLegend');
+  wrap.innerHTML = '';
+  Object.keys(MECH_PARTS).forEach(function(key){
+    var btn = document.createElement('button');
+    btn.textContent = MECH_PARTS[key].label;
+    btn.setAttribute('data-part', key);
+    if(state.mechPart === key) btn.classList.add('active');
+    btn.addEventListener('click', function(){ selectMechPart(key); });
+    wrap.appendChild(btn);
+  });
+}
+
+function selectMechPart(key){
+  state.mechPart = (state.mechPart === key) ? null : key;
+  var info = document.getElementById('mechInfo');
+  info.textContent = state.mechPart ? MECH_PARTS[state.mechPart].text : 'Drag the sliders to change flow speed, or click the source / sink boxes below to trigger a sugar-loading pulse.';
+  document.querySelectorAll('.mech-legend button').forEach(function(b){
+    b.classList.toggle('active', b.getAttribute('data-part') === state.mechPart);
+  });
+  document.querySelectorAll('.mech-part').forEach(function(node){
+    var p = node.getAttribute('data-part');
+    var match = !state.mechPart || p === state.mechPart;
+    node.classList.toggle('dimmed', !match);
+  });
+}
+
+function updateRates(){
+  var xy = parseInt(document.getElementById('xySlider').value, 10);
+  var ph = parseInt(document.getElementById('phSlider').value, 10);
+  document.getElementById('xyVal').textContent = xy + '%';
+  document.getElementById('phVal').textContent = ph + '%';
+
+  var svg = document.getElementById('mechSvg');
+  var minDur = 1.1, maxDur = 6.4;
+  var xyDur = (maxDur - (xy/100)*(maxDur-minDur)).toFixed(2);
+  var phDur = (maxDur - (ph/100)*(maxDur-minDur)).toFixed(2);
+  svg.style.setProperty('--xdur', xyDur + 's');
+  svg.style.setProperty('--pdur', phDur + 's');
+
+  svg.classList.toggle('xy-paused', xy < 3);
+  svg.classList.toggle('ph-paused', ph < 3);
+
+  var xyTube = document.getElementById('xyTube');
+  var phTube = document.getElementById('phTube');
+  if(xyTube) xyTube.style.opacity = (0.55 + (xy/100)*0.5).toFixed(2);
+  if(phTube) phTube.style.opacity = (0.55 + (ph/100)*0.5).toFixed(2);
+
+  var stomaOffset = 2 + (xy/100)*9;
+  var left = document.getElementById('stomaLeft');
+  var right = document.getElementById('stomaRight');
+  if(left) left.setAttribute('transform', 'translate(' + (-stomaOffset) + ',0)');
+  if(right) right.setAttribute('transform', 'translate(' + stomaOffset + ',0)');
+
+  var companionGroup = document.getElementById('companionGroup');
+  var sourceBox = document.getElementById('sourceBox');
+  if(companionGroup) companionGroup.classList.toggle('glow-active', ph >= 35);
+  document.querySelectorAll('.companion-cell').forEach(function(c){
+    c.parentElement && c.parentElement.classList.contains('glow-active');
+  });
+  if(companionGroup){
+    var glowing = ph >= 35;
+    companionGroup.querySelectorAll('.companion-cell').forEach(function(c){
+      c.parentNode.classList.toggle('glow', false);
+    });
+    companionGroup.classList.toggle('glow', false);
+  }
+  document.querySelectorAll('#companionGroup rect.companion-cell').forEach(function(c){
+    c.classList.toggle('glow', ph >= 35);
+  });
+  if(sourceBox) sourceBox.classList.toggle('pulse', ph >= 35);
+
+  var xyRateVal = (0.3 + (xy/100)*3.8).toFixed(1);
+  var phRateVal = (0.3 + (ph/100)*3.8).toFixed(1);
+  document.getElementById('xyRate').textContent = xyRateVal + ' mm/s';
+  document.getElementById('phRate').textContent = phRateVal + ' mm/s';
+}
+
+function triggerBurst(which){
+  var id = which === 'ph' ? 'burstRingPh' : 'burstRingXy';
+  var g = document.getElementById(id);
+  if(!g) return;
+  var ring = g.querySelector('.burst-ring');
+  ring.classList.remove('go');
+  void ring.offsetWidth;
+  ring.classList.add('go');
+
+  if(which === 'ph'){
+    document.querySelectorAll('#companionGroup rect.companion-cell').forEach(function(c){
+      c.classList.add('glow');
+    });
+    var sb = document.getElementById('sourceBox');
+    if(sb){ sb.classList.add('pulse'); }
+    setTimeout(function(){
+      var xy = parseInt(document.getElementById('xySlider').value, 10);
+      var ph = parseInt(document.getElementById('phSlider').value, 10);
+      document.querySelectorAll('#companionGroup rect.companion-cell').forEach(function(c){
+        c.classList.toggle('glow', ph >= 35);
+      });
+      if(sb) sb.classList.toggle('pulse', ph >= 35);
+    }, 1400);
+  }
+}
+
+function setDayNight(mode){
+  state.dayMode = (mode === 'day');
+  var panel = document.getElementById('diagramPanel');
+  panel.classList.toggle('night', !state.dayMode);
+  document.querySelectorAll('#daynightToggle button').forEach(function(b){
+    b.classList.toggle('on', b.getAttribute('data-mode') === mode);
+  });
+  var xySlider = document.getElementById('xySlider');
+  var phSlider = document.getElementById('phSlider');
+  if(mode === 'night'){
+    xySlider.value = 8;
+    phSlider.value = 30;
+  } else {
+    xySlider.value = 55;
+    phSlider.value = 55;
+  }
+  updateRates();
+}
+
+document.getElementById('xySlider').addEventListener('input', updateRates);
+document.getElementById('phSlider').addEventListener('input', updateRates);
+document.getElementById('daynightToggle').addEventListener('click', function(e){
+  var btn = e.target.closest('button');
+  if(!btn) return;
+  setDayNight(btn.getAttribute('data-mode'));
+});
+
+function renderCards(){
+  var t = DATA[state.tissue];
+  var grid = document.getElementById('cardGrid');
+  grid.innerHTML = '';
+
+  t.cells.forEach(function(c){
+    var show = state.filter === 'all' || state.filter === c.status;
+    var card = el('div','cell-card' + (state.selectedCell===c.id?' selected':'') + (!show?' faded':''));
+    card.style.borderLeftColor = COLORS[c.id];
+    card.innerHTML =
+      '<div class="cc-top">' +
+        '<h3>'+c.name+'</h3>' +
+        '<span class="status-pill '+c.status+'">'+c.status+'</span>' +
+      '</div>' +
+      '<div class="cc-row ui-font">'+c.oneLiner+'</div>';
+    card.addEventListener('click', function(){ selectCell(c.id); });
+    grid.appendChild(card);
+
+    if(state.selectedCell === c.id){
+      grid.appendChild(renderDetail(c));
+    }
+  });
+}
+
+function renderDetail(c){
+  var detail = el('div','cell-detail');
+  detail.innerHTML =
+    '<button class="close-detail ui-font" id="closeDetailBtn">Close \u2715</button>' +
+    '<h3>'+c.name+'</h3>' +
+    '<div class="detail-sub">'+c.oneLiner+'</div>' +
+    '<div class="detail-stats">' +
+      c.stats.map(function(s){
+        return '<div class="stat"><div class="k ui-font">'+s[0]+'</div><div class="v">'+s[1]+'</div></div>';
+      }).join('') +
+    '</div>' +
+    '<p><b>Structure.</b> '+c.structure+'</p>' +
+    '<p><b>Key fact.</b> '+c.keyFact+'</p>';
+  setTimeout(function(){
+    var btn = document.getElementById('closeDetailBtn');
+    if(btn) btn.addEventListener('click', function(e){ e.stopPropagation(); selectCell(null); });
+  },0);
+  return detail;
+}
+
+function selectCell(id){
+  state.selectedCell = (state.selectedCell === id) ? null : id;
+  render();
+}
+
+function renderTraps(){
+  var wrap = document.getElementById('trapGrid');
+  wrap.innerHTML = '';
+  TRAPS.forEach(function(tr){
+    var card = el('div','trap-card');
+    card.innerHTML =
+      '<div class="tc-term">'+tr.term+'</div>' +
+      '<div class="tc-belongs">'+tr.belongs+'</div>' +
+      '<p>'+tr.text+'</p>';
+    wrap.appendChild(card);
+  });
+}
+
+function render(){
+  document.getElementById('tissueFooter').textContent = 'Viewing: ' + (state.tissue==='xylem'?'Xylem':'Phloem');
+  renderFacts();
+  renderCards();
+}
+
+document.getElementById('tissueToggle').addEventListener('click', function(e){
+  var btn = e.target.closest('button');
+  if(!btn) return;
+  document.querySelectorAll('#tissueToggle button').forEach(function(b){
+    b.classList.remove('active','xy','ph');
+    b.style.color = '#5C4F3E';
+  });
+  var tissue = btn.getAttribute('data-tissue');
+  btn.classList.add('active', tissue==='xylem'?'xy':'ph');
+  btn.style.color = '#fff';
+  state.tissue = tissue;
+  state.selectedCell = null;
+  render();
+});
+
+document.getElementById('filterRow').addEventListener('click', function(e){
+  var btn = e.target.closest('button');
+  if(!btn) return;
+  document.querySelectorAll('#filterRow button').forEach(function(b){ b.classList.remove('on'); });
+  btn.classList.add('on');
+  state.filter = btn.getAttribute('data-filter');
+  renderCards();
+});
+
+renderTraps();
+render();
+renderMechSvg();
+renderMechLegend();
+
+/* ---------------- Quiz ---------------- */
+function renderQuiz(){
+  var q = QUIZ[state.quizIdx];
+  document.getElementById('quizProgressLabel').textContent = 'Question ' + (state.quizIdx+1) + ' of ' + QUIZ.length;
+  document.getElementById('quizScore').textContent = 'Score: ' + state.quizScore + ' / ' + QUIZ.length;
+  document.getElementById('quizFill').style.width = ((state.quizIdx)/QUIZ.length*100) + '%';
+  document.getElementById('quizQ').textContent = q.q;
+
+  var opts = document.getElementById('quizOptions');
+  opts.innerHTML = '';
+  q.options.forEach(function(optText, i){
+    var b = el('button','quiz-opt ui-font', optText);
+    b.addEventListener('click', function(){ answerQuiz(i); });
+    opts.appendChild(b);
+  });
+
+  document.getElementById('quizExplain').classList.remove('show');
+  document.getElementById('quizExplain').textContent = '';
+  document.getElementById('quizNextBtn').classList.remove('show');
+  state.quizAnswered = false;
+}
+
+function answerQuiz(i){
+  if(state.quizAnswered) return;
+  state.quizAnswered = true;
+  var q = QUIZ[state.quizIdx];
+  var opts = document.querySelectorAll('.quiz-opt');
+  opts.forEach(function(o, idx){
+    o.classList.add('locked');
+    if(idx === q.correct) o.classList.add('correct');
+    if(idx === i && i !== q.correct) o.classList.add('wrong');
+  });
+  if(i === q.correct) state.quizScore++;
+  document.getElementById('quizScore').textContent = 'Score: ' + state.quizScore + ' / ' + QUIZ.length;
+  var explainBox = document.getElementById('quizExplain');
+  explainBox.textContent = q.explain;
+  explainBox.classList.add('show');
+  var nextBtn = document.getElementById('quizNextBtn');
+  nextBtn.textContent = (state.quizIdx === QUIZ.length-1) ? 'See results' : 'Next question';
+  nextBtn.classList.add('show');
+}
+
+document.getElementById('quizNextBtn').addEventListener('click', function(){
+  if(state.quizIdx < QUIZ.length - 1){
+    state.quizIdx++;
+    renderQuiz();
+  } else {
+    renderQuizDone();
+  }
+});
+
+function renderQuizDone(){
+  document.getElementById('quizFill').style.width = '100%';
+  var card = document.querySelector('.quiz-card');
+  var pct = Math.round(state.quizScore / QUIZ.length * 100);
+  var msg = pct === 100 ? 'Every distractor dodged.' : pct >= 66 ? 'Solid grasp \u2014 review the missed ones.' : 'Worth another pass through the atlas above.';
+  card.innerHTML =
+    '<div class="quiz-done">' +
+      '<div class="big-score">'+state.quizScore+' / '+QUIZ.length+'</div>' +
+      '<p class="ui-font">'+msg+'</p>' +
+      '<button id="quizRetryBtn" class="ui-font">Retry quiz</button>' +
+    '</div>';
+  document.getElementById('quizRetryBtn').addEventListener('click', function(){
+    state.quizIdx = 0; state.quizScore = 0;
+    location.reload();
+  });
+}
+
+renderQuiz();
+
+})();
+</script>
+</body>
+</html>

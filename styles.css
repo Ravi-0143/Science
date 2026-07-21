@@ -928,3 +928,21 @@ body {
     min-height: 40px;
   }
 }
+
+/* ==========================================================================
+   Flora Immersive 3D Module Container & Anti-Lag Embed
+   ========================================================================== */
+.flora-iframe-wrapper {
+  width: 100%;
+  height: calc(100vh - var(--header-height) - var(--nav-height) - 1px);
+  height: calc(100dvh - var(--header-height) - var(--nav-height) - 1px);
+  overflow: hidden;
+  background-color: var(--gh-bg-canvas);
+}
+
+.flora-iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+  display: block;
+}

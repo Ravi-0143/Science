@@ -56,7 +56,7 @@ function initSPARouter() {
 }
 
 function switchTab(tabName) {
-  const validTabs = ['overview', 'hydrocarbon', 'optics', 'epithelial', 'meristem'];
+  const validTabs = ['overview', 'hydrocarbon', 'optics', 'epithelial', 'meristem', 'vascular'];
   if (!validTabs.includes(tabName)) tabName = 'overview';
 
   // Update Navigation Tab Highlights
@@ -89,11 +89,24 @@ function switchTab(tabName) {
   if (tabName === 'optics') {
     renderOptics();
   }
+
+  // Sync theme to Flora Immersive frame when Flora tab is selected
+  if (tabName === 'vascular') {
+    syncFloraTheme();
+  }
 }
 
 /* ==========================================================================
    2. Theme Switcher & Global Search
    ========================================================================== */
+
+function syncFloraTheme() {
+  const floraFrame = document.getElementById('floraFrame');
+  if (floraFrame && floraFrame.contentWindow) {
+    const isLight = document.body.classList.contains('light-theme');
+    floraFrame.contentWindow.postMessage({ theme: isLight ? 'light' : 'dark' }, '*');
+  }
+}
 
 function initTheme() {
   const toggleBtn = document.getElementById('themeToggle');
@@ -110,6 +123,7 @@ function initTheme() {
       const isLight = document.body.classList.contains('light-theme');
       localStorage.setItem('gh_theme', isLight ? 'light' : 'dark');
       toggleBtn.innerHTML = isLight ? '<i class="fa-solid fa-sun"></i>' : '<i class="fa-solid fa-moon"></i>';
+      syncFloraTheme();
     });
   }
 }
