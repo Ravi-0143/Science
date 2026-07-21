@@ -27,6 +27,12 @@ An interactive, high-performance web suite designed for CBSE Class 9 & 10 Scienc
   4. **Ciliated Columnar Epithelium (Respiratory Tract / Windpipe):** Tall pillars with hair-like cilia sweeping dirty mucus upwards out of lungs. Interactive cilia broom sweeping animation!
 * **Homework Matching Activity:** Drag/click interactive matching game for tissue types $\rightarrow$ body locations with instant scoring and celebratory feedback.
 
+### 4. 🌱 Meristem Mastery & Plant Tissues Lab (`meristem_mastery_lab.html`)
+* **Interactive Meristem Map:** Interactive SVG plant model highlighting **Apical** (shoot/root tips), **Intercalary** (nodes/leaf bases), and **Lateral** (vascular cambium) meristems.
+* **Live Growth Simulator:** Interactive sliders for **Primary Growth** (length) and **Secondary Growth** (stem girth) with real-time morphing SVG plant rendering and growth energy meter.
+* **Cell Differentiation Visualizer:** Microscopic comparison cards between **Meristematic Cells** (dense cytoplasm, large nucleus, no vacuole, active division) and **Permanent Cells** (large central vacuole, thick wall, specialized job).
+* **Interactive Placement Mission & Retrieval Quiz:** Drag/click tissue matching activity and a 5-question NCERT-aligned revision quiz with confetti celebrations.
+
 ---
 
 ## 🎨 Design System
