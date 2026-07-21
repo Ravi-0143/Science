@@ -1,4 +1,5 @@
 node_modules/
 build/
-# dist/ is included for webapp module hosting
+.env
+.env.local
 !.env.example
