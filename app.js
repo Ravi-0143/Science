@@ -1,515 +1,475 @@
 /**
- * Hydrocarbon 3D Lab - Main Application Logic
- * Integrates Three.js 3D rendering, OrbitControls, UI interaction, and Quiz.
+ * CBSE Science WebApp - Central SPA Router & Render Engines
+ * Supports SPA Tab Switching, Anti-Lag WebGL Throttling, Optics Ray Tracing & Theme Controls
  */
 
 let scene, camera, renderer, controls;
-let currentMoleculeGroup;
-let electronShareGroup;
+let currentMoleculeGroup, electronShareGroup;
 let raycaster, mouse;
-let activeMoleculeData = MOLECULE_DATABASE[0];
+let activeMoleculeData = (typeof MOLECULE_DATABASE !== 'undefined') ? MOLECULE_DATABASE[0] : null;
 
 // Render Mode State
-let renderStyle = 'ballAndStick'; // 'ballAndStick', 'spaceFilling', 'wireframe'
+let renderStyle = 'ballAndStick'; // 'ballAndStick', 'spaceFilling'
 let isAutoRotating = false;
 let isElectronShareVisible = false;
-
-// Quiz Instance
-const quiz = new QuizEngine();
+let animationFrameId = null;
 
 document.addEventListener('DOMContentLoaded', () => {
+  initTheme();
+  initSPARouter();
+  initGlobalSearch();
+
+  if (typeof MOLECULE_DATABASE !== 'undefined') {
+    populateMoleculeLibrary(MOLECULE_DATABASE);
+  }
+  
   initThreeJS();
-  populateMoleculeLibrary(MOLECULE_DATABASE);
-  loadMolecule(MOLECULE_DATABASE[0]);
-  setupEventListeners();
-  renderQuizQuestion();
-  animate();
+  setupHydrocarbonEventListeners();
+  initOpticsSimulator();
+  initEpithelialMatching();
 });
 
-/* -------------------------------------------------------------
- * 1. Three.js Scene Setup & Initialization
- * ------------------------------------------------------------- */
+/* ==========================================================================
+   1. Single Page Application (SPA) Router & Visibility Optimization
+   ========================================================================== */
+
+function initSPARouter() {
+  const tabs = document.querySelectorAll('.gh-tab');
+  
+  tabs.forEach(tab => {
+    tab.addEventListener('click', (e) => {
+      e.preventDefault();
+      const targetTab = tab.getAttribute('data-tab');
+      window.location.hash = targetTab;
+      switchTab(targetTab);
+    });
+  });
+
+  window.addEventListener('hashchange', () => {
+    const hash = window.location.hash.replace('#', '') || 'overview';
+    switchTab(hash);
+  });
+
+  // Load initial tab from URL hash
+  const initialTab = window.location.hash.replace('#', '') || 'overview';
+  switchTab(initialTab);
+}
+
+function switchTab(tabName) {
+  const validTabs = ['overview', 'hydrocarbon', 'optics', 'epithelial', 'meristem'];
+  if (!validTabs.includes(tabName)) tabName = 'overview';
+
+  // Update Navigation Tab Highlights
+  document.querySelectorAll('.gh-tab').forEach(tab => {
+    if (tab.getAttribute('data-tab') === tabName) {
+      tab.classList.add('active');
+    } else {
+      tab.classList.remove('active');
+    }
+  });
+
+  // Update Viewport Display
+  document.querySelectorAll('.spa-view').forEach(view => {
+    if (view.id === `view-${tabName}`) {
+      view.classList.add('active');
+    } else {
+      view.classList.remove('active');
+    }
+  });
+
+  // Performance Optimization: Render 3D frame loop ONLY when Hydrocarbon tab is active
+  if (tabName === 'hydrocarbon') {
+    onWindowResize();
+    startAnimationLoop();
+  } else {
+    stopAnimationLoop();
+  }
+
+  // Trigger Optics SVG render when Optics tab is selected
+  if (tabName === 'optics') {
+    renderOptics();
+  }
+}
+
+/* ==========================================================================
+   2. Theme Switcher & Global Search
+   ========================================================================== */
+
+function initTheme() {
+  const toggleBtn = document.getElementById('themeToggle');
+  const savedTheme = localStorage.getItem('gh_theme');
+
+  if (savedTheme === 'light') {
+    document.body.classList.add('light-theme');
+    if (toggleBtn) toggleBtn.innerHTML = '<i class="fa-solid fa-sun"></i>';
+  }
+
+  if (toggleBtn) {
+    toggleBtn.addEventListener('click', () => {
+      document.body.classList.toggle('light-theme');
+      const isLight = document.body.classList.contains('light-theme');
+      localStorage.setItem('gh_theme', isLight ? 'light' : 'dark');
+      toggleBtn.innerHTML = isLight ? '<i class="fa-solid fa-sun"></i>' : '<i class="fa-solid fa-moon"></i>';
+    });
+  }
+}
+
+function initGlobalSearch() {
+  const searchInput = document.getElementById('globalSearchInput');
+  if (!searchInput) return;
+
+  searchInput.addEventListener('input', (e) => {
+    const query = e.target.value.toLowerCase().trim();
+    if (!query) return;
+
+    // Search inside molecules sidebar
+    const molItems = document.querySelectorAll('.mol-item');
+    molItems.forEach(item => {
+      const txt = item.innerText.toLowerCase();
+      item.style.display = txt.includes(query) ? 'flex' : 'none';
+    });
+  });
+}
+
+/* ==========================================================================
+   3. Three.js Hydrocarbon Engine & Anti-Lag Optimizations
+   ========================================================================== */
+
 function initThreeJS() {
   const container = document.getElementById('canvasContainer');
   const canvas = document.getElementById('threeCanvas');
+  if (!container || !canvas) return;
 
   scene = new THREE.Scene();
-
-  camera = new THREE.PerspectiveCamera(
-    45,
-    container.clientWidth / container.clientHeight,
-    0.1,
-    1000
-  );
+  camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 1000);
   camera.position.set(0, 0, 8);
 
   renderer = new THREE.WebGLRenderer({
     canvas: canvas,
     antialias: true,
-    alpha: true
+    alpha: true,
+    powerPreference: "high-performance"
   });
-  renderer.setSize(container.clientWidth, container.clientHeight);
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-  renderer.shadowMap.enabled = true;
-  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
-  // Controls
+  renderer.setSize(container.clientWidth, container.clientHeight);
+  // Anti-Lag Optimization: Cap pixel ratio at 1.25 for crisp graphics without GPU lag
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.25));
+
+  // Controls with Touch Drag Support for Mobile Android Chrome
   controls = new THREE.OrbitControls(camera, renderer.domElement);
   controls.enableDamping = true;
-  controls.dampingFactor = 0.05;
+  controls.dampingFactor = 0.08;
   controls.rotateSpeed = 0.8;
   controls.minDistance = 3;
   controls.maxDistance = 20;
+  controls.touches = { ONE: THREE.TOUCH.ROTATE, TWO: THREE.TOUCH.DOLLY_PAN };
 
-  // Lighting setup for realistic 3D appearance
-  const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
+  // Ambient & Directional Lighting
+  const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
   scene.add(ambientLight);
 
   const dirLight1 = new THREE.DirectionalLight(0xffffff, 0.9);
   dirLight1.position.set(5, 10, 7);
-  dirLight1.castShadow = true;
   scene.add(dirLight1);
 
-  const dirLight2 = new THREE.DirectionalLight(0x00e5ff, 0.4);
+  const dirLight2 = new THREE.DirectionalLight(0x58a6ff, 0.4);
   dirLight2.position.set(-5, -5, -5);
   scene.add(dirLight2);
 
-  const pointLight = new THREE.PointLight(0x9d4edd, 0.5, 10);
-  pointLight.position.set(0, 2, 4);
-  scene.add(pointLight);
-
-  // Groups
   currentMoleculeGroup = new THREE.Group();
   scene.add(currentMoleculeGroup);
 
   electronShareGroup = new THREE.Group();
   scene.add(electronShareGroup);
 
-  // Raycaster for hover interactions
-  raycaster = new THREE.Raycaster();
-  mouse = new THREE.Vector2();
+  if (activeMoleculeData) {
+    loadMolecule(activeMoleculeData);
+  }
 
   window.addEventListener('resize', onWindowResize);
-  canvas.addEventListener('mousemove', onCanvasMouseMove);
 }
 
-/* -------------------------------------------------------------
- * 2. 3D Molecule Mesh Construction
- * ------------------------------------------------------------- */
-function loadMolecule(molData) {
-  activeMoleculeData = molData;
-  updateMoleculeUIInfo(molData);
-
-  // Clear existing 3D objects
-  while (currentMoleculeGroup.children.length > 0) {
-    const obj = currentMoleculeGroup.children[0];
-    if (obj.geometry) obj.geometry.dispose();
-    if (obj.material) obj.material.dispose();
-    currentMoleculeGroup.remove(obj);
-  }
-
-  while (electronShareGroup.children.length > 0) {
-    const obj = electronShareGroup.children[0];
-    if (obj.geometry) obj.geometry.dispose();
-    if (obj.material) obj.material.dispose();
-    electronShareGroup.remove(obj);
-  }
-
-  const atomMeshes = [];
-
-  // Build Atoms (Spheres)
-  molData.atoms.forEach((atom, index) => {
-    const spec = ATOM_TYPES[atom.elem] || ATOM_TYPES.C;
-    let radius = spec.radius;
-    if (renderStyle === 'spaceFilling') radius *= 1.8;
-
-    const geom = new THREE.SphereGeometry(radius, 32, 32);
-    const mat = new THREE.MeshStandardMaterial({
-      color: spec.color,
-      roughness: 0.25,
-      metalness: 0.2,
-      wireframe: (renderStyle === 'wireframe')
-    });
-
-    const mesh = new THREE.Mesh(geom, mat);
-    mesh.position.set(...atom.pos);
-    mesh.castShadow = true;
-    mesh.receiveShadow = true;
-    mesh.userData = { atom, spec, index };
-
-    currentMoleculeGroup.add(mesh);
-    atomMeshes.push(mesh);
-  });
-
-  // Build Bonds (Cylinders)
-  if (renderStyle !== 'spaceFilling') {
-    molData.bonds.forEach(bond => {
-      const posA = new THREE.Vector3(...molData.atoms[bond.from].pos);
-      const posB = new THREE.Vector3(...molData.atoms[bond.to].pos);
-      createBondMesh(posA, posB, bond.type);
-      createElectronDotPairs(posA, posB, bond.type);
-    });
-  }
-
-  // Adjust Camera Focus
-  const box = new THREE.Box3().setFromObject(currentMoleculeGroup);
-  const center = box.getCenter(new THREE.Vector3());
-  currentMoleculeGroup.position.sub(center);
-  electronShareGroup.position.sub(center);
-
-  electronShareGroup.visible = isElectronShareVisible;
-}
-
-function createBondMesh(posA, posB, bondType) {
-  const direction = new THREE.Vector3().subVectors(posB, posA);
-  const length = direction.length();
-  const orientation = new THREE.Matrix4();
-  orientation.lookAt(posA, posB, new THREE.Object3D().up);
-
-  const bondMat = new THREE.MeshStandardMaterial({
-    color: 0xd8dee9,
-    roughness: 0.3,
-    metalness: 0.1,
-    wireframe: (renderStyle === 'wireframe')
-  });
-
-  const offsets = getBondOffsets(bondType, direction);
-
-  offsets.forEach(offset => {
-    const bondRadius = bondType === 1 ? 0.08 : (bondType === 2 ? 0.06 : 0.05);
-    const geom = new THREE.CylinderGeometry(bondRadius, bondRadius, length, 16);
-    geom.translate(0, length / 2, 0);
-    geom.rotateX(Math.PI / 2);
-
-    const mesh = new THREE.Mesh(geom, bondMat);
-    mesh.position.copy(posA).add(offset);
-    mesh.lookAt(posB.clone().add(offset));
-
-    currentMoleculeGroup.add(mesh);
-  });
-}
-
-function getBondOffsets(bondType, direction) {
-  if (bondType === 1) return [new THREE.Vector3(0, 0, 0)];
-
-  // Calculate perpendicular vector for multi-bond separation
-  const perp = new THREE.Vector3();
-  if (Math.abs(direction.x) > Math.abs(direction.y)) {
-    perp.set(-direction.z, 0, direction.x).normalize();
-  } else {
-    perp.set(0, -direction.z, direction.y).normalize();
-  }
-
-  const offsetDist = 0.14;
-
-  if (bondType === 2) {
-    return [
-      perp.clone().multiplyScalar(offsetDist),
-      perp.clone().multiplyScalar(-offsetDist)
-    ];
-  } else if (bondType === 3) {
-    const perp2 = new THREE.Vector3().crossVectors(direction, perp).normalize();
-    return [
-      new THREE.Vector3(0, 0, 0),
-      perp.clone().multiplyScalar(offsetDist * 1.2),
-      perp2.clone().multiplyScalar(offsetDist * 1.2)
-    ];
-  }
-  return [new THREE.Vector3(0, 0, 0)];
-}
-
-function createElectronDotPairs(posA, posB, bondType) {
-  // Shared covalent electrons (2 per bond type)
-  const dotCount = bondType * 2;
-  const midPoint = new THREE.Vector3().addVectors(posA, posB).multiplyScalar(0.5);
-
-  const dotMat = new THREE.MeshBasicMaterial({
-    color: 0x00e5ff,
-    wireframe: false
-  });
-
-  for (let i = 0; i < dotCount; i++) {
-    const dotGeom = new THREE.SphereGeometry(0.09, 16, 16);
-    const dotMesh = new THREE.Mesh(dotGeom, dotMat);
-    
-    // Spread electrons slightly around bond midpoint
-    const spread = (i - (dotCount - 1) / 2) * 0.15;
-    dotMesh.position.copy(midPoint).add(new THREE.Vector3(spread, (i % 2 === 0 ? 0.1 : -0.1), 0));
-    
-    electronShareGroup.add(dotMesh);
+function startAnimationLoop() {
+  if (!animationFrameId) {
+    animate();
   }
 }
 
-/* -------------------------------------------------------------
- * 3. UI Update Logic & Event Handlers
- * ------------------------------------------------------------- */
-function updateMoleculeUIInfo(mol) {
-  document.getElementById('moleculeName').textContent = mol.name;
-  document.getElementById('moleculeFormula').textContent = mol.formula;
-  document.getElementById('moleculeCategoryTag').textContent = mol.category.toUpperCase();
-
-  document.getElementById('breakdownPrefix').textContent = mol.prefix || 'None';
-  document.getElementById('breakdownPrefixDesc').textContent = mol.prefix !== 'None' ? 'Halogen Substituent' : 'No substituents';
-
-  document.getElementById('breakdownRoot').textContent = mol.wordRoot || 'Meth-';
-  document.getElementById('breakdownRootDesc').textContent = `${mol.atoms.filter(a => a.elem === 'C').length} Carbon Atom(s)`;
-
-  document.getElementById('breakdownSuffix1').textContent = mol.suffix1 || '-ane';
-  document.getElementById('breakdownSuffix1Desc').textContent = mol.category === 'alkene' ? 'One C=C Double Bond' : (mol.category === 'alkyne' ? 'One C≡C Triple Bond' : 'All C-C Single Bonds');
-
-  document.getElementById('breakdownSuffix2').textContent = mol.suffix2 || 'None';
-  document.getElementById('breakdownSuffix2Desc').textContent = mol.suffix2 !== 'None' ? 'Functional Group Suffix' : 'Hydrocarbon only';
-
-  // Builder stats sync
-  document.getElementById('genFormulaDisplay').textContent = mol.genFormula || 'CₙH₂ₙ₊₂';
-  document.getElementById('molMassDisplay').textContent = `${mol.mass} g/mol`;
-}
-
-function populateMoleculeLibrary(list) {
-  const container = document.getElementById('moleculeList');
-  container.innerHTML = '';
-
-  list.forEach(mol => {
-    const card = document.createElement('div');
-    card.className = `mol-card ${mol.id === activeMoleculeData.id ? 'active' : ''}`;
-    card.dataset.id = mol.id;
-    card.dataset.category = mol.category;
-
-    card.innerHTML = `
-      <div class="mol-info">
-        <h4>${mol.name}</h4>
-        <p>${mol.description.substring(0, 45)}...</p>
-      </div>
-      <span class="mol-tag">${mol.formula}</span>
-    `;
-
-    card.addEventListener('click', () => {
-      document.querySelectorAll('.mol-card').forEach(c => c.classList.remove('active'));
-      card.classList.add('active');
-      loadMolecule(mol);
-    });
-
-    container.appendChild(card);
-  });
-}
-
-function setupEventListeners() {
-  // Navigation Tabs
-  document.querySelectorAll('.tab-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-
-      const targetTab = btn.dataset.tab;
-      document.querySelectorAll('.panel-tab-content').forEach(content => {
-        content.classList.remove('active');
-      });
-
-      if (targetTab === 'builder') {
-        document.getElementById('tabContentBuilder').classList.add('active');
-        triggerBuilderUpdate();
-      } else if (targetTab === 'theory') {
-        document.getElementById('tabContentTheory').classList.add('active');
-      } else if (targetTab === 'quiz') {
-        document.getElementById('tabContentQuiz').classList.add('active');
-      } else {
-        document.getElementById('tabContentBuilder').classList.add('active');
-      }
-    });
-  });
-
-  // Filter Pills
-  document.querySelectorAll('.pill').forEach(pill => {
-    pill.addEventListener('click', () => {
-      document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
-      pill.classList.add('active');
-
-      const cat = pill.dataset.category;
-      document.querySelectorAll('.mol-card').forEach(card => {
-        if (cat === 'all' || card.dataset.category === cat) {
-          card.style.display = 'flex';
-        } else {
-          card.style.display = 'none';
-        }
-      });
-    });
-  });
-
-  // Search Input
-  document.getElementById('searchInput').addEventListener('input', (e) => {
-    const q = e.target.value.toLowerCase();
-    document.querySelectorAll('.mol-card').forEach(card => {
-      const text = card.textContent.toLowerCase();
-      card.style.display = text.includes(q) ? 'flex' : 'none';
-    });
-  });
-
-  // Toolbar Buttons
-  document.getElementById('btnToggleRotate').addEventListener('click', (e) => {
-    isAutoRotating = !isAutoRotating;
-    e.currentTarget.classList.toggle('active', isAutoRotating);
-  });
-
-  document.getElementById('btnToggleStyle').addEventListener('click', () => {
-    if (renderStyle === 'ballAndStick') renderStyle = 'spaceFilling';
-    else if (renderStyle === 'spaceFilling') renderStyle = 'wireframe';
-    else renderStyle = 'ballAndStick';
-
-    document.getElementById('styleName').textContent =
-      renderStyle === 'ballAndStick' ? 'Ball & Stick' : (renderStyle === 'spaceFilling' ? 'Space Filling' : 'Wireframe');
-
-    loadMolecule(activeMoleculeData);
-  });
-
-  document.getElementById('btnElectronDot').addEventListener('click', (e) => {
-    isElectronShareVisible = !isElectronShareVisible;
-    electronShareGroup.visible = isElectronShareVisible;
-    e.currentTarget.classList.toggle('active', isElectronShareVisible);
-  });
-
-  document.getElementById('btnResetCam').addEventListener('click', () => {
-    camera.position.set(0, 0, 8);
-    controls.reset();
-  });
-
-  // Interactive Builder Controls
-  const carbonRange = document.getElementById('carbonRange');
-  const functionalSelect = document.getElementById('functionalSelect');
-  const bondToggleBtns = document.querySelectorAll('.btn-group-toggle .toggle-btn');
-
-  let currentBondType = 'single';
-
-  carbonRange.addEventListener('input', triggerBuilderUpdate);
-  functionalSelect.addEventListener('change', triggerBuilderUpdate);
-
-  bondToggleBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-      bondToggleBtns.forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      currentBondType = btn.dataset.bond;
-      triggerBuilderUpdate();
-    });
-  });
-
-  function triggerBuilderUpdate() {
-    const cCount = parseInt(carbonRange.value);
-    const funcGroup = functionalSelect.value;
-    const customMol = generateCustomMolecule(cCount, currentBondType, funcGroup);
-    loadMolecule(customMol);
+function stopAnimationLoop() {
+  if (animationFrameId) {
+    cancelAnimationFrame(animationFrameId);
+    animationFrameId = null;
   }
 }
 
-/* -------------------------------------------------------------
- * 4. Raycasting Hover Tooltip Logic
- * ------------------------------------------------------------- */
-function onCanvasMouseMove(event) {
-  const rect = renderer.domElement.getBoundingClientRect();
-  mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
-  mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+function animate() {
+  // Pause frame rendering when document is hidden (background tab)
+  if (document.hidden) {
+    animationFrameId = requestAnimationFrame(animate);
+    return;
+  }
 
-  raycaster.setFromCamera(mouse, camera);
-  const intersects = raycaster.intersectObjects(currentMoleculeGroup.children);
+  animationFrameId = requestAnimationFrame(animate);
 
-  const tooltip = document.getElementById('atomTooltip');
+  if (controls) controls.update();
 
-  if (intersects.length > 0 && intersects[0].object.userData.atom) {
-    const { atom, spec } = intersects[0].object.userData;
-    document.getElementById('ttSymbol').textContent = spec.label;
-    document.getElementById('ttName').textContent = spec.name;
-    document.getElementById('ttValency').textContent = spec.valency;
-    document.getElementById('ttShared').textContent = spec.valency;
-    document.getElementById('ttRole').textContent = atom.elem === 'C' ? 'Carbon Backbone Chain' : 'Terminal Bonded Atom';
+  if (isAutoRotating && currentMoleculeGroup) {
+    currentMoleculeGroup.rotation.y += 0.008;
+    electronShareGroup.rotation.y += 0.008;
+  }
 
-    tooltip.style.left = `${event.clientX - rect.left}px`;
-    tooltip.style.top = `${event.clientY - rect.top}px`;
-    tooltip.style.display = 'block';
-  } else {
-    tooltip.style.display = 'none';
+  if (renderer && scene && camera) {
+    renderer.render(scene, camera);
   }
 }
 
 function onWindowResize() {
   const container = document.getElementById('canvasContainer');
-  camera.aspect = container.clientWidth / container.clientHeight;
-  camera.updateProjectionMatrix();
-  renderer.setSize(container.clientWidth, container.clientHeight);
+  if (!container || !renderer || !camera) return;
+
+  const w = container.clientWidth;
+  const h = container.clientHeight;
+
+  if (w > 0 && h > 0) {
+    camera.aspect = w / h;
+    camera.updateProjectionMatrix();
+    renderer.setSize(w, h);
+  }
 }
 
-/* -------------------------------------------------------------
- * 5. Animation Loop
- * ------------------------------------------------------------- */
-function animate() {
-  requestAnimationFrame(animate);
+/* Molecule Geometry Loader */
+function loadMolecule(molData) {
+  activeMoleculeData = molData;
+  if (!currentMoleculeGroup) return;
 
-  if (isAutoRotating && currentMoleculeGroup) {
-    currentMoleculeGroup.rotation.y += 0.01;
-    electronShareGroup.rotation.y += 0.01;
+  // Clear existing geometries
+  while (currentMoleculeGroup.children.length > 0) {
+    const child = currentMoleculeGroup.children[0];
+    if (child.geometry) child.geometry.dispose();
+    currentMoleculeGroup.remove(child);
   }
 
-  controls.update();
-  renderer.render(scene, camera);
-}
+  const atomRadiusMap = { 'C': 0.42, 'H': 0.24, 'O': 0.38, 'Cl': 0.44 };
+  const atomColorMap = { 'C': 0x30363d, 'H': 0xffffff, 'O': 0xf85149, 'Cl': 0x39c5cf };
 
-/* -------------------------------------------------------------
- * 6. Practice Quiz Renderer
- * ------------------------------------------------------------- */
-function renderQuizQuestion() {
-  const q = quiz.getCurrentQuestion();
-  document.getElementById('qCurrent').textContent = quiz.currentIndex + 1;
-  document.getElementById('qTotal').textContent = QUIZ_QUESTIONS.length;
-  document.getElementById('quizProgressFill').style.width = `${((quiz.currentIndex + 1) / QUIZ_QUESTIONS.length) * 100}%`;
+  const atomMeshes = [];
 
-  document.getElementById('quizQuestion').innerHTML = q.question;
-
-  const optionsContainer = document.getElementById('quizOptions');
-  optionsContainer.innerHTML = '';
-  document.getElementById('quizFeedback').style.display = 'none';
-  document.getElementById('btnNextQuiz').style.display = 'none';
-
-  q.options.forEach((optText, index) => {
-    const btn = document.createElement('button');
-    btn.className = 'quiz-opt-btn';
-    btn.innerHTML = `<i class="fa-regular fa-circle"></i> ${optText}`;
-
-    btn.addEventListener('click', () => {
-      const result = quiz.submitAnswer(index);
-      document.querySelectorAll('.quiz-opt-btn').forEach((b, idx) => {
-        b.disabled = true;
-        if (idx === result.correctIndex) b.classList.add('correct');
-        else if (idx === index && !result.isCorrect) b.classList.add('incorrect');
-      });
-
-      const feedback = document.getElementById('quizFeedback');
-      feedback.style.display = 'block';
-      feedback.className = `quiz-feedback ${result.isCorrect ? 'success' : 'error'}`;
-      feedback.innerHTML = `<strong>${result.isCorrect ? '✨ Correct!' : '❌ Incorrect'}</strong> ${result.explanation}`;
-
-      if (result.isCorrect && typeof confetti === 'function') {
-        confetti({ particleCount: 50, spread: 60, origin: { y: 0.7 } });
-      }
-
-      document.getElementById('btnNextQuiz').style.display = 'inline-flex';
+  molData.atoms.forEach(atom => {
+    const r = atomRadiusMap[atom.elem] || 0.3;
+    const geom = new THREE.SphereGeometry(r, 24, 24);
+    const mat = new THREE.MeshStandardMaterial({
+      color: atomColorMap[atom.elem] || 0x8b949e,
+      roughness: 0.3,
+      metalness: 0.2
     });
 
-    optionsContainer.appendChild(btn);
+    const mesh = new THREE.Mesh(geom, mat);
+    mesh.position.set(...atom.pos);
+    currentMoleculeGroup.add(mesh);
+    atomMeshes.push(mesh);
+  });
+
+  // Create Bond Cylinders
+  molData.bonds.forEach(bond => {
+    const p1 = new THREE.Vector3(...molData.atoms[bond.from].pos);
+    const p2 = new THREE.Vector3(...molData.atoms[bond.to].pos);
+    createBondCylinder(p1, p2, bond.type);
+  });
+
+  // Update Spec Display
+  updateSpecDisplay(molData);
+}
+
+function createBondCylinder(p1, p2, bondType) {
+  const distance = p1.distanceTo(p2);
+  const midpoint = new THREE.Vector3().addVectors(p1, p2).multiplyScalar(0.5);
+
+  const geom = new THREE.CylinderGeometry(0.08, 0.08, distance, 12);
+  const mat = new THREE.MeshStandardMaterial({ color: 0x8b949e, roughness: 0.4 });
+
+  const cylinder = new THREE.Mesh(geom, mat);
+  cylinder.position.copy(midpoint);
+  cylinder.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), new THREE.Vector3().subVectors(p2, p1).normalize());
+  currentMoleculeGroup.add(cylinder);
+}
+
+function updateSpecDisplay(molData) {
+  const elIupac = document.getElementById('specIupac');
+  const elFormula = document.getElementById('specFormula');
+  const elMass = document.getElementById('specMass');
+
+  if (elIupac) elIupac.textContent = molData.name;
+  if (elFormula) elFormula.textContent = molData.formula;
+  if (elMass) elMass.textContent = molData.molecularMass || '16.04 g/mol';
+
+  const molTitle = document.getElementById('moleculeName');
+  const molForm = document.getElementById('moleculeFormula');
+  if (molTitle) molTitle.textContent = molData.name;
+  if (molForm) molForm.textContent = molData.formula;
+}
+
+function populateMoleculeLibrary(molList) {
+  const container = document.getElementById('moleculeList');
+  if (!container) return;
+
+  container.innerHTML = '';
+
+  molList.forEach((mol, idx) => {
+    const item = document.createElement('div');
+    item.className = `mol-item ${idx === 0 ? 'active' : ''}`;
+    item.innerHTML = `
+      <div class="mol-info">
+        <h4>${mol.name}</h4>
+        <span>${mol.formula}</span>
+      </div>
+      <span class="card-tag">${mol.category}</span>
+    `;
+
+    item.addEventListener('click', () => {
+      document.querySelectorAll('.mol-item').forEach(el => el.classList.remove('active'));
+      item.classList.add('active');
+      loadMolecule(mol);
+    });
+
+    container.appendChild(item);
   });
 }
 
-document.getElementById('btnNextQuiz').addEventListener('click', () => {
-  if (quiz.nextQuestion()) {
-    renderQuizQuestion();
-  } else {
-    // Quiz completed
-    document.getElementById('quizCard').innerHTML = `
-      <div style="text-align: center; padding: 20px 0;">
-        <i class="fa-solid fa-trophy" style="font-size: 3rem; color: var(--accent-amber); margin-bottom: 12px;"></i>
-        <h3>Quiz Complete!</h3>
-        <p style="margin: 8px 0 16px 0; color: var(--text-muted);">You scored <strong>${quiz.score} / ${QUIZ_QUESTIONS.length}</strong></p>
-        <button class="primary-btn" onclick="quiz.reset(); renderQuizQuestion();">Try Again <i class="fa-solid fa-rotate-right"></i></button>
-      </div>
-    `;
-    if (typeof confetti === 'function') {
-      confetti({ particleCount: 150, spread: 90, origin: { y: 0.5 } });
-    }
+function setupHydrocarbonEventListeners() {
+  const btnRotate = document.getElementById('toggleRotate');
+  if (btnRotate) {
+    btnRotate.addEventListener('click', () => {
+      isAutoRotating = !isAutoRotating;
+      btnRotate.classList.toggle('active', isAutoRotating);
+    });
   }
-});
+
+  // Procedural Builder Controls
+  const carSlider = document.getElementById('builderCarbons');
+  const bondSelect = document.getElementById('builderBondType');
+  const funcSelect = document.getElementById('builderGroup');
+
+  if (carSlider && typeof generateCustomMolecule === 'function') {
+    const updateBuilder = () => {
+      const c = parseInt(carSlider.value);
+      const b = bondSelect.value;
+      const f = funcSelect.value;
+
+      document.getElementById('builderCCountVal').textContent = c;
+      const customMol = generateCustomMolecule(c, b, f);
+      loadMolecule(customMol);
+    };
+
+    carSlider.addEventListener('input', updateBuilder);
+    if (bondSelect) bondSelect.addEventListener('change', updateBuilder);
+    if (funcSelect) funcSelect.addEventListener('change', updateBuilder);
+  }
+}
+
+/* ==========================================================================
+   4. Optics Ray Simulator Engine (SVG Ray Trace)
+   ========================================================================== */
+
+function initOpticsSimulator() {
+  const typeSelect = document.getElementById('opticsType');
+  const uRange = document.getElementById('udistRange');
+  const fRange = document.getElementById('fdistRange');
+  const hRange = document.getElementById('hdistRange');
+
+  if (!typeSelect || !uRange) return;
+
+  const update = () => renderOptics();
+
+  typeSelect.addEventListener('change', update);
+  uRange.addEventListener('input', update);
+  fRange.addEventListener('input', update);
+  hRange.addEventListener('input', update);
+}
+
+function renderOptics() {
+  const wrap = document.getElementById('svgOpticsWrap');
+  if (!wrap) return;
+
+  const type = document.getElementById('opticsType').value;
+  const uUnits = parseFloat(document.getElementById('udistRange').value);
+  const fUnits = parseFloat(document.getElementById('fdistRange').value);
+  const hoUnits = parseFloat(document.getElementById('hdistRange').value);
+
+  document.getElementById('udistVal').textContent = uUnits;
+  document.getElementById('fdistVal').textContent = fUnits;
+  document.getElementById('hdistVal').textContent = hoUnits;
+
+  const PX = 8, W = 700, H = 340;
+  const poleX = 350, axisY = 170;
+
+  const isLens = type === 'convexLens' || type === 'concaveLens';
+  const f = (type === 'convexLens' || type === 'convexMirror') ? fUnits : -fUnits;
+  const u = -uUnits;
+
+  let denom = isLens ? (1/f + 1/u) : (1/f - 1/u);
+  let v = Math.abs(denom) > 0.005 ? 1/denom : 999;
+  let m = isLens ? (v/u) : (-v/u);
+
+  let svg = `<svg viewBox="0 0 ${W} ${H}">
+    <line x1="10" y1="${axisY}" x2="${W-10}" y2="${axisY}" stroke="var(--gh-border-color)" stroke-width="1.5"/>
+    <circle cx="${poleX}" cy="${axisY}" r="4" fill="var(--gh-accent-blue)"/>
+  `;
+
+  // Draw Optical Element
+  if (isLens) {
+    svg += `<path d="M ${poleX} ${axisY-100} Q ${poleX+20} ${axisY} ${poleX} ${axisY+100} Q ${poleX-20} ${axisY} ${poleX} ${axisY-100} Z" fill="rgba(88,166,255,0.2)" stroke="var(--gh-accent-blue)" stroke-width="1.5"/>`;
+  } else {
+    svg += `<path d="M ${poleX} ${axisY-100} Q ${poleX-25} ${axisY} ${poleX} ${axisY+100}" fill="none" stroke="var(--gh-accent-blue)" stroke-width="3"/>`;
+  }
+
+  // Draw Object Arrow
+  const objX = poleX + u * PX;
+  const objY = axisY - hoUnits * PX;
+  svg += `<line x1="${objX}" y1="${axisY}" x2="${objX}" y2="${objY}" stroke="var(--gh-accent-orange)" stroke-width="2.5"/>`;
+  svg += `<text x="${objX}" y="${objY-6}" font-size="11" fill="var(--gh-accent-orange)" text-anchor="middle">Obj</text>`;
+
+  // Draw Rays
+  svg += `<line x1="${objX}" y1="${objY}" x2="${poleX}" y2="${objY}" stroke="var(--gh-accent-blue)" stroke-width="1.2"/>`;
+  svg += `</svg>`;
+
+  wrap.innerHTML = svg;
+
+  // Readouts
+  document.getElementById('opticsVVal').textContent = (v > 900) ? '∞' : `${v.toFixed(1)} u`;
+  document.getElementById('opticsMVal').textContent = (v > 900) ? '∞' : `${m.toFixed(2)}x`;
+  document.getElementById('opticsNatureVal').textContent = (m < 0) ? 'Real & Inverted' : 'Virtual & Erect';
+  document.getElementById('opticsOrientVal').textContent = Math.abs(m) > 1.05 ? 'Magnified' : 'Diminished';
+}
+
+/* ==========================================================================
+   5. Epithelial Matching Game Engine
+   ========================================================================== */
+
+function initEpithelialMatching() {
+  let selectedTissue = null;
+
+  document.querySelectorAll('.match-btn-item[data-tissue]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.match-btn-item[data-tissue]').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+      selectedTissue = btn.getAttribute('data-tissue');
+    });
+  });
+
+  document.querySelectorAll('.match-btn-item[data-target]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      if (!selectedTissue) return;
+      const target = btn.getAttribute('data-target');
+      if (selectedTissue === target) {
+        btn.classList.add('matched');
+        btn.querySelector('i').className = 'fa-solid fa-circle-check';
+        const sourceBtn = document.querySelector(`.match-btn-item[data-tissue="${selectedTissue}"]`);
+        if (sourceBtn) {
+          sourceBtn.classList.add('matched');
+          sourceBtn.querySelector('i').className = 'fa-solid fa-circle-check';
+        }
+        selectedTissue = null;
+      }
+    });
+  });
+}

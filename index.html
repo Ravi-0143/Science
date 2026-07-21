@@ -2,451 +2,410 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Science Interactive Lab Portal | CBSE Class 9 & 10</title>
-  <meta name="description" content="Main portal for CBSE Class 9 & 10 Science interactive simulations: 3D Hydrocarbon Lab, Optics Ray Diagram Simulator, and Epithelial Tissue & Skin Cell Lab.">
-
-  <!-- Google Fonts & Font Awesome Icons -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+  <title>Ravi-0143 / Science • Interactive CBSE WebApp Suite</title>
+  <meta name="description" content="Compact, fast, GitHub-themed Single Page WebApp for CBSE Class 9 & 10 Science: 3D Hydrocarbon & IUPAC Lab, Optics Ray Diagram Simulator, Epithelial Tissue & Meristem Plant Labs.">
+  
+  <!-- Fonts & Font Awesome Icons -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-  <style>
-    :root {
-      --bg-light: #f8fafc;
-      --bg-card: #ffffff;
-      --bg-card-hover: #f1f5f9;
-      --border-color: #e2e8f0;
-      --border-glow: rgba(2, 132, 199, 0.2);
-      
-      --primary-cyan: #0284c7;
-      --primary-glow: rgba(2, 132, 199, 0.2);
-      --accent-purple: #7c3aed;
-      --accent-pink: #db2777;
-      --accent-amber: #d97706;
-      --accent-emerald: #059669;
+  <!-- External Libraries -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
-      --text-main: #0f172a;
-      --text-secondary: #334155;
-      --text-muted: #64748b;
-      
-      --font-sans: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
-      --font-mono: 'Fira Code', monospace;
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    body {
-      background-color: var(--bg-light);
-      color: var(--text-main);
-      font-family: var(--font-sans);
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      overflow-x: hidden;
-    }
-
-    /* Ambient Soft Glow */
-    .bg-glow {
-      position: fixed;
-      top: -200px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 900px;
-      height: 600px;
-      background: radial-gradient(circle, rgba(14, 165, 233, 0.08) 0%, rgba(124, 58, 237, 0.05) 40%, rgba(248, 250, 252, 0) 70%);
-      pointer-events: none;
-      z-index: 0;
-    }
-
-    /* Header Navigation */
-    .app-header {
-      height: 70px;
-      background: rgba(255, 255, 255, 0.95);
-      backdrop-filter: blur(16px);
-      border-bottom: 1px solid var(--border-color);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 2rem;
-      position: relative;
-      z-index: 10;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
-    }
-
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-    }
-
-    .logo-icon {
-      width: 42px;
-      height: 42px;
-      background: linear-gradient(135deg, var(--primary-cyan), var(--accent-purple));
-      border-radius: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.3rem;
-      color: #fff;
-      box-shadow: 0 4px 12px rgba(2, 132, 199, 0.25);
-    }
-
-    .brand-text h1 {
-      font-size: 1.35rem;
-      font-weight: 700;
-      color: var(--text-main);
-    }
-
-    .brand-text .highlight {
-      color: var(--primary-cyan);
-    }
-
-    .brand-text p {
-      font-size: 0.75rem;
-      color: var(--text-muted);
-    }
-
-    .repo-link {
-      background: #f1f5f9;
-      border: 1px solid var(--border-color);
-      color: var(--text-main);
-      padding: 8px 16px;
-      border-radius: 10px;
-      font-size: 0.85rem;
-      font-weight: 600;
-      text-decoration: none;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      transition: all 0.25s ease;
-    }
-
-    .repo-link:hover {
-      background: #e0f2fe;
-      border-color: var(--primary-cyan);
-      color: var(--primary-cyan);
-      box-shadow: 0 2px 10px rgba(2, 132, 199, 0.15);
-    }
-
-    /* Hero Section */
-    .hero-section {
-      text-align: center;
-      padding: 4rem 1.5rem 2.5rem;
-      position: relative;
-      z-index: 1;
-      max-width: 950px;
-      margin: 0 auto;
-    }
-
-    .hero-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      background: #e0f2fe;
-      border: 1px solid rgba(2, 132, 199, 0.3);
-      color: var(--primary-cyan);
-      padding: 6px 16px;
-      border-radius: 20px;
-      font-size: 0.82rem;
-      font-weight: 700;
-      margin-bottom: 1.25rem;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
-
-    .hero-title {
-      font-size: 2.75rem;
-      font-weight: 800;
-      line-height: 1.2;
-      margin-bottom: 1rem;
-      color: var(--text-main);
-    }
-
-    .hero-subtitle {
-      font-size: 1.1rem;
-      color: var(--text-secondary);
-      line-height: 1.6;
-    }
-
-    /* Lab Cards Showcase Grid */
-    .showcase-container {
-      max-width: 1200px;
-      margin: 0 auto 3.5rem;
-      padding: 0 1.5rem;
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-      gap: 2rem;
-      position: relative;
-      z-index: 1;
-    }
-
-    .lab-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border-color);
-      border-radius: 20px;
-      padding: 2rem;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      position: relative;
-      overflow: hidden;
-      box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.04);
-    }
-
-    .lab-card:hover {
-      background: var(--bg-card);
-      border-color: var(--primary-cyan);
-      transform: translateY(-6px);
-      box-shadow: 0 20px 40px -10px rgba(2, 132, 199, 0.15);
-    }
-
-    .card-icon-wrapper {
-      width: 56px;
-      height: 56px;
-      border-radius: 16px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.8rem;
-      margin-bottom: 1.25rem;
-    }
-
-    .lab-card.chem .card-icon-wrapper {
-      background: #e0f2fe;
-      color: var(--primary-cyan);
-      border: 1px solid rgba(2, 132, 199, 0.3);
-    }
-
-    .lab-card.physics .card-icon-wrapper {
-      background: #fef3c7;
-      color: var(--accent-amber);
-      border: 1px solid rgba(217, 119, 6, 0.3);
-    }
-
-    .lab-card.bio .card-icon-wrapper {
-      background: #fce7f3;
-      color: var(--accent-pink);
-      border: 1px solid rgba(219, 39, 119, 0.3);
-    }
-
-    .card-title {
-      font-size: 1.4rem;
-      font-weight: 700;
-      margin-bottom: 0.75rem;
-      color: var(--text-main);
-    }
-
-    .card-desc {
-      font-size: 0.9rem;
-      color: var(--text-secondary);
-      line-height: 1.55;
-      margin-bottom: 1.5rem;
-    }
-
-    .card-tags {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      margin-bottom: 1.5rem;
-    }
-
-    .tag {
-      font-size: 0.72rem;
-      font-family: var(--font-mono);
-      background: #f1f5f9;
-      border: 1px solid var(--border-color);
-      color: var(--text-secondary);
-      padding: 3px 10px;
-      border-radius: 6px;
-    }
-
-    .launch-btn {
-      background: linear-gradient(135deg, var(--primary-cyan), #0284c7);
-      color: #ffffff;
-      font-weight: 700;
-      font-size: 0.95rem;
-      padding: 12px 20px;
-      border-radius: 12px;
-      text-decoration: none;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      transition: all 0.25s ease;
-      box-shadow: 0 4px 12px rgba(2, 132, 199, 0.25);
-    }
-
-    .lab-card.physics .launch-btn {
-      background: linear-gradient(135deg, var(--accent-amber), #ea580c);
-      box-shadow: 0 4px 12px rgba(217, 119, 6, 0.25);
-    }
-
-    .lab-card.bio .launch-btn {
-      background: linear-gradient(135deg, var(--accent-pink), var(--accent-purple));
-      box-shadow: 0 4px 12px rgba(219, 39, 119, 0.25);
-    }
-
-    .launch-btn:hover {
-      transform: scale(1.02);
-      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
-    }
-
-    /* Footer */
-    .app-footer {
-      margin-top: auto;
-      padding: 1.5rem;
-      background: #ffffff;
-      border-top: 1px solid var(--border-color);
-      text-align: center;
-      font-size: 0.85rem;
-      color: var(--text-muted);
-    }
-
-    .app-footer a {
-      color: var(--primary-cyan);
-      text-decoration: none;
-    }
-
-
-  </style>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <div class="bg-glow"></div>
-
-  <!-- Main Navigation Header -->
+  <!-- Header: GitHub Repository Brand & Controls -->
   <header class="app-header">
-    <div class="brand">
-      <div class="logo-icon">
-        <i class="fa-solid fa-flask-vial"></i>
-      </div>
-      <div class="brand-text">
-        <h1>Science<span class="highlight">Interactive</span> Hub</h1>
-        <p>CBSE Class 9 & 10 • Physics, Chemistry & Biology Labs</p>
-      </div>
+    <div class="brand-wrapper">
+      <a href="#overview" class="repo-brand" title="CBSE Science WebApp Suite">
+        <i class="fa-brands fa-github"></i>
+        <span class="repo-owner">Ravi-0143</span>
+        <span class="repo-slash">/</span>
+        <span class="repo-name">Science</span>
+      </a>
+      <span class="gh-badge"><i class="fa-solid fa-code-branch"></i> main</span>
+      <span class="gh-badge">v2.4.0</span>
+      <span class="gh-badge live-status"><i class="fa-solid fa-circle"></i> WebApp Live</span>
     </div>
 
-    <a href="https://github.com/Ravi-0143/Science.git" target="_blank" class="repo-link">
-      <i class="fa-brands fa-github"></i> GitHub Repository
-    </a>
+    <div class="header-actions">
+      <div class="gh-search-box">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input type="text" id="globalSearchInput" class="gh-search-input" placeholder="Search lab, topic...">
+      </div>
+
+      <button id="themeToggle" class="btn-icon" title="Toggle Dark / Light Theme">
+        <i class="fa-solid fa-moon"></i> <span style="display:none;">Theme</span>
+      </button>
+
+      <a href="https://github.com/Ravi-0143/Science.git" target="_blank" class="btn-icon" title="View Source on GitHub">
+        <i class="fa-solid fa-code"></i> Code
+      </a>
+
+      <button id="mobileMenuBtn" class="btn-icon mobile-menu-btn" title="Toggle Nav Menu">
+        <i class="fa-solid fa-bars"></i>
+      </button>
+    </div>
   </header>
 
-  <!-- Hero Section -->
-  <section class="hero-section">
-    <div class="hero-badge">
-      <i class="fa-solid fa-microscope"></i> Interactive Science Simulators
-    </div>
-    <h1 class="hero-title">Master Physics, Chemistry & Biology Concepts</h1>
-    <p class="hero-subtitle">
-      Explore interactive 3D molecular structures, live optical ray tracing, and epithelial tissue / skin cell functional simulators aligned directly with CBSE Class 9 & 10 syllabus.
-    </p>
-  </section>
+  <!-- GitHub Repository Navigation Tabs (SPA View Selectors) -->
+  <nav class="gh-nav-bar">
+    <ul class="gh-nav-tabs" id="mainNavTabs">
+      <li>
+        <a class="gh-tab active" data-tab="overview" href="#overview">
+          <i class="fa-solid fa-book-bookmark"></i> Overview
+        </a>
+      </li>
+      <li>
+        <a class="gh-tab" data-tab="hydrocarbon" href="#hydrocarbon">
+          <i class="fa-solid fa-atom"></i> 3D Hydrocarbons <span class="gh-tab-count">3D</span>
+        </a>
+      </li>
+      <li>
+        <a class="gh-tab" data-tab="optics" href="#optics">
+          <i class="fa-solid fa-glasses"></i> Optics Simulator <span class="gh-tab-count">Physics</span>
+        </a>
+      </li>
+      <li>
+        <a class="gh-tab" data-tab="epithelial" href="#epithelial">
+          <i class="fa-solid fa-dna"></i> Epithelial Tissue <span class="gh-tab-count">Bio 9</span>
+        </a>
+      </li>
+      <li>
+        <a class="gh-tab" data-tab="meristem" href="#meristem">
+          <i class="fa-solid fa-seedling"></i> Meristem Mastery <span class="gh-tab-count">Bio 9</span>
+        </a>
+      </li>
+    </ul>
+  </nav>
 
-  <!-- Lab Modules Showcase Grid -->
-  <section class="showcase-container">
+  <!-- Main SPA Viewport Container -->
+  <main class="app-main-content">
     
-    <!-- Module 1: Hydrocarbon 3D Lab -->
-    <div class="lab-card chem">
-      <div>
-        <div class="card-icon-wrapper">
-          <i class="fa-solid fa-atom fa-spin-pulse" style="--fa-animation-duration: 15s;"></i>
-        </div>
-        <h2 class="card-title">3D Hydrocarbon & IUPAC Lab</h2>
-        <p class="card-desc">
-          Interactive 3D molecular viewer for Alkanes, Alkenes, Alkynes, and Functional Groups (-OH, -CHO, >C=O, -COOH, -Cl, -Br). Includes 3D electron share view (Lewis dots), procedural IUPAC builder, and revision quiz.
-        </p>
-        <div class="card-tags">
-          <span class="tag">Carbon & Its Compounds</span>
-          <span class="tag">Three.js 3D</span>
-          <span class="tag">IUPAC Rules</span>
-          <span class="tag">Electron Sharing</span>
+    <!-- View 1: Overview & README Showcase -->
+    <section class="spa-view active" id="view-overview">
+      <div class="hub-container">
+        <div class="readme-box">
+          <div class="readme-header">
+            <span><i class="fa-solid fa-file-lines"></i> README.md</span>
+            <span class="gh-badge">CBSE Class 9 & 10 Science</span>
+          </div>
+          <div class="readme-body">
+            <h1 class="readme-title">CBSE Science Interactive WebApp Suite</h1>
+            <p class="readme-sub">
+              A ultra-fast, compact, zero-lag WebApp suite designed for interactive physics, chemistry, and biology learning aligned with CBSE Class 9 & 10 syllabi.
+            </p>
+
+            <div class="lab-grid">
+              <!-- Lab Card 1 -->
+              <div class="gh-lab-card">
+                <div class="card-top">
+                  <div class="card-icon"><i class="fa-solid fa-atom"></i></div>
+                  <div class="card-meta">
+                    <h3>3D Hydrocarbon & IUPAC Lab</h3>
+                    <p>3D molecular viewer, Lewis electron sharing dots, procedural IUPAC builder, and revision quiz.</p>
+                  </div>
+                </div>
+                <div class="card-tags">
+                  <span class="card-tag">Class 10 Chemistry</span>
+                  <span class="card-tag">Three.js 3D</span>
+                </div>
+                <a href="#hydrocarbon" class="btn-launch">Launch 3D Lab <i class="fa-solid fa-arrow-right"></i></a>
+              </div>
+
+              <!-- Lab Card 2 -->
+              <div class="gh-lab-card">
+                <div class="card-top">
+                  <div class="card-icon"><i class="fa-solid fa-glasses"></i></div>
+                  <div class="card-meta">
+                    <h3>Optics Ray Diagram Simulator</h3>
+                    <p>Live SVG ray tracing for lenses & mirrors with real-time focal length, image distance, and magnification.</p>
+                  </div>
+                </div>
+                <div class="card-tags">
+                  <span class="card-tag">Class 10 Physics</span>
+                  <span class="card-tag">Ray Tracing</span>
+                </div>
+                <a href="#optics" class="btn-launch">Launch Optics Simulator <i class="fa-solid fa-arrow-right"></i></a>
+              </div>
+
+              <!-- Lab Card 3 -->
+              <div class="gh-lab-card">
+                <div class="card-top">
+                  <div class="card-icon"><i class="fa-solid fa-dna"></i></div>
+                  <div class="card-meta">
+                    <h3>Epithelial Tissue & Skin Cell Lab</h3>
+                    <p>Animal tissues visualizer (Squamous, Stratified Skin, Cuboidal, Ciliated Columnar) & matching game.</p>
+                  </div>
+                </div>
+                <div class="card-tags">
+                  <span class="card-tag">Class 9 Biology</span>
+                  <span class="card-tag">Animal Tissues</span>
+                </div>
+                <a href="#epithelial" class="btn-launch">Launch Epithelial Lab <i class="fa-solid fa-arrow-right"></i></a>
+              </div>
+
+              <!-- Lab Card 4 -->
+              <div class="gh-lab-card">
+                <div class="card-top">
+                  <div class="card-icon"><i class="fa-solid fa-seedling"></i></div>
+                  <div class="card-meta">
+                    <h3>Meristem Mastery & Plant Tissues</h3>
+                    <p>Plant tissue explorer for Apical, Intercalary, and Lateral meristems with growth simulator.</p>
+                  </div>
+                </div>
+                <div class="card-tags">
+                  <span class="card-tag">Class 9 Biology</span>
+                  <span class="card-tag">Plant Growth</span>
+                </div>
+                <a href="#meristem" class="btn-launch">Launch Meristem Lab <i class="fa-solid fa-arrow-right"></i></a>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-      <a href="hydrocarbon_3d_lab.html" class="launch-btn">
-        Launch 3D Molecular Lab <i class="fa-solid fa-arrow-right"></i>
-      </a>
-    </div>
+    </section>
 
-    <!-- Module 2: Optics Ray Diagram Simulator -->
-    <div class="lab-card physics">
-      <div>
-        <div class="card-icon-wrapper">
-          <i class="fa-solid fa-glasses"></i>
+    <!-- View 2: 3D Hydrocarbon Lab -->
+    <section class="spa-view" id="view-hydrocarbon">
+      <div class="workspace-layout">
+        <!-- Left Sidebar: Molecule Library -->
+        <aside class="workspace-sidebar" id="molSidebar">
+          <div class="sidebar-head">
+            <h2><i class="fa-solid fa-flask"></i> Molecules</h2>
+            <div class="filter-pills">
+              <button class="pill active" data-category="all">All</button>
+              <button class="pill" data-category="alkane">Alkanes</button>
+              <button class="pill" data-category="alkene">Alkenes</button>
+              <button class="pill" data-category="alkyne">Alkynes</button>
+              <button class="pill" data-category="functional">Functional</button>
+            </div>
+          </div>
+          <div class="molecule-list" id="moleculeList"></div>
+        </aside>
+
+        <!-- Center 3D Viewport Stage -->
+        <section class="viewport-stage">
+          <div class="viewport-toolbar">
+            <div class="molecule-title-group">
+              <span class="gh-badge" id="moleculeCategoryTag">Alkane</span>
+              <h2 id="moleculeName">Methane</h2>
+              <span class="gh-badge" id="moleculeFormula" style="font-family: var(--gh-font-mono);">CH₄</span>
+            </div>
+            <div style="display: flex; gap: 6px;">
+              <button class="btn-icon" id="btnBallStick"><i class="fa-solid fa-cubes"></i> Ball & Stick</button>
+              <button class="btn-icon" id="btnSpaceFilling"><i class="fa-solid fa-circle"></i> Space Fill</button>
+            </div>
+          </div>
+
+          <div class="canvas-container" id="canvasContainer">
+            <canvas id="threeCanvas"></canvas>
+            <div class="viewport-floating-controls">
+              <button class="btn-toggle-small" id="toggleRotate"><i class="fa-solid fa-rotate"></i> Auto-Rotate</button>
+              <button class="btn-toggle-small" id="toggleDots"><i class="fa-solid fa-braille"></i> Lewis Dots</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- Right Spec & Builder Panel -->
+        <aside class="workspace-panel">
+          <div class="panel-section">
+            <div class="panel-title"><i class="fa-solid fa-circle-info"></i> Specifications</div>
+            <div class="spec-grid">
+              <div class="spec-item"><div class="spec-label">IUPAC</div><div class="spec-val" id="specIupac">Methane</div></div>
+              <div class="spec-item"><div class="spec-label">Formula</div><div class="spec-val" id="specFormula">CH₄</div></div>
+              <div class="spec-item"><div class="spec-label">Mol Mass</div><div class="spec-val" id="specMass">16.04 g/mol</div></div>
+              <div class="spec-item"><div class="spec-label">Bond Angle</div><div class="spec-val" id="specAngle">109.5°</div></div>
+            </div>
+          </div>
+
+          <div class="panel-section">
+            <div class="panel-title"><i class="fa-solid fa-sliders"></i> Procedural Builder</div>
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+              <label style="font-size: 11px;">Carbons: <span id="builderCCountVal" style="color: var(--gh-accent-blue);">1</span></label>
+              <input type="range" id="builderCarbons" min="1" max="6" value="1" class="gh-input-range">
+              
+              <label style="font-size: 11px;">Bond Type</label>
+              <select id="builderBondType" class="gh-select">
+                <option value="single">Single Bond (-ane)</option>
+                <option value="double">Double Bond (-ene)</option>
+                <option value="triple">Triple Bond (-yne)</option>
+              </select>
+
+              <label style="font-size: 11px;">Functional Group</label>
+              <select id="builderGroup" class="gh-select">
+                <option value="none">None (Hydrocarbon)</option>
+                <option value="alcohol">Alcohol (-OH)</option>
+                <option value="aldehyde">Aldehyde (-CHO)</option>
+                <option value="carboxylic">Carboxylic Acid (-COOH)</option>
+                <option value="halo">Haloalkane (-Cl)</option>
+              </select>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <!-- View 3: Optics Ray Simulator -->
+    <section class="spa-view" id="view-optics">
+      <div class="optics-container">
+        <div class="controls-grid">
+          <div class="control-group">
+            <label>Element Type</label>
+            <select id="opticsType" class="gh-select">
+              <option value="convexLens">Convex Lens (Converging)</option>
+              <option value="concaveLens">Concave Lens (Diverging)</option>
+              <option value="concaveMirror">Concave Mirror (Converging)</option>
+              <option value="convexMirror">Convex Mirror (Diverging)</option>
+            </select>
+          </div>
+          <div class="control-group">
+            <label>Object Distance (u): <span id="udistVal">24</span> units</label>
+            <input type="range" id="udistRange" min="4" max="60" value="24" class="gh-input-range">
+          </div>
+          <div class="control-group">
+            <label>Focal Length (|f|): <span id="fdistVal">12</span> units</label>
+            <input type="range" id="fdistRange" min="6" max="24" value="12" class="gh-input-range">
+          </div>
+          <div class="control-group">
+            <label>Object Height (hₒ): <span id="hdistVal">6</span> units</label>
+            <input type="range" id="hdistRange" min="3" max="12" value="6" class="gh-input-range">
+          </div>
         </div>
-        <h2 class="card-title">Optics Ray Diagram Simulator</h2>
-        <p class="card-desc">
-          Live ray tracing simulator for Convex/Concave Lenses & Mirrors. Dynamically adjust object distance ($u$), focal length ($f$), and height ($h_o$) to compute image distance ($v$), magnification ($m$), and nature (real/virtual).
-        </p>
-        <div class="card-tags">
-          <span class="tag">Light: Reflection & Refraction</span>
-          <span class="tag">Ray Tracing</span>
-          <span class="tag">Lens & Mirror Formula</span>
-          <span class="tag">Magnification</span>
+
+        <div id="svgOpticsWrap" class="svg-canvas-box"></div>
+
+        <div class="results-row">
+          <div class="res-card"><div class="lbl">Image Dist (v)</div><div class="val" id="opticsVVal">-</div></div>
+          <div class="res-card"><div class="lbl">Magnification (m)</div><div class="val" id="opticsMVal">-</div></div>
+          <div class="res-card"><div class="lbl">Nature</div><div class="val" id="opticsNatureVal">-</div></div>
+          <div class="res-card"><div class="lbl">Orientation</div><div class="val" id="opticsOrientVal">-</div></div>
         </div>
       </div>
-      <a href="mirror_lens_ray_diagram_simulator.html" class="launch-btn">
-        Launch Ray Diagram Simulator <i class="fa-solid fa-arrow-right"></i>
-      </a>
-    </div>
+    </section>
 
-    <!-- Module 3: Epithelial Tissue & Skin Cell Lab -->
-    <div class="lab-card bio">
-      <div>
-        <div class="card-icon-wrapper">
-          <i class="fa-solid fa-dna"></i>
+    <!-- View 4: Epithelial Tissue Lab -->
+    <section class="spa-view" id="view-epithelial">
+      <div class="tissue-container">
+        <div class="tissue-grid">
+          <div class="tissue-card">
+            <div class="tissue-title"><i class="fa-solid fa-layer-group"></i> 1. Simple Squamous</div>
+            <p style="font-size: 11px; color: var(--gh-text-secondary);">Ultra-flat single layer for rapid diffusion in blood vessels & oesophagus.</p>
+            <div class="graphic-box">
+              <svg width="200" height="80" viewBox="0 0 200 80">
+                <line x1="10" y1="65" x2="190" y2="65" stroke="var(--gh-text-primary)" stroke-width="2"/>
+                <polygon points="15,48 55,46 60,65 15,65" fill="#bae6fd" stroke="#0284c7" stroke-width="1.5"/>
+                <polygon points="60,46 105,48 110,65 60,65" fill="#bae6fd" stroke="#0284c7" stroke-width="1.5"/>
+                <polygon points="110,48 155,46 160,65 110,65" fill="#bae6fd" stroke="#0284c7" stroke-width="1.5"/>
+                <circle cx="37" cy="56" r="4" fill="#0369a1"/>
+                <circle cx="85" cy="56" r="4" fill="#0369a1"/>
+                <circle cx="135" cy="56" r="4" fill="#0369a1"/>
+              </svg>
+            </div>
+          </div>
+
+          <div class="tissue-card">
+            <div class="tissue-title"><i class="fa-solid fa-shield-halved"></i> 2. Stratified Squamous (Skin)</div>
+            <p style="font-size: 11px; color: var(--gh-text-secondary);">Multi-layered skin protection against wear, tear & scratches.</p>
+            <div class="graphic-box">
+              <svg width="200" height="80" viewBox="0 0 200 80">
+                <rect x="20" y="20" width="160" height="45" fill="#fbcfe8" stroke="#db2777" stroke-width="1.5" rx="3"/>
+                <line x1="20" y1="35" x2="180" y2="35" stroke="#db2777" stroke-dasharray="3 3"/>
+                <line x1="20" y1="50" x2="180" y2="50" stroke="#db2777" stroke-dasharray="3 3"/>
+              </svg>
+            </div>
+          </div>
+
+          <div class="tissue-card">
+            <div class="tissue-title"><i class="fa-solid fa-cube"></i> 3. Cuboidal Epithelium</div>
+            <p style="font-size: 11px; color: var(--gh-text-secondary);">Cube-like 3D boxes providing mechanical support in kidney tubules.</p>
+            <div class="graphic-box">
+              <svg width="200" height="80" viewBox="0 0 200 80">
+                <rect x="25" y="25" width="35" height="35" fill="#bbf7d0" stroke="#059669" stroke-width="1.5" rx="2"/>
+                <rect x="65" y="25" width="35" height="35" fill="#bbf7d0" stroke="#059669" stroke-width="1.5" rx="2"/>
+                <rect x="105" y="25" width="35" height="35" fill="#bbf7d0" stroke="#059669" stroke-width="1.5" rx="2"/>
+                <circle cx="42" cy="42" r="5" fill="#047857"/>
+                <circle cx="82" cy="42" r="5" fill="#047857"/>
+                <circle cx="122" cy="42" r="5" fill="#047857"/>
+              </svg>
+            </div>
+          </div>
+
+          <div class="tissue-card">
+            <div class="tissue-title"><i class="fa-solid fa-broom"></i> 4. Ciliated Columnar</div>
+            <p style="font-size: 11px; color: var(--gh-text-secondary);">Tall pillars + microscopic cilia hairs sweeping mucus in respiratory tract.</p>
+            <div class="graphic-box">
+              <svg width="200" height="80" viewBox="0 0 200 80">
+                <rect x="30" y="25" width="30" height="45" fill="#fde68a" stroke="#d97706" stroke-width="1.5"/>
+                <rect x="65" y="25" width="30" height="45" fill="#fde68a" stroke="#d97706" stroke-width="1.5"/>
+                <rect x="100" y="25" width="30" height="45" fill="#fde68a" stroke="#d97706" stroke-width="1.5"/>
+                <!-- Cilia -->
+                <line x1="35" y1="25" x2="35" y2="15" stroke="#b45309" stroke-width="1.5"/>
+                <line x1="45" y1="25" x2="45" y2="15" stroke="#b45309" stroke-width="1.5"/>
+                <line x1="70" y1="25" x2="70" y2="15" stroke="#b45309" stroke-width="1.5"/>
+                <line x1="80" y1="25" x2="80" y2="15" stroke="#b45309" stroke-width="1.5"/>
+              </svg>
+            </div>
+          </div>
         </div>
-        <h2 class="card-title">Epithelial Tissue & Skin Cell Lab</h2>
-        <p class="card-desc">
-          Interactive visualizer for animal tissues: Simple Squamous (Oesophagus), Stratified Squamous (Skin multi-layered protection), Cuboidal (Kidney/Salivary factories), and Ciliated Columnar (Respiratory broom hairs).
-        </p>
-        <div class="card-tags">
-          <span class="tag">CBSE Class 9 Biology</span>
-          <span class="tag">Skin Cells (Stratified)</span>
-          <span class="tag">Epithelial Tissues</span>
-          <span class="tag">Interactive Matching</span>
+
+        <!-- Matching Game Component -->
+        <div class="matching-board">
+          <div class="match-list">
+            <h4 style="font-size: 12px; font-weight: 600; color: var(--gh-text-secondary);">1. Select Tissue</h4>
+            <div class="match-btn-item" data-tissue="squamous"><span>Simple Squamous</span> <i class="fa-regular fa-circle"></i></div>
+            <div class="match-btn-item" data-tissue="stratified"><span>Stratified Squamous</span> <i class="fa-regular fa-circle"></i></div>
+            <div class="match-btn-item" data-tissue="cuboidal"><span>Cuboidal Epithelium</span> <i class="fa-regular fa-circle"></i></div>
+            <div class="match-btn-item" data-tissue="columnar"><span>Ciliated Columnar</span> <i class="fa-regular fa-circle"></i></div>
+          </div>
+          <div class="match-list">
+            <h4 style="font-size: 12px; font-weight: 600; color: var(--gh-text-secondary);">2. Select Location</h4>
+            <div class="match-btn-item" data-target="columnar"><span>Respiratory Tract</span> <i class="fa-regular fa-circle"></i></div>
+            <div class="match-btn-item" data-target="squamous"><span>Oesophagus Lining</span> <i class="fa-regular fa-circle"></i></div>
+            <div class="match-btn-item" data-target="stratified"><span>Human Skin</span> <i class="fa-regular fa-circle"></i></div>
+            <div class="match-btn-item" data-target="cuboidal"><span>Kidney Tubules</span> <i class="fa-regular fa-circle"></i></div>
+          </div>
         </div>
       </div>
-      <a href="epithelial_tissue_lab.html" class="launch-btn">
-        Launch Epithelial Tissue Lab <i class="fa-solid fa-arrow-right"></i>
-      </a>
-    </div>
+    </section>
 
-    <!-- Module 4: Plant Tissues & Meristem Mastery Lab -->
-    <div class="lab-card bio">
-      <div>
-        <div class="card-icon-wrapper" style="background: #e6f4ea; color: #059669; border: 1px solid rgba(5, 150, 105, 0.3);">
-          <i class="fa-solid fa-seedling"></i>
-        </div>
-        <h2 class="card-title">Meristem Mastery & Plant Tissues</h2>
-        <p class="card-desc">
-          Interactive plant tissue explorer for Apical (length), Intercalary (node regrowth), and Lateral Meristems (girth). Features live growth simulator, cell differentiation visualizer, placement mission, and retrieval quiz.
-        </p>
-        <div class="card-tags">
-          <span class="tag">CBSE Class 9 Biology</span>
-          <span class="tag">Apical & Lateral Meristems</span>
-          <span class="tag">Primary vs Secondary Growth</span>
-          <span class="tag">Interactive Plant Anatomy</span>
+    <!-- View 5: Meristem Mastery Lab -->
+    <section class="spa-view" id="view-meristem">
+      <div class="tissue-container">
+        <div class="tissue-grid">
+          <div class="tissue-card">
+            <div class="tissue-title"><i class="fa-solid fa-up-long"></i> Apical Meristem</div>
+            <p style="font-size: 11px; color: var(--gh-text-secondary);">Located at shoot and root tips. Drives primary growth & elongation.</p>
+          </div>
+          <div class="tissue-card">
+            <div class="tissue-title"><i class="fa-solid fa-arrows-rotate"></i> Intercalary Meristem</div>
+            <p style="font-size: 11px; color: var(--gh-text-secondary);">Located at internodes & leaf bases. Enables rapid regrowth after grazing.</p>
+          </div>
+          <div class="tissue-card">
+            <div class="tissue-title"><i class="fa-solid fa-arrows-left-right"></i> Lateral Meristem (Cambium)</div>
+            <p style="font-size: 11px; color: var(--gh-text-secondary);">Located along sides of stem/root. Drives secondary growth & trunk girth.</p>
+          </div>
         </div>
       </div>
-      <a href="meristem_mastery_lab.html" class="launch-btn" style="background: linear-gradient(135deg, #059669, #047857); box-shadow: 0 4px 12px rgba(5, 150, 105, 0.25);">
-        Launch Meristem Mastery Lab <i class="fa-solid fa-arrow-right"></i>
-      </a>
-    </div>
+    </section>
 
-  </section>
+  </main>
 
   <!-- Footer -->
   <footer class="app-footer">
-    <p>
-      CBSE Class 9 & 10 Science Interactive Portal • Built for <a href="https://github.com/Ravi-0143/Science.git" target="_blank">GitHub: Ravi-0143/Science</a>
-    </p>
+    <p>CBSE Class 9 & 10 Science Interactive WebApp • Repository: <a href="https://github.com/Ravi-0143/Science.git" target="_blank">Ravi-0143/Science</a></p>
   </footer>
+
+  <!-- Scripts -->
+  <script src="molecules.js"></script>
+  <script src="builder.js"></script>
+  <script src="quiz.js"></script>
+  <script src="app.js"></script>
 </body>
 </html>
