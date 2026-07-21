@@ -3,13 +3,1334 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Meristem Mastery Lab | Ravi-0143 / Science</title>
-  <script>
-    // Redirect to unified SPA WebApp tab
-    window.location.replace("index.html#meristem");
-  </script>
+  <title>Meristem Mastery & Plant Tissues Lab | CBSE Class 9 Biology</title>
+  <meta name="description" content="Interactive Class 9 Biology Explorer for Plant Tissues: Apical, Intercalary, and Lateral Meristems, Primary vs Secondary Growth, Parenchyma, Collenchyma, Sclerenchyma, Xylem & Phloem.">
+
+  <!-- Google Fonts & Font Awesome Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Canvas Confetti -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+  <style>
+    :root {
+      --bg-light: #f8fafc;
+      --bg-card: #ffffff;
+      --bg-card-hover: #f1f5f9;
+      --surface-1: #f8fafc;
+      --surface-2: #f1f5f9;
+      --border-color: #e2e8f0;
+      --border-strong: #cbd5e1;
+      
+      --primary-cyan: #0284c7;
+      --primary-glow: rgba(2, 132, 199, 0.15);
+      --accent-purple: #7c3aed;
+      --accent-emerald: #059669;
+      --accent-amber: #d97706;
+      --accent-pink: #db2777;
+
+      --text-main: #0f172a;
+      --text-secondary: #334155;
+      --text-muted: #64748b;
+      --text-accent: #059669;
+
+      --font-sans: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-mono: 'Fira Code', monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-light);
+      color: var(--text-main);
+      font-family: var(--font-sans);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+    }
+
+    /* Ambient Soft Glow */
+    .bg-glow {
+      position: fixed;
+      top: -200px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 900px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(5, 150, 105, 0.08) 0%, rgba(2, 132, 199, 0.05) 40%, rgba(248, 250, 252, 0) 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Header Navigation */
+    .app-header {
+      height: 70px;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 2rem;
+      position: relative;
+      z-index: 10;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .logo-icon {
+      width: 42px;
+      height: 42px;
+      background: linear-gradient(135deg, var(--accent-emerald), var(--primary-cyan));
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      color: #fff;
+      box-shadow: 0 4px 12px rgba(5, 150, 105, 0.25);
+    }
+
+    .brand-text h1 {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .brand-text .highlight {
+      color: var(--accent-emerald);
+    }
+
+    .brand-text p {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    .back-link {
+      background: #f1f5f9;
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      padding: 8px 16px;
+      border-radius: 10px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.25s ease;
+    }
+
+    .back-link:hover {
+      background: #e6f4ea;
+      border-color: var(--accent-emerald);
+      color: var(--accent-emerald);
+      box-shadow: 0 2px 10px rgba(5, 150, 105, 0.15);
+    }
+
+    /* Main Container */
+    .main-layout {
+      max-width: 1200px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 2rem 1.5rem 4rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Hero Banner */
+    .hero-banner {
+      text-align: center;
+      margin-bottom: 2.5rem;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: #e6f4ea;
+      border: 1px solid rgba(5, 150, 105, 0.3);
+      color: var(--accent-emerald);
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .hero-title {
+      font-size: 2.5rem;
+      font-weight: 800;
+      color: var(--text-main);
+      line-height: 1.2;
+      margin-bottom: 0.75rem;
+    }
+
+    .hero-subtitle {
+      font-size: 1.05rem;
+      color: var(--text-secondary);
+      max-width: 800px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+
+    /* Tabbed Navigation Bar */
+    .tabs-nav {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .tab-btn {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      padding: 12px 22px;
+      border-radius: 14px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transition: all 0.25s ease;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+    }
+
+    .tab-btn:hover {
+      background: var(--bg-card-hover);
+      border-color: var(--accent-emerald);
+      color: var(--accent-emerald);
+      transform: translateY(-2px);
+    }
+
+    .tab-btn.active {
+      background: linear-gradient(135deg, var(--accent-emerald), #047857);
+      border-color: transparent;
+      color: #ffffff;
+      box-shadow: 0 6px 18px rgba(5, 150, 105, 0.25);
+    }
+
+    /* Tab Content Panels */
+    .tab-panel {
+      display: none;
+      animation: fadeIn 0.35s ease forwards;
+    }
+
+    .tab-panel.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Card System */
+    .lab-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      padding: 2rem;
+      box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.04);
+      margin-bottom: 2rem;
+    }
+
+    .card-title {
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .card-title i {
+      color: var(--accent-emerald);
+    }
+
+    /* Interactive Plant SVG Map Section */
+    .plant-map-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 2rem;
+      align-items: center;
+    }
+
+    .plant-svg-container {
+      background: #f8fafc;
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 1.5rem;
+      text-align: center;
+      position: relative;
+    }
+
+    .plant-svg {
+      width: 100%;
+      max-height: 380px;
+      display: block;
+      margin: 0 auto;
+    }
+
+    .meristem-dot {
+      fill: var(--accent-emerald);
+      stroke: #ffffff;
+      stroke-width: 3;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .meristem-dot:hover, .meristem-dot.active {
+      fill: var(--accent-amber);
+      r: 10;
+      filter: drop-shadow(0 0 8px rgba(217, 119, 6, 0.6));
+    }
+
+    .pulse {
+      animation: meripulse 1.8s ease-in-out infinite;
+      transform-origin: center;
+    }
+
+    @keyframes meripulse {
+      50% { r: 11; opacity: 0.8; }
+    }
+
+    .fact-card {
+      background: #f0fdf4;
+      border: 1px solid rgba(5, 150, 105, 0.3);
+      border-radius: 16px;
+      padding: 1.5rem;
+      box-shadow: 0 4px 15px rgba(5, 150, 105, 0.08);
+    }
+
+    .fact-badge {
+      display: inline-block;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--accent-emerald);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.5rem;
+    }
+
+    .fact-headline {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 0.75rem;
+    }
+
+    .fact-desc {
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    .tissue-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.25rem;
+      margin-top: 2rem;
+    }
+
+    .tissue-card {
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      padding: 1.25rem;
+      transition: all 0.25s ease;
+    }
+
+    .tissue-card:hover {
+      border-color: var(--accent-emerald);
+      transform: translateY(-3px);
+      box-shadow: 0 6px 20px rgba(5, 150, 105, 0.1);
+    }
+
+    .tissue-card-header {
+      font-weight: 700;
+      font-size: 1.05rem;
+      margin-bottom: 0.5rem;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .tissue-card-body {
+      font-size: 0.88rem;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+
+    /* Growth Simulator Section */
+    .growth-grid {
+      display: grid;
+      grid-template-columns: 1fr 1.2fr;
+      gap: 2rem;
+      align-items: center;
+    }
+
+    .slider-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .slider-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 0.5rem;
+    }
+
+    .slider-input {
+      width: 100%;
+      height: 8px;
+      border-radius: 4px;
+      accent-color: var(--accent-emerald);
+      cursor: pointer;
+    }
+
+    .energy-bar-wrapper {
+      margin-top: 1rem;
+      background: var(--surface-2);
+      border-radius: 8px;
+      height: 14px;
+      overflow: hidden;
+      border: 1px solid var(--border-color);
+    }
+
+    .energy-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent-emerald), var(--primary-cyan));
+      width: 50%;
+      transition: width 0.35s ease;
+    }
+
+    /* Cell Comparison Cards */
+    .cell-compare-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+      margin-top: 2rem;
+    }
+
+    .cell-card {
+      background: #f8fafc;
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 1.5rem;
+      text-align: center;
+    }
+
+    .cell-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 1rem;
+    }
+
+    .cell-visual-box {
+      height: 160px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1rem;
+    }
+
+    .cell-graphic {
+      border: 3px solid var(--text-main);
+      background: rgba(5, 150, 105, 0.12);
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+    }
+
+    .cell-graphic.meri {
+      width: 110px;
+      height: 110px;
+      border-radius: 28%;
+    }
+
+    .cell-graphic.perm {
+      width: 150px;
+      height: 76px;
+      border-radius: 44%;
+      background: rgba(2, 132, 199, 0.1);
+    }
+
+    .nucleus {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: var(--accent-purple);
+      box-shadow: 0 0 10px rgba(124, 58, 237, 0.4);
+    }
+
+    .cell-graphic.perm .nucleus {
+      width: 20px;
+      height: 20px;
+      margin-left: auto;
+      margin-right: 15px;
+    }
+
+    .vacuole {
+      position: absolute;
+      width: 75px;
+      height: 45px;
+      border: 2px dashed var(--primary-cyan);
+      border-radius: 35%;
+      background: rgba(2, 132, 199, 0.15);
+    }
+
+    .cell-specs {
+      font-size: 0.88rem;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+
+    /* Matching Game Section */
+    .matching-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      align-items: start;
+    }
+
+    .chips-container {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 1rem;
+    }
+
+    .chip-item {
+      background: #ffffff;
+      border: 2px solid var(--border-color);
+      padding: 12px 18px;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      color: var(--text-main);
+      cursor: grab;
+      user-select: none;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    }
+
+    .chip-item:hover {
+      border-color: var(--accent-emerald);
+      color: var(--accent-emerald);
+      transform: translateX(4px);
+    }
+
+    .chip-item.placed {
+      background: #e6f4ea;
+      border-color: var(--accent-emerald);
+      color: var(--accent-emerald);
+      cursor: default;
+    }
+
+    .targets-container {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .target-box {
+      background: #f8fafc;
+      border: 2px dashed var(--border-strong);
+      border-radius: 14px;
+      padding: 1.25rem;
+      min-height: 90px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      transition: all 0.25s ease;
+    }
+
+    .target-box.hoverover {
+      border-color: var(--accent-emerald);
+      background: rgba(5, 150, 105, 0.05);
+    }
+
+    .target-title {
+      font-weight: 700;
+      font-size: 1rem;
+      color: var(--text-main);
+    }
+
+    .target-sub {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .match-feedback {
+      margin-top: 1.25rem;
+      padding: 12px 16px;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      display: none;
+    }
+
+    .match-feedback.success {
+      display: block;
+      background: #e6f4ea;
+      border: 1px solid rgba(5, 150, 105, 0.3);
+      color: var(--accent-emerald);
+    }
+
+    .match-feedback.error {
+      display: block;
+      background: #fef2f2;
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      color: #dc2626;
+    }
+
+    /* Quiz Section */
+    .quiz-card {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .quiz-question {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 1.5rem;
+      line-height: 1.5;
+    }
+
+    .quiz-options {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 1.5rem;
+    }
+
+    .quiz-opt-btn {
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      padding: 14px 20px;
+      border-radius: 12px;
+      font-size: 0.98rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      cursor: pointer;
+      text-align: left;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      transition: all 0.2s ease;
+    }
+
+    .quiz-opt-btn:hover {
+      background: var(--bg-card-hover);
+      border-color: var(--accent-emerald);
+      color: var(--accent-emerald);
+    }
+
+    .quiz-opt-btn.correct {
+      background: #e6f4ea !important;
+      border-color: var(--accent-emerald) !important;
+      color: var(--accent-emerald) !important;
+    }
+
+    .quiz-opt-btn.wrong {
+      background: #fef2f2 !important;
+      border-color: #ef4444 !important;
+      color: #dc2626 !important;
+    }
+
+    .quiz-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-top: 1px solid var(--border-color);
+      padding-top: 1.25rem;
+      margin-top: 1.25rem;
+    }
+
+    .btn-action {
+      background: linear-gradient(135deg, var(--accent-emerald), #047857);
+      color: #ffffff;
+      font-weight: 700;
+      font-size: 0.95rem;
+      padding: 12px 24px;
+      border-radius: 12px;
+      border: none;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.25s ease;
+      box-shadow: 0 4px 12px rgba(5, 150, 105, 0.25);
+    }
+
+    .btn-action:hover:not(:disabled) {
+      transform: scale(1.02);
+      box-shadow: 0 6px 18px rgba(5, 150, 105, 0.35);
+    }
+
+    .btn-action:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+
+    /* Footer */
+    .app-footer {
+      margin-top: auto;
+      padding: 1.5rem;
+      background: #ffffff;
+      border-top: 1px solid var(--border-color);
+      text-align: center;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .app-footer a {
+      color: var(--accent-emerald);
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    @media (max-width: 768px) {
+      .hero-title { font-size: 1.85rem; }
+      .plant-map-grid, .growth-grid, .cell-compare-grid, .matching-grid { grid-template-columns: 1fr; }
+      .tabs-nav { flex-direction: column; }
+    }
+  </style>
 </head>
 <body>
-  <p>Redirecting to <a href="index.html#meristem">Meristem Mastery Lab WebApp</a>...</p>
+  <div class="bg-glow"></div>
+
+  <!-- Header Navigation -->
+  <header class="app-header">
+    <div class="brand">
+      <div class="logo-icon">
+        <i class="fa-solid fa-seedling"></i>
+      </div>
+      <div class="brand-text">
+        <h1>Science<span class="highlight">Interactive</span> Hub</h1>
+        <p>CBSE Class 9 Biology • Chapter 6: Plant Tissues</p>
+      </div>
+    </div>
+
+    <a href="index.html" class="back-link">
+      <i class="fa-solid fa-arrow-left"></i> ← Back to Science Hub
+    </a>
+  </header>
+
+  <!-- Main Content Layout -->
+  <main class="main-layout">
+    
+    <!-- Hero Banner -->
+    <div class="hero-banner">
+      <div class="hero-badge">
+        <i class="fa-solid fa-microscope"></i> Meristem Mastery & Tissue Simulator
+      </div>
+      <h1 class="hero-title">Plant Tissues & Cell Differentiation</h1>
+      <p class="hero-subtitle">
+        Discover how localized cell-making workshops (Apical, Intercalary, and Lateral Meristems) drive primary length and secondary girth growth, and transform into specialized permanent tissues.
+      </p>
+    </div>
+
+    <!-- Chapter Navigation Tabs -->
+    <div class="tabs-nav" role="tablist">
+      <button class="tab-btn active" data-tab="tab-map">
+        <i class="fa-solid fa-location-dot"></i> 1. Find Meristems
+      </button>
+      <button class="tab-btn" data-tab="tab-engine">
+        <i class="fa-solid fa-sliders"></i> 2. Growth Simulator
+      </button>
+      <button class="tab-btn" data-tab="tab-match">
+        <i class="fa-solid fa-puzzle-piece"></i> 3. Tissue Placement
+      </button>
+      <button class="tab-btn" data-tab="tab-quiz">
+        <i class="fa-solid fa-circle-question"></i> 4. Recall Quiz
+      </button>
+    </div>
+
+    <!-- Tab 1: Find Meristems Map -->
+    <div class="tab-panel active" id="tab-map">
+      <div class="lab-card">
+        <h2 class="card-title">
+          <i class="fa-solid fa-diagram-project"></i> Interactive Plant Meristem Anatomy Map
+        </h2>
+        <p style="color: var(--text-secondary); margin-bottom: 1.5rem; font-size: 0.95rem;">
+          Click or tap any glowing meristem zone on the NCERT plant stem model below to uncover its location, function, and physiological growth type.
+        </p>
+
+        <div class="plant-map-grid">
+          <div class="plant-svg-container">
+            <svg class="plant-svg" viewBox="0 0 640 320" role="img" aria-label="Interactive Plant Meristem Map">
+              <!-- Stem Background -->
+              <path d="M292 278 L292 48 Q292 25 310 12 Q328 25 328 48 L328 278" fill="#a7f3d0" opacity="0.85"/>
+              <path d="M292 48 Q310 8 328 48" fill="#059669"/>
+              <path d="M292 48 L328 48 M292 64 L328 64 M292 80 L328 80" stroke="#047857" stroke-width="1.5" fill="none"/>
+              <!-- Intercalary Nodes -->
+              <path d="M292 112 L328 112 L328 129 L292 129Z M292 188 L328 188 L328 205 L292 205Z" fill="#10b981"/>
+              <!-- Leaves -->
+              <path class="plant-part" d="M292 130 C254 127 229 111 211 84 C249 91 280 105 292 121Z M328 108 C352 95 370 72 386 53 C380 91 360 113 328 121Z M328 205 C354 191 374 161 385 128 C356 155 337 177 328 192Z" fill="#059669"/>
+              <!-- Roots -->
+              <path d="M292 278 L300 298 L300 315 M302 278 L310 298 L310 318 M318 278 L320 299 L320 317 M328 278 L328 300 L328 314" fill="none" stroke="#d97706" stroke-width="4"/>
+              <path d="M292 252 L328 252 L328 278 L292 278Z" fill="#059669"/>
+
+              <!-- Clickable Meristem Dots -->
+              <circle class="meristem-dot pulse active" data-zone="apicalShoot" cx="310" cy="42" r="9"/>
+              <circle class="meristem-dot pulse" data-zone="intercalary" cx="310" cy="120" r="9"/>
+              <circle class="meristem-dot pulse" data-zone="lateral" cx="310" cy="266" r="9"/>
+
+              <!-- Pointer Lines & Text -->
+              <path stroke="#64748b" stroke-width="1.5" fill="none" d="M318 42 L438 42"/>
+              <text font-family="Outfit" font-size="13" font-weight="700" fill="#0f172a" x="445" y="46">Apical Meristem (Shoot Tip)</text>
+
+              <path stroke="#64748b" stroke-width="1.5" fill="none" d="M302 120 L154 120"/>
+              <text font-family="Outfit" font-size="13" font-weight="700" fill="#0f172a" x="25" y="124">Intercalary Meristem (Node Base)</text>
+
+              <path stroke="#64748b" stroke-width="1.5" fill="none" d="M310 274 L310 300 L404 300"/>
+              <text font-family="Outfit" font-size="13" font-weight="700" fill="#0f172a" x="410" y="304">Lateral Meristem (Cambium)</text>
+            </svg>
+          </div>
+
+          <!-- Fact Hook Box -->
+          <div class="fact-card" id="factCard">
+            <span class="fact-badge" id="factBadge">Interactive Memory Hook</span>
+            <h3 class="fact-headline" id="factTitle">Apical Meristem</h3>
+            <p class="fact-desc" id="factDesc">
+              Located at the growing tips of shoots and roots. Active cell division here drives <strong>Primary Growth</strong>, increasing the length of stems and roots.
+            </p>
+          </div>
+        </div>
+
+        <!-- Permanent Tissues Reference Grid -->
+        <h3 style="font-size: 1.15rem; font-weight: 700; margin-top: 2rem; margin-bottom: 1rem;">
+          <i class="fa-solid fa-tree"></i> Permanent Plant Tissues Summary (Post-Differentiation)
+        </h3>
+        <div class="tissue-grid">
+          <div class="tissue-card">
+            <div class="tissue-card-header" style="color: var(--accent-emerald);">
+              <i class="fa-solid fa-leaf"></i> Parenchyma
+            </div>
+            <div class="tissue-card-body">
+              Unspecialized living cells with thin cell walls & large intercellular spaces. Functions: Food storage, photosynthesis (Chlorenchyma), and buoyancy in aquatic plants (Aerenchyma).
+            </div>
+          </div>
+
+          <div class="tissue-card">
+            <div class="tissue-card-header" style="color: var(--accent-amber);">
+              <i class="fa-solid fa-compress"></i> Collenchyma
+            </div>
+            <div class="tissue-card-body">
+              Living mechanical tissue with irregularly thickened corners (pectin & cellulose). Provides flexibility and mechanical support to leaf stalks and young stems without breaking.
+            </div>
+          </div>
+
+          <div class="tissue-card">
+            <div class="tissue-card-header" style="color: var(--accent-purple);">
+              <i class="fa-solid fa-shield-halved"></i> Sclerenchyma
+            </div>
+            <div class="tissue-card-body">
+              Dead cells at maturity with thick, lignified walls & no internal space. Provides extreme hardness and stiffness (e.g., coconut husk, seed coats, leaf veins).
+            </div>
+          </div>
+
+          <div class="tissue-card">
+            <div class="tissue-card-header" style="color: var(--primary-cyan);">
+              <i class="fa-solid fa-droplet"></i> Complex (Xylem / Phloem)
+            </div>
+            <div class="tissue-card-body">
+              Vascular bundles for bulk transport: <strong>Xylem</strong> (Tracheids & Vessels) conducts water & minerals upward. <strong>Phloem</strong> (Sieve tubes & Companion cells) translocates food.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab 2: Growth Engine Simulator -->
+    <div class="tab-panel" id="tab-engine">
+      <div class="lab-card">
+        <h2 class="card-title">
+          <i class="fa-solid fa-sliders"></i> Plant Primary & Secondary Growth Simulator
+        </h2>
+        <p style="color: var(--text-secondary); margin-bottom: 1.5rem; font-size: 0.95rem;">
+          Adjust the sliders below to see how Apical Meristems (Primary Growth) increase plant height while Lateral Meristems / Vascular Cambium (Secondary Growth) thicken stem girth.
+        </p>
+
+        <div class="growth-grid">
+          <div>
+            <div class="slider-group">
+              <div class="slider-label">
+                <span>Primary Growth (Length - Apical Meristem)</span>
+                <span id="lenVal" style="color: var(--accent-emerald)">50 cm</span>
+              </div>
+              <input type="range" class="slider-input" id="lenSlider" min="10" max="100" value="50">
+            </div>
+
+            <div class="slider-group">
+              <div class="slider-label">
+                <span>Secondary Growth (Girth - Lateral Meristem)</span>
+                <span id="girthVal" style="color: var(--accent-amber)">20 mm</span>
+              </div>
+              <input type="range" class="slider-input" id="girthSlider" min="8" max="70" value="20">
+            </div>
+
+            <div style="font-size: 0.88rem; color: var(--text-muted); background: #f8fafc; padding: 12px; border-radius: 10px; border: 1px solid var(--border-color);">
+              <i class="fa-solid fa-lightbulb" style="color: var(--accent-amber)"></i> <strong>Key Insight:</strong> Primary growth makes plants grow taller to capture sunlight. Secondary growth (lateral cambium) thickens trunk girth to support heavier branches.
+            </div>
+
+            <div style="margin-top: 1rem;">
+              <span style="font-size: 0.82rem; font-weight: 700; color: var(--text-secondary); text-transform: uppercase;">Total Growth Energy</span>
+              <div class="energy-bar-wrapper">
+                <div class="energy-bar-fill" id="energyFill"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Live SVG Morphing Model -->
+          <div class="plant-svg-container" style="background: #ffffff;">
+            <svg viewBox="0 0 310 250" style="width:100%; height:250px;">
+              <path id="growStem" d="M155 214 L155 65" stroke="#059669" stroke-width="20" stroke-linecap="round"/>
+              <path id="growLeft" d="M155 125 L82 90" stroke="#047857" stroke-width="9"/>
+              <path id="growRight" d="M155 95 L228 55" stroke="#047857" stroke-width="9"/>
+              <ellipse id="growLeaf1" cx="73" cy="80" rx="39" ry="17" fill="#10b981" transform="rotate(-25 73 80)"/>
+              <ellipse id="growLeaf2" cx="237" cy="45" rx="44" ry="18" fill="#10b981" transform="rotate(-25 237 45)"/>
+              <circle id="growTip" cx="155" cy="58" r="9" fill="#d97706"/>
+              <text x="155" y="240" text-anchor="middle" font-family="Outfit" font-size="12" font-weight="700" fill="#64748b">Dynamic Plant Model</text>
+            </svg>
+          </div>
+        </div>
+
+        <!-- Meristematic vs Permanent Cell Microscopic Comparison -->
+        <h3 style="font-size: 1.15rem; font-weight: 700; margin-top: 2rem; margin-bottom: 1rem;">
+          <i class="fa-solid fa-microscope"></i> Cell Differentiation: Meristematic vs Permanent Cell
+        </h3>
+        <div class="cell-compare-grid">
+          <div class="cell-card">
+            <div class="cell-title" style="color: var(--accent-emerald);">
+              <i class="fa-solid fa-rotate"></i> Meristematic Cell
+            </div>
+            <div class="cell-visual-box">
+              <div class="cell-graphic meri">
+                <div class="nucleus"></div>
+              </div>
+            </div>
+            <div class="cell-specs">
+              <strong>Characteristics:</strong> Small isometric shape • Thin cellulose wall • Dense active cytoplasm • Prominent large nucleus • <em>No vacuoles</em> (actively dividing!).
+            </div>
+          </div>
+
+          <div class="cell-card">
+            <div class="cell-title" style="color: var(--primary-cyan);">
+              <i class="fa-solid fa-lock"></i> Permanent Differentiated Cell
+            </div>
+            <div class="cell-visual-box">
+              <div class="cell-graphic perm">
+                <div class="vacuole"></div>
+                <div class="nucleus"></div>
+              </div>
+            </div>
+            <div class="cell-specs">
+              <strong>Characteristics:</strong> Specialized elongated/tubular shape • Thickened cell walls (lignin/pectin) • Large central vacuole • <em>Loses power of cell division</em> to perform specific permanent duties.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab 3: Matching Placement Mission -->
+    <div class="tab-panel" id="tab-match">
+      <div class="lab-card">
+        <h2 class="card-title">
+          <i class="fa-solid fa-puzzle-piece"></i> Mission: Place Each Growth Team
+        </h2>
+        <p style="color: var(--text-secondary); margin-bottom: 1.5rem; font-size: 0.95rem;">
+          Drag or click a tissue label on the left, then assign it to its correct anatomical location box on the right.
+        </p>
+
+        <div class="matching-grid">
+          <div>
+            <h3 style="font-size: 1rem; font-weight: 700; color: var(--text-main);">Available Meristem Labels</h3>
+            <div class="chips-container" id="chipsContainer">
+              <div class="chip-item" draggable="true" data-answer="apical">
+                <i class="fa-solid fa-grip-vertical" style="color: var(--text-muted);"></i> Apical Meristem
+              </div>
+              <div class="chip-item" draggable="true" data-answer="intercalary">
+                <i class="fa-solid fa-grip-vertical" style="color: var(--text-muted);"></i> Intercalary Meristem
+              </div>
+              <div class="chip-item" draggable="true" data-answer="lateral">
+                <i class="fa-solid fa-grip-vertical" style="color: var(--text-muted);"></i> Lateral Meristem (Cambium)
+              </div>
+            </div>
+
+            <div class="match-feedback" id="matchFeedback"></div>
+
+            <button class="back-link" id="resetMatchBtn" style="margin-top: 1.25rem; border: none; cursor: pointer;">
+              <i class="fa-solid fa-rotate-left"></i> Reset Matching Mission
+            </button>
+          </div>
+
+          <div class="targets-container">
+            <div class="target-box" data-target="apical">
+              <div class="target-title">Tips of Roots & Shoots</div>
+              <div class="target-sub">Drives primary growth & elongation of stem/roots</div>
+            </div>
+
+            <div class="target-box" data-target="intercalary">
+              <div class="target-title">Base of Leaves & Internodes</div>
+              <div class="target-sub">Enables grasses & stems to rapidly regrow after grazing</div>
+            </div>
+
+            <div class="target-box" data-target="lateral">
+              <div class="target-title">Sides of Stem & Roots (Cambium)</div>
+              <div class="target-sub">Drives secondary growth & increases girth/thickness</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab 4: Recall Quiz -->
+    <div class="tab-panel" id="tab-quiz">
+      <div class="lab-card quiz-card">
+        <h2 class="card-title">
+          <i class="fa-solid fa-circle-question"></i> Class 9 Biology Retrieval Quiz
+        </h2>
+        
+        <div style="margin-top: 1.5rem;">
+          <div class="quiz-question" id="quizQuestion">
+            Where would you find a meristem that increases plant length?
+          </div>
+
+          <div class="quiz-options" id="quizOptions"></div>
+
+          <div class="match-feedback" id="quizFeedback"></div>
+
+          <div class="quiz-footer">
+            <span style="font-size: 0.9rem; font-weight: 700; color: var(--text-muted);" id="quizCounter">
+              Question 1 of 5
+            </span>
+            <button class="btn-action" id="nextQuizBtn" disabled>
+              Next Question <i class="fa-solid fa-arrow-right"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="app-footer">
+    <p>
+      CBSE Class 9 Biology Interactive Suite • Built for <a href="https://github.com/Ravi-0143/Science.git" target="_blank">GitHub: Ravi-0143/Science</a>
+    </p>
+  </footer>
+
+  <!-- Interactive Script Logic -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // ===== Tab Switching Logic =====
+      const tabBtns = document.querySelectorAll('.tab-btn');
+      const tabPanels = document.querySelectorAll('.tab-panel');
+
+      tabBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          tabBtns.forEach(b => b.classList.remove('active'));
+          tabPanels.forEach(p => p.classList.remove('active'));
+
+          btn.classList.add('active');
+          const panelId = btn.getAttribute('data-tab');
+          document.getElementById(panelId).classList.add('active');
+        });
+      });
+
+      // ===== Tab 1: Meristem Plant Map Interactive Facts =====
+      const zones = {
+        apicalShoot: {
+          title: 'Apical Meristem (Shoot & Root Tips)',
+          badge: 'Primary Growth',
+          desc: 'Present at growing tips of stems and roots. Continuous cell division causes primary growth, elongating the plant upward into air and downward into soil.'
+        },
+        intercalary: {
+          title: 'Intercalary Meristem (Nodes & Leaf Bases)',
+          badge: 'Regrowth Engine',
+          desc: 'Located at nodes, leaf bases, or internodes (especially in monocots like grass). Allows severed stems and grazed leaves to quickly regenerate.'
+        },
+        lateral: {
+          title: 'Lateral Meristem / Vascular Cambium',
+          badge: 'Secondary Growth',
+          desc: 'Located along the lateral sides of stems and roots. Drives secondary growth, adding wood layers and thickening trunk girth.'
+        }
+      };
+
+      const dots = document.querySelectorAll('.meristem-dot');
+      const factCard = document.getElementById('factCard');
+      const factBadge = document.getElementById('factBadge');
+      const factTitle = document.getElementById('factTitle');
+      const factDesc = document.getElementById('factDesc');
+
+      dots.forEach(dot => {
+        dot.addEventListener('click', () => {
+          dots.forEach(d => d.classList.remove('active'));
+          dot.classList.add('active');
+
+          const zoneKey = dot.getAttribute('data-zone');
+          const info = zones[zoneKey];
+
+          factBadge.textContent = info.badge;
+          factTitle.textContent = info.title;
+          factDesc.innerHTML = info.desc;
+        });
+      });
+
+      // ===== Tab 2: Growth Simulator Logic =====
+      const lenSlider = document.getElementById('lenSlider');
+      const girthSlider = document.getElementById('girthSlider');
+      const lenVal = document.getElementById('lenVal');
+      const girthVal = document.getElementById('girthVal');
+      const growStem = document.getElementById('growStem');
+      const growTip = document.getElementById('growTip');
+      const growLeft = document.getElementById('growLeft');
+      const growRight = document.getElementById('growRight');
+      const energyFill = document.getElementById('energyFill');
+
+      function updateGrowth() {
+        const l = parseInt(lenSlider.value);
+        const g = parseInt(girthSlider.value);
+
+        lenVal.textContent = `${l} cm`;
+        girthVal.textContent = `${g} mm`;
+
+        const y = 214 - l * 1.45;
+        const w = 8 + g * 0.25;
+
+        growStem.setAttribute('d', `M155 214 L155 ${y}`);
+        growStem.setAttribute('stroke-width', w);
+        growTip.setAttribute('cy', y - 7);
+        growLeft.setAttribute('d', `M155 ${y + 65} L82 ${y + 30}`);
+        growRight.setAttribute('d', `M155 ${y + 35} L228 ${y - 5}`);
+
+        const energyPct = Math.min(100, Math.round((l + g) / 1.35));
+        energyFill.style.width = `${energyPct}%`;
+      }
+
+      lenSlider.addEventListener('input', updateGrowth);
+      girthSlider.addEventListener('input', updateGrowth);
+      updateGrowth();
+
+      // ===== Tab 3: Matching Placement Logic =====
+      let heldChip = null;
+      const chipsContainer = document.getElementById('chipsContainer');
+      const matchFeedback = document.getElementById('matchFeedback');
+      const targetBoxes = document.querySelectorAll('.target-box');
+      const resetMatchBtn = document.getElementById('resetMatchBtn');
+
+      function placeChip(chip, target) {
+        if (!chip) return;
+        const isCorrect = chip.getAttribute('data-answer') === target.getAttribute('data-target');
+
+        if (isCorrect) {
+          target.appendChild(chip);
+          chip.draggable = false;
+          chip.classList.add('placed');
+          matchFeedback.textContent = `✓ Correct! ${chip.innerText.trim()} placed successfully.`;
+          matchFeedback.className = 'match-feedback success';
+
+          const placedCount = document.querySelectorAll('.target-box .chip-item').length;
+          if (placedCount === 3) {
+            matchFeedback.textContent = '🎉 Mission Accomplished! All meristems correctly assigned!';
+            if (typeof confetti === 'function') {
+              confetti({ particleCount: 80, spread: 70, origin: { y: 0.6 } });
+            }
+          }
+        } else {
+          matchFeedback.textContent = '✕ Incorrect placement! Think: Apical = Tips, Intercalary = Nodes, Lateral = Girth.';
+          matchFeedback.className = 'match-feedback error';
+        }
+      }
+
+      document.querySelectorAll('.chip-item').forEach(chip => {
+        chip.addEventListener('dragstart', () => { heldChip = chip; });
+        chip.addEventListener('click', () => {
+          heldChip = chip;
+          matchFeedback.textContent = 'Now click a target box on the right to place label.';
+          matchFeedback.className = 'match-feedback success';
+        });
+      });
+
+      targetBoxes.forEach(target => {
+        target.addEventListener('dragover', e => {
+          e.preventDefault();
+          target.classList.add('hoverover');
+        });
+        target.addEventListener('dragleave', () => target.classList.remove('hoverover'));
+        target.addEventListener('drop', e => {
+          e.preventDefault();
+          target.classList.remove('hoverover');
+          placeChip(heldChip, target);
+        });
+        target.addEventListener('click', () => placeChip(heldChip, target));
+      });
+
+      resetMatchBtn.addEventListener('click', () => {
+        document.querySelectorAll('.target-box .chip-item').forEach(chip => {
+          chipsContainer.appendChild(chip);
+          chip.draggable = true;
+          chip.classList.remove('placed');
+        });
+        heldChip = null;
+        matchFeedback.style.display = 'none';
+      });
+
+      // ===== Tab 4: Retrieval Quiz Engine =====
+      const quizQuestions = [
+        {
+          q: "Where would you find a meristem that increases plant length?",
+          opts: ["Sides of stem & roots", "Tips of roots & shoots", "Surface of leaf epidermis"],
+          ans: "Tips of roots & shoots",
+          exp: "Apical meristem located at shoot and root tips drives primary growth (length)."
+        },
+        {
+          q: "Which meristem helps grass regrow rapidly after grazing?",
+          opts: ["Apical Meristem", "Intercalary Meristem", "Lateral Meristem"],
+          ans: "Intercalary Meristem",
+          exp: "Intercalary meristem is located at leaf bases and internodes in monocots."
+        },
+        {
+          q: "Which growth process increases tree trunk thickness (girth)?",
+          opts: ["Primary growth", "Secondary growth", "Apical elongation"],
+          ans: "Secondary growth",
+          exp: "Lateral meristem (vascular cambium) adds secondary xylem and bark thickness."
+        },
+        {
+          q: "Which feature is characteristic of active meristematic cells?",
+          opts: ["Large central vacuole", "Dead at maturity", "Dense cytoplasm & large nucleus"],
+          ans: "Dense cytoplasm & large nucleus",
+          exp: "Meristematic cells are active dividers with thin cell walls and no vacuoles."
+        },
+        {
+          q: "What happens during cell differentiation in plants?",
+          opts: ["Cells take up permanent shape and lose division power", "Cells divide faster continuously", "Roots stop taking up water"],
+          ans: "Cells take up permanent shape and lose division power",
+          exp: "Meristematic cells differentiate into permanent tissues like Parenchyma & Sclerenchyma."
+        }
+      ];
+
+      let quizIndex = 0;
+      let score = 0;
+      let isAnswered = false;
+
+      const quizQuestion = document.getElementById('quizQuestion');
+      const quizOptions = document.getElementById('quizOptions');
+      const quizFeedback = document.getElementById('quizFeedback');
+      const quizCounter = document.getElementById('quizCounter');
+      const nextQuizBtn = document.getElementById('nextQuizBtn');
+
+      function loadQuizQuestion() {
+        const item = quizQuestions[quizIndex];
+        quizQuestion.textContent = `${quizIndex + 1}. ${item.q}`;
+        quizOptions.innerHTML = '';
+        quizFeedback.style.display = 'none';
+        isAnswered = false;
+        nextQuizBtn.disabled = true;
+
+        item.opts.forEach(optText => {
+          const btn = document.createElement('button');
+          btn.className = 'quiz-opt-btn';
+          btn.innerHTML = `<i class="fa-regular fa-circle"></i> ${optText}`;
+
+          btn.addEventListener('click', () => {
+            if (isAnswered) return;
+            isAnswered = true;
+
+            const isCorrect = optText === item.ans;
+            if (isCorrect) {
+              btn.classList.add('correct');
+              btn.querySelector('i').className = 'fa-solid fa-circle-check';
+              quizFeedback.textContent = `✓ Exactly right! ${item.exp}`;
+              quizFeedback.className = 'match-feedback success';
+              score++;
+            } else {
+              btn.classList.add('wrong');
+              btn.querySelector('i').className = 'fa-solid fa-circle-xmark';
+              quizFeedback.textContent = `✕ Not quite. ${item.exp}`;
+              quizFeedback.className = 'match-feedback error';
+
+              // Highlight correct answer
+              Array.from(quizOptions.children).forEach(b => {
+                if (b.innerText.trim().includes(item.ans)) {
+                  b.classList.add('correct');
+                }
+              });
+            }
+
+            nextQuizBtn.disabled = false;
+          });
+
+          quizOptions.appendChild(btn);
+        });
+
+        quizCounter.textContent = `Question ${quizIndex + 1} of ${quizQuestions.length}`;
+        nextQuizBtn.innerHTML = quizIndex === quizQuestions.length - 1 ? 
+          'Finish Quiz <i class="fa-solid fa-trophy"></i>' : 
+          'Next Question <i class="fa-solid fa-arrow-right"></i>';
+      }
+
+      nextQuizBtn.addEventListener('click', () => {
+        if (quizIndex < quizQuestions.length - 1) {
+          quizIndex++;
+          loadQuizQuestion();
+        } else {
+          // Finish Quiz
+          quizQuestion.textContent = `🎉 Quiz Completed! Score: ${score} / ${quizQuestions.length}`;
+          quizOptions.innerHTML = `<div style="text-align:center; padding: 1.5rem; font-size: 1.1rem; color: var(--text-secondary);">
+            Great job reviewing Class 9 Biology Plant Tissues!
+          </div>`;
+          quizFeedback.style.display = 'none';
+          nextQuizBtn.innerHTML = 'Restart Quiz <i class="fa-solid fa-rotate-left"></i>';
+          quizIndex = 0;
+          score = 0;
+
+          if (typeof confetti === 'function') {
+            confetti({ particleCount: 100, spread: 80, origin: { y: 0.6 } });
+          }
+
+          nextQuizBtn.onclick = () => {
+            loadQuizQuestion();
+          };
+        }
+      });
+
+      loadQuizQuestion();
+    });
+  </script>
 </body>
 </html>
