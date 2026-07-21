@@ -315,62 +315,7 @@
       text-decoration: none;
     }
 
-    /* ===== Video Section ===== */
-    .video-section {
-      background: #ffffff;
-      border: 1px solid var(--border-color);
-      border-radius: 20px;
-      padding: 1.75rem 2rem;
-      box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.04);
-      margin-bottom: 2.5rem;
-    }
 
-    .video-wrapper {
-      position: relative;
-      width: 100%;
-      max-width: 100%;
-      margin: 1.25rem auto 0;
-      aspect-ratio: 16 / 9;
-      border-radius: 16px;
-      overflow: hidden;
-      border: 1px solid var(--border-color);
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-    }
-
-    .video-wrapper iframe {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      border: none;
-    }
-
-    .audio-status-badge {
-      position: absolute;
-      top: 14px;
-      right: 14px;
-      background: rgba(15, 23, 42, 0.85);
-      backdrop-filter: blur(8px);
-      color: #f8fafc;
-      padding: 6px 14px;
-      border-radius: 20px;
-      font-size: 0.78rem;
-      font-weight: 700;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      z-index: 10;
-      pointer-events: none;
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      transition: all 0.3s ease;
-    }
-
-    .audio-status-badge.audio-active {
-      background: rgba(5, 150, 105, 0.9);
-      color: #ffffff;
-      box-shadow: 0 0 15px rgba(16, 185, 129, 0.4);
-    }
   </style>
 </head>
 <body>
@@ -497,84 +442,11 @@
 
   </section>
 
-  <!-- Video Guidance Section -->
-  <section style="max-width: 1200px; margin: 0 auto 3.5rem; padding: 0 1.5rem; width: 100%;">
-    <div class="video-section">
-      <h2 style="font-size: 1.4rem; font-weight: 800; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 10px;">
-        <i class="fa-solid fa-circle-play" style="color: var(--accent-pink);"></i>
-        Video Guidance & Concept Explanation
-      </h2>
-      <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 1rem;">
-        Watch the video tutorial for in-depth concepts, cell structures, and explanations. <em>(Move cursor or touch screen to enable audio!)</em>
-      </p>
-      <div class="video-wrapper" id="videoContainerMain">
-        <div class="audio-status-badge" id="audioBadgeMain">
-          <i class="fa-solid fa-volume-xmark"></i> Muted (Hover / Touch for Sound)
-        </div>
-        <iframe id="ytplayerMain"
-                src="https://www.youtube.com/embed/MYcVW1dlNbU?enablejsapi=1&autoplay=1&mute=1&loop=1&playlist=MYcVW1dlNbU" 
-                title="Epithelial Tissues Guidance Video" 
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-                allowfullscreen>
-        </iframe>
-      </div>
-    </div>
-  </section>
-
   <!-- Footer -->
   <footer class="app-footer">
     <p>
       CBSE Class 9 & 10 Science Interactive Portal • Built for <a href="https://github.com/Ravi-0143/Science.git" target="_blank">GitHub: Ravi-0143/Science</a>
     </p>
   </footer>
-
-  <!-- YouTube Iframe API -->
-  <script src="https://www.youtube.com/iframe_api"></script>
-  <script>
-    var playerMain;
-    function onYouTubeIframeAPIReady() {
-      playerMain = new YT.Player('ytplayerMain', {
-        events: {
-          'onReady': function(event) {
-            event.target.playVideo();
-            event.target.mute();
-          }
-        }
-      });
-    }
-
-    function enableMainAudio() {
-      if (playerMain && typeof playerMain.unMute === 'function') {
-        playerMain.unMute();
-        playerMain.setVolume(100);
-        const b = document.getElementById('audioBadgeMain');
-        if (b) {
-          b.innerHTML = '<i class="fa-solid fa-volume-high"></i> Audio On';
-          b.classList.add('audio-active');
-        }
-      }
-    }
-
-    function disableMainAudio() {
-      if (playerMain && typeof playerMain.mute === 'function') {
-        playerMain.mute();
-        const b = document.getElementById('audioBadgeMain');
-        if (b) {
-          b.innerHTML = '<i class="fa-solid fa-volume-xmark"></i> Muted (Hover / Touch for Sound)';
-          b.classList.remove('audio-active');
-        }
-      }
-    }
-
-    document.addEventListener('DOMContentLoaded', () => {
-      const v = document.getElementById('videoContainerMain');
-      if (v) {
-        v.addEventListener('mouseenter', enableMainAudio);
-        v.addEventListener('mouseleave', disableMainAudio);
-        v.addEventListener('touchstart', enableMainAudio, { passive: true });
-        v.addEventListener('touchend', disableMainAudio, { passive: true });
-      }
-    });
-  </script>
 </body>
 </html>
